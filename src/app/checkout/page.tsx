@@ -133,7 +133,7 @@ export default function CheckoutPage() {
 
   const handleSendWhatsAppConfirmation = () => {
     if (!lastOrderDetails) return;
-    const msg = `Hello City Cosmetics Sunyani! 🌸\n\nI just placed an order on your website:\n*Order Ref:* #${lastOrderDetails.orderNumber}\n*Customer:* ${lastOrderDetails.customerName}\n*Phone:* ${lastOrderDetails.customerPhone}\n*Delivery Address:* ${lastOrderDetails.shippingAddress}\n*Total:* ${formatPrice(lastOrderDetails.total)}\n*Payment:* ${lastOrderDetails.paymentMethod}\n\nPlease confirm order preparation and dispatch in Sunyani. Thank you!`;
+    const msg = `Hello City Cosmetics Sunyani,\n\nI just placed an order on your website:\n*Order Ref:* #${lastOrderDetails.orderNumber}\n*Customer:* ${lastOrderDetails.customerName}\n*Phone:* ${lastOrderDetails.customerPhone}\n*Delivery Address:* ${lastOrderDetails.shippingAddress}\n*Total:* ${formatPrice(lastOrderDetails.total)}\n*Payment:* ${lastOrderDetails.paymentMethod}\n\nPlease confirm order preparation and dispatch in Sunyani. Thank you!`;
     const url = `https://wa.me/${SITE_CONFIG.whatsappNumber}?text=${encodeURIComponent(msg)}`;
     window.open(url, '_blank');
   };
@@ -427,8 +427,8 @@ export default function CheckoutPage() {
                       </div>
                     </div>
 
-                    <p className="text-[11px] text-[#6B7280] bg-white p-2.5 rounded-md border border-[#E5E7EB]">
-                      ⚡ You will receive an instant payment push prompt on your handset to approve the GH₵ transaction.
+                    <p className="text-[11px] text-[#6B7280] bg-white p-2.5 rounded-none border border-[#E5E7EB]">
+                      You will receive an instant payment push prompt on your handset to approve the GH₵ transaction.
                     </p>
                   </div>
                 )}

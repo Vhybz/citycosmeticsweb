@@ -190,7 +190,7 @@ export default function QuizPage() {
             {/* Promo banner callout */}
             <div className="bg-[#DCEBFA]/50 p-4 rounded-xl border border-[#DCEBFA] flex items-center justify-between text-xs text-[#0B1F3A]">
               <span>
-                ✨ 15% VIP code <strong className="text-[#174EA6]">CITYGLOW15</strong> will be automatically applied to your ritual bag.
+                Exclusive 15% VIP code <strong className="text-[#174EA6]">CITYGLOW15</strong> will be automatically applied to your ritual bag.
               </span>
             </div>
 

@@ -32,7 +32,7 @@ export const WhatsAppButton: React.FC<WhatsAppButtonProps> = ({
     e.preventDefault();
     e.stopPropagation();
 
-    let message = `Hello City Cosmetics Sunyani! 🌸\n\n`;
+    let message = `Hello City Cosmetics Sunyani,\n\n`;
 
     if (cartItems && cartItems.length > 0) {
       message += `I would like to place an order for the following items:\n\n`;
