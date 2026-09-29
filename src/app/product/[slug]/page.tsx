@@ -96,26 +96,26 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
   };
 
   return (
-    <div className="bg-[#fcfaf8] py-8 md:py-16">
+    <div className="bg-white py-8 md:py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Breadcrumb Navigation */}
-        <nav className="flex items-center text-xs text-[#8a8075] mb-8 space-x-2">
-          <Link href="/" className="hover:text-[#121113] transition-colors">
+        <nav className="flex items-center text-xs text-[#6B7280] mb-8 space-x-2">
+          <Link href="/" className="hover:text-[#174EA6] transition-colors">
             Home
           </Link>
           <span>/</span>
-          <Link href="/shop" className="hover:text-[#121113] transition-colors">
+          <Link href="/shop" className="hover:text-[#174EA6] transition-colors">
             Shop
           </Link>
           <span>/</span>
           <Link
             href={`/shop?category=${product.category}`}
-            className="capitalize hover:text-[#121113] transition-colors"
+            className="capitalize hover:text-[#174EA6] transition-colors"
           >
             {product.category}
           </Link>
           <span>/</span>
-          <span className="text-[#121113] font-medium truncate max-w-xs">{product.name}</span>
+          <span className="text-[#0B1F3A] font-medium truncate max-w-xs">{product.name}</span>
         </nav>
 
         {/* Main Product Stage */}
@@ -129,10 +129,10 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
                   <button
                     key={idx}
                     onClick={() => setActiveImage(img)}
-                    className={`w-20 h-20 rounded-2xl overflow-hidden border-2 transition-all flex-shrink-0 bg-white ${
+                    className={`w-20 h-20 rounded-md overflow-hidden border-2 transition-all flex-shrink-0 bg-white ${
                       activeImage === img
-                        ? 'border-[#121113] shadow-md scale-105'
-                        : 'border-[#ede4dc] opacity-70 hover:opacity-100'
+                        ? 'border-[#0B1F3A] shadow-sm scale-105'
+                        : 'border-[#E5E7EB] opacity-70 hover:opacity-100'
                     }`}
                   >
                     <img
@@ -146,7 +146,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
             )}
 
             {/* Main Stage Image */}
-            <div className="flex-1 relative aspect-[4/5] rounded-3xl overflow-hidden bg-white shadow-xl border border-[#ede4dc]">
+            <div className="flex-1 relative aspect-[4/5] rounded-xl overflow-hidden bg-[#F5F9FE] shadow-sm border border-[#E5E7EB]">
               <img
                 src={activeImage}
                 alt={product.name}
@@ -158,7 +158,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
                 {product.tags.map((tag) => (
                   <span
                     key={tag}
-                    className="text-[10px] uppercase font-bold tracking-wider px-3 py-1 rounded-full bg-white/95 text-[#a85845] border border-[#ebd2c7] shadow-sm backdrop-blur-md"
+                    className="text-[10px] uppercase font-bold tracking-wider px-3 py-1 rounded-sm bg-white/95 text-[#0B1F3A] border border-[#DCEBFA] shadow-xs backdrop-blur-md"
                   >
                     {tag}
                   </span>
@@ -172,25 +172,25 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
             <div>
               {/* Category & Rating */}
               <div className="flex items-center justify-between">
-                <span className="text-xs uppercase tracking-[0.25em] text-[#a85845] font-semibold">
+                <span className="text-xs uppercase tracking-[0.25em] text-[#174EA6] font-semibold">
                   {product.category}
                 </span>
                 <div className="flex items-center gap-2">
                   <button
                     onClick={handleShare}
-                    className="p-2 text-[#8a8075] hover:text-[#121113] rounded-full hover:bg-white border border-[#ede4dc] transition-all"
+                    className="p-2 text-[#6B7280] hover:text-[#0B1F3A] rounded-md hover:bg-[#F5F9FE] border border-[#E5E7EB] transition-all"
                     title="Share Link"
                   >
                     <Share2 className="w-3.5 h-3.5" />
                   </button>
                   <button
                     onClick={() => toggleWishlist(product)}
-                    className="p-2 text-[#8a8075] hover:text-[#a85845] rounded-full hover:bg-white border border-[#ede4dc] transition-all"
+                    className="p-2 text-[#6B7280] hover:text-[#174EA6] rounded-md hover:bg-[#F5F9FE] border border-[#E5E7EB] transition-all"
                     title="Add to Wishlist"
                   >
                     <Heart
                       className={`w-3.5 h-3.5 ${
-                        isFavorited ? 'fill-[#a85845] text-[#a85845]' : ''
+                        isFavorited ? 'fill-[#174EA6] text-[#174EA6]' : ''
                       }`}
                     />
                   </button>
@@ -198,56 +198,56 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
               </div>
 
               {copiedLink && (
-                <p className="text-[11px] text-[#2c6e3b] font-medium">Link copied to clipboard!</p>
+                <p className="text-[11px] text-[#174EA6] font-medium">Link copied to clipboard!</p>
               )}
 
               {/* Title & Subtitle */}
-              <h1 className="font-serif-luxury text-3xl sm:text-4xl font-normal text-[#121113] mt-2">
+              <h1 className="font-serif-luxury text-3xl sm:text-4xl font-normal text-[#0B1F3A] mt-2">
                 {product.name}
               </h1>
-              <p className="text-xs sm:text-sm text-[#8a8075] mt-1">{product.subtitle}</p>
+              <p className="text-xs sm:text-sm text-[#6B7280] mt-1">{product.subtitle}</p>
 
               {/* Stars & Reviews */}
               <div className="flex items-center gap-2 mt-3">
-                <div className="flex text-[#cba258]">
+                <div className="flex text-amber-500">
                   {[...Array(5)].map((_, i) => (
                     <Star key={i} className="w-4 h-4 fill-current" />
                   ))}
                 </div>
-                <span className="text-xs font-semibold text-[#121113]">
+                <span className="text-xs font-semibold text-[#0B1F3A]">
                   {product.rating.toFixed(1)}
                 </span>
-                <span className="text-xs text-[#8a8075]">
+                <span className="text-xs text-[#6B7280]">
                   ({product.reviewCount} verified reviews)
                 </span>
               </div>
 
               {/* Price & Value */}
-              <div className="flex items-baseline gap-3 mt-5 pt-4 border-t border-[#ede4dc]">
-                <span className="text-3xl font-semibold text-[#121113]">
+              <div className="flex items-baseline gap-3 mt-5 pt-4 border-t border-[#E5E7EB]">
+                <span className="text-3xl font-semibold text-[#0B1F3A]">
                   {formatPrice(currentPrice)}
                 </span>
                 {product.compareAtPrice && (
-                  <span className="text-base text-[#8a8075] line-through">
+                  <span className="text-base text-[#9CA3AF] line-through">
                     {formatPrice(product.compareAtPrice)}
                   </span>
                 )}
-                <span className="text-xs text-[#2c6e3b] font-semibold bg-[#eaf4eb] px-2.5 py-1 rounded-full">
+                <span className="text-xs text-[#0B1F3A] font-semibold bg-[#DCEBFA] px-2.5 py-1 rounded-sm">
                   In Stock &bull; Ready to Ship
                 </span>
               </div>
 
               {/* Description */}
-              <p className="text-xs sm:text-sm text-[#5a544e] mt-4 leading-relaxed">
+              <p className="text-xs sm:text-sm text-[#4B5563] mt-4 leading-relaxed">
                 {product.description}
               </p>
 
               {/* Shade Selector if variants exist */}
               {product.variants && product.variants.length > 0 && (
-                <div className="mt-6 pt-5 border-t border-[#ede4dc]">
+                <div className="mt-6 pt-5 border-t border-[#E5E7EB]">
                   <div className="flex items-center justify-between text-xs mb-3">
-                    <span className="font-semibold text-[#121113]">Select Shade Tone:</span>
-                    <span className="text-[#a85845] font-semibold">{selectedVariant?.name}</span>
+                    <span className="font-semibold text-[#0B1F3A]">Select Shade Tone:</span>
+                    <span className="text-[#174EA6] font-semibold">{selectedVariant?.name}</span>
                   </div>
                   <div className="flex items-center gap-2.5 flex-wrap">
                     {product.variants.map((v) => (
@@ -256,7 +256,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
                         onClick={() => setSelectedVariant(v)}
                         className={`w-9 h-9 rounded-full border transition-all flex items-center justify-center ${
                           selectedVariant?.id === v.id
-                            ? 'ring-2 ring-offset-2 ring-[#121113] scale-110 shadow-md'
+                            ? 'ring-2 ring-offset-2 ring-[#0B1F3A] scale-110 shadow-sm'
                             : 'border-black/20 hover:scale-105'
                         }`}
                         style={{ backgroundColor: v.hexCode || '#ccc' }}
@@ -279,20 +279,20 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
               )}
 
               {/* Quantity & Add to Cart Button */}
-              <div className="mt-8 pt-6 border-t border-[#ede4dc] space-y-4">
+              <div className="mt-8 pt-6 border-t border-[#E5E7EB] space-y-4">
                 <div className="flex items-center gap-4">
                   {/* Quantity selector */}
-                  <div className="flex items-center border border-[#d8cec4] rounded-full px-4 py-2.5 bg-white shadow-sm">
+                  <div className="flex items-center border border-[#E5E7EB] rounded-md px-4 py-2.5 bg-[#F5F9FE]">
                     <button
                       onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                      className="text-sm font-bold text-[#6b645d] hover:text-black px-2"
+                      className="text-sm font-bold text-[#6B7280] hover:text-[#0B1F3A] px-2"
                     >
                       -
                     </button>
-                    <span className="text-sm font-semibold px-3">{quantity}</span>
+                    <span className="text-sm font-semibold px-3 text-[#0B1F3A]">{quantity}</span>
                     <button
                       onClick={() => setQuantity(quantity + 1)}
-                      className="text-sm font-bold text-[#6b645d] hover:text-black px-2"
+                      className="text-sm font-bold text-[#6B7280] hover:text-[#0B1F3A] px-2"
                     >
                       +
                     </button>
@@ -302,10 +302,10 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
                   <button
                     onClick={handleAddToCart}
                     disabled={isAdded}
-                    className={`flex-1 py-4 px-8 rounded-full text-xs uppercase tracking-widest font-semibold flex items-center justify-center gap-3 transition-all ${
+                    className={`flex-1 py-4 px-8 rounded-md text-xs uppercase tracking-widest font-semibold flex items-center justify-center gap-3 transition-all ${
                       isAdded
-                        ? 'bg-[#2c6e3b] text-white shadow-lg'
-                        : 'btn-luxury-primary text-white shadow-xl hover:shadow-2xl'
+                        ? 'bg-[#174EA6] text-white shadow-md'
+                        : 'bg-[#0B1F3A] hover:bg-[#174EA6] text-white shadow-sm hover:shadow-md'
                     }`}
                   >
                     {isAdded ? (
@@ -314,7 +314,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
                       </>
                     ) : (
                       <>
-                        <ShoppingBag className="w-4 h-4 text-[#ebd2c7]" /> Add to Bag &bull;{' '}
+                        <ShoppingBag className="w-4 h-4 text-[#DCEBFA]" /> Add to Bag &bull;{' '}
                         {formatPrice(currentPrice * quantity)}
                       </>
                     )}
@@ -327,42 +327,42 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
                     quantity={quantity}
                     variant="primary"
                     text="Order via WhatsApp"
-                    className="w-full py-3.5 px-6 text-xs uppercase tracking-wider font-semibold"
+                    className="w-full py-3.5 px-6 text-xs uppercase tracking-wider font-semibold rounded-md"
                   />
                 </div>
 
                 {/* Guarantees row */}
-                <div className="grid grid-cols-2 gap-3 pt-2 text-[11px] text-[#6b645d]">
+                <div className="grid grid-cols-2 gap-3 pt-2 text-[11px] text-[#6B7280]">
                   <div className="flex items-center gap-1.5">
-                    <Truck className="w-3.5 h-3.5 text-[#a85845]" /> Free Express Shipping over GH₵800
+                    <Truck className="w-3.5 h-3.5 text-[#174EA6]" /> Free Express Shipping over GH₵800
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <ShieldCheck className="w-3.5 h-3.5 text-[#a85845]" /> 30-Day Glowing Guarantee
+                    <ShieldCheck className="w-3.5 h-3.5 text-[#174EA6]" /> 30-Day Glowing Guarantee
                   </div>
                 </div>
               </div>
 
               {/* Accordions */}
-              <div className="mt-8 pt-6 border-t border-[#ede4dc] space-y-3">
+              <div className="mt-8 pt-6 border-t border-[#E5E7EB] space-y-3">
                 {/* 1. Benefits */}
-                <div className="border border-[#ede4dc] rounded-2xl overflow-hidden bg-white">
+                <div className="border border-[#E5E7EB] rounded-xl overflow-hidden bg-white">
                   <button
                     onClick={() =>
                       setOpenAccordion(openAccordion === 'benefits' ? '' : 'benefits')
                     }
-                    className="w-full px-5 py-4 flex items-center justify-between text-left text-xs uppercase tracking-wider font-semibold text-[#121113]"
+                    className="w-full px-5 py-4 flex items-center justify-between text-left text-xs uppercase tracking-wider font-semibold text-[#0B1F3A]"
                   >
                     <span className="flex items-center gap-2">
-                      <Sparkles className="w-3.5 h-3.5 text-[#a85845]" /> Botanical Key Benefits
+                      <Sparkles className="w-3.5 h-3.5 text-[#174EA6]" /> Botanical Key Benefits
                     </span>
                     {openAccordion === 'benefits' ? (
-                      <ChevronUp className="w-4 h-4 text-[#8a8075]" />
+                      <ChevronUp className="w-4 h-4 text-[#6B7280]" />
                     ) : (
-                      <ChevronDown className="w-4 h-4 text-[#8a8075]" />
+                      <ChevronDown className="w-4 h-4 text-[#6B7280]" />
                     )}
                   </button>
                   {openAccordion === 'benefits' && (
-                    <div className="px-5 pb-4 pt-1 text-xs text-[#5a544e] border-t border-[#f4ede8]">
+                    <div className="px-5 pb-4 pt-1 text-xs text-[#4B5563] border-t border-[#E5E7EB]">
                       <ul className="space-y-1.5 list-disc pl-4">
                         {product.benefits.map((b, i) => (
                           <li key={i}>{b}</li>
@@ -373,44 +373,44 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
                 </div>
 
                 {/* 2. Full Ingredients */}
-                <div className="border border-[#ede4dc] rounded-2xl overflow-hidden bg-white">
+                <div className="border border-[#E5E7EB] rounded-xl overflow-hidden bg-white">
                   <button
                     onClick={() =>
                       setOpenAccordion(openAccordion === 'ingredients' ? '' : 'ingredients')
                     }
-                    className="w-full px-5 py-4 flex items-center justify-between text-left text-xs uppercase tracking-wider font-semibold text-[#121113]"
+                    className="w-full px-5 py-4 flex items-center justify-between text-left text-xs uppercase tracking-wider font-semibold text-[#0B1F3A]"
                   >
                     <span>Full Ingredients List (Clean Actives)</span>
                     {openAccordion === 'ingredients' ? (
-                      <ChevronUp className="w-4 h-4 text-[#8a8075]" />
+                      <ChevronUp className="w-4 h-4 text-[#6B7280]" />
                     ) : (
-                      <ChevronDown className="w-4 h-4 text-[#8a8075]" />
+                      <ChevronDown className="w-4 h-4 text-[#6B7280]" />
                     )}
                   </button>
                   {openAccordion === 'ingredients' && (
-                    <div className="px-5 pb-4 pt-1 text-xs text-[#6b645d] leading-relaxed border-t border-[#f4ede8]">
+                    <div className="px-5 pb-4 pt-1 text-xs text-[#6B7280] leading-relaxed border-t border-[#E5E7EB]">
                       {product.ingredients}
                     </div>
                   )}
                 </div>
 
                 {/* 3. How to Apply */}
-                <div className="border border-[#ede4dc] rounded-2xl overflow-hidden bg-white">
+                <div className="border border-[#E5E7EB] rounded-xl overflow-hidden bg-white">
                   <button
                     onClick={() =>
                       setOpenAccordion(openAccordion === 'howto' ? '' : 'howto')
                     }
-                    className="w-full px-5 py-4 flex items-center justify-between text-left text-xs uppercase tracking-wider font-semibold text-[#121113]"
+                    className="w-full px-5 py-4 flex items-center justify-between text-left text-xs uppercase tracking-wider font-semibold text-[#0B1F3A]"
                   >
                     <span>Ritual & How to Apply</span>
                     {openAccordion === 'howto' ? (
-                      <ChevronUp className="w-4 h-4 text-[#8a8075]" />
+                      <ChevronUp className="w-4 h-4 text-[#6B7280]" />
                     ) : (
-                      <ChevronDown className="w-4 h-4 text-[#8a8075]" />
+                      <ChevronDown className="w-4 h-4 text-[#6B7280]" />
                     )}
                   </button>
                   {openAccordion === 'howto' && (
-                    <div className="px-5 pb-4 pt-1 text-xs text-[#5a544e] leading-relaxed border-t border-[#f4ede8]">
+                    <div className="px-5 pb-4 pt-1 text-xs text-[#4B5563] leading-relaxed border-t border-[#E5E7EB]">
                       {product.howToUse}
                     </div>
                   )}
@@ -421,13 +421,13 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
         </div>
 
         {/* Customer Reviews & Feedback Submission */}
-        <section className="mt-20 pt-12 border-t border-[#ede4dc]">
+        <section className="mt-20 pt-12 border-t border-[#E5E7EB]">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 gap-4">
             <div>
-              <span className="text-xs uppercase tracking-[0.25em] text-[#a85845] font-semibold">
+              <span className="text-xs uppercase tracking-[0.25em] text-[#174EA6] font-semibold">
                 Customer Community
               </span>
-              <h2 className="font-serif-luxury text-3xl font-normal text-[#121113] mt-1">
+              <h2 className="font-serif-luxury text-3xl font-normal text-[#0B1F3A] mt-1">
                 Verified Reviews ({reviews.length})
               </h2>
             </div>
@@ -439,22 +439,22 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
               {reviews.map((rev) => (
                 <div
                   key={rev.id}
-                  className="bg-white p-5 rounded-2xl border border-[#ede4dc] shadow-sm space-y-2"
+                  className="bg-white p-5 rounded-xl border border-[#E5E7EB] shadow-xs space-y-2"
                 >
                   <div className="flex items-center justify-between">
-                    <div className="flex text-[#cba258]">
+                    <div className="flex text-amber-500">
                       {[...Array(rev.rating)].map((_, i) => (
                         <Star key={i} className="w-3.5 h-3.5 fill-current" />
                       ))}
                     </div>
-                    <span className="text-[11px] text-[#8a8075]">{rev.date}</span>
+                    <span className="text-[11px] text-[#6B7280]">{rev.date}</span>
                   </div>
-                  <h4 className="text-sm font-semibold text-[#121113]">{rev.title}</h4>
-                  <p className="text-xs sm:text-sm text-[#5a544e] leading-relaxed">{rev.comment}</p>
-                  <div className="pt-2 flex items-center gap-2 text-xs text-[#8a8075]">
-                    <span className="font-semibold text-[#121113]">{rev.author}</span>
+                  <h4 className="text-sm font-semibold text-[#0B1F3A]">{rev.title}</h4>
+                  <p className="text-xs sm:text-sm text-[#4B5563] leading-relaxed">{rev.comment}</p>
+                  <div className="pt-2 flex items-center gap-2 text-xs text-[#6B7280]">
+                    <span className="font-semibold text-[#0B1F3A]">{rev.author}</span>
                     {rev.verified && (
-                      <span className="text-[#2c6e3b] flex items-center gap-0.5 text-[11px]">
+                      <span className="text-[#174EA6] flex items-center gap-0.5 text-[11px] font-medium">
                         <CheckCircle className="w-3 h-3" /> Verified Buyer
                       </span>
                     )}
@@ -464,22 +464,22 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
             </div>
 
             {/* Write a Review Box */}
-            <div className="lg:col-span-5 bg-white p-6 rounded-3xl border border-[#ede4dc] shadow-sm h-fit space-y-4">
-              <h3 className="font-serif-luxury text-lg font-semibold text-[#121113]">
+            <div className="lg:col-span-5 bg-[#F5F9FE] p-6 rounded-xl border border-[#E5E7EB] shadow-xs h-fit space-y-4">
+              <h3 className="font-serif-luxury text-lg font-semibold text-[#0B1F3A]">
                 Share Your Experience
               </h3>
-              <p className="text-xs text-[#8a8075]">
+              <p className="text-xs text-[#6B7280]">
                 Tell our community how {product.name} feels on your skin.
               </p>
 
               {reviewSubmitted ? (
-                <div className="bg-[#eaf4eb] text-[#2c6e3b] p-4 rounded-2xl text-xs font-semibold flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4" /> Thank you! Your review has been posted.
+                <div className="bg-[#DCEBFA] text-[#0B1F3A] p-4 rounded-md text-xs font-semibold flex items-center gap-2">
+                  <CheckCircle className="w-4 h-4 text-[#174EA6]" /> Thank you! Your review has been posted.
                 </div>
               ) : (
                 <form onSubmit={handleReviewSubmit} className="space-y-3">
                   <div>
-                    <label className="text-xs font-medium text-[#1e1b18] block mb-1">
+                    <label className="text-xs font-medium text-[#1F2937] block mb-1">
                       Your Rating:
                     </label>
                     <div className="flex gap-1">
@@ -488,11 +488,11 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
                           type="button"
                           key={star}
                           onClick={() => setNewReviewRating(star)}
-                          className="p-1 text-[#cba258]"
+                          className="p-1 text-amber-500"
                         >
                           <Star
                             className={`w-5 h-5 ${
-                              star <= newReviewRating ? 'fill-current' : 'text-[#ede4dc]'
+                              star <= newReviewRating ? 'fill-current' : 'text-[#E5E7EB]'
                             }`}
                           />
                         </button>
@@ -501,19 +501,19 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
                   </div>
 
                   <div>
-                    <label className="text-xs font-medium text-[#1e1b18] block mb-1">Name:</label>
+                    <label className="text-xs font-medium text-[#1F2937] block mb-1">Name:</label>
                     <input
                       type="text"
                       required
                       value={newReviewAuthor}
                       onChange={(e) => setNewReviewAuthor(e.target.value)}
                       placeholder="e.g. Eleanor W."
-                      className="w-full bg-[#fbf9f7] border border-[#d8cec4] rounded-xl px-3 py-2 text-xs text-[#1e1b18] focus:outline-none focus:border-[#a85845]"
+                      className="w-full bg-white border border-[#E5E7EB] rounded-md px-3 py-2 text-xs text-[#1F2937] focus:outline-none focus:border-[#0B1F3A]"
                     />
                   </div>
 
                   <div>
-                    <label className="text-xs font-medium text-[#1e1b18] block mb-1">
+                    <label className="text-xs font-medium text-[#1F2937] block mb-1">
                       Review Comments:
                     </label>
                     <textarea
@@ -522,13 +522,13 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
                       value={newReviewComment}
                       onChange={(e) => setNewReviewComment(e.target.value)}
                       placeholder="Describe hydration, scent, texture, or results..."
-                      className="w-full bg-[#fbf9f7] border border-[#d8cec4] rounded-xl px-3 py-2 text-xs text-[#1e1b18] focus:outline-none focus:border-[#a85845]"
+                      className="w-full bg-white border border-[#E5E7EB] rounded-md px-3 py-2 text-xs text-[#1F2937] focus:outline-none focus:border-[#0B1F3A]"
                     />
                   </div>
 
                   <button
                     type="submit"
-                    className="w-full btn-luxury-primary text-white text-xs uppercase tracking-wider font-semibold py-3 rounded-xl shadow"
+                    className="w-full bg-[#0B1F3A] hover:bg-[#174EA6] text-white text-xs uppercase tracking-wider font-semibold py-3 rounded-md shadow-sm transition-colors"
                   >
                     Post Review
                   </button>
@@ -539,12 +539,12 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
         </section>
 
         {/* Pairs Well With / Related Products */}
-        <section className="mt-20 pt-12 border-t border-[#ede4dc]">
+        <section className="mt-20 pt-12 border-t border-[#E5E7EB]">
           <div className="text-center max-w-xl mx-auto mb-10">
-            <span className="text-xs uppercase tracking-[0.25em] text-[#a85845] font-semibold">
+            <span className="text-xs uppercase tracking-[0.25em] text-[#174EA6] font-semibold">
               Complete The Ritual
             </span>
-            <h2 className="font-serif-luxury text-2xl sm:text-3xl font-normal text-[#121113] mt-1">
+            <h2 className="font-serif-luxury text-2xl sm:text-3xl font-normal text-[#0B1F3A] mt-1">
               Pairs Well With
             </h2>
           </div>

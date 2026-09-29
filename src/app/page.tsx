@@ -26,21 +26,21 @@ export default function HomePage() {
         <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-12">
           <div>
             <div className="flex items-center gap-2">
-              <Sparkles className="w-3.5 h-3.5 text-[#a85845]" />
-              <span className="text-xs uppercase tracking-[0.25em] text-[#a85845] font-semibold">
+              <Sparkles className="w-3.5 h-3.5 text-[#174EA6]" />
+              <span className="text-xs uppercase tracking-[0.25em] text-[#174EA6] font-semibold">
                 Client Favorites
               </span>
             </div>
-            <h2 className="font-serif-luxury text-3xl sm:text-4xl font-normal text-[#121113] mt-2">
+            <h2 className="font-serif-luxury text-3xl sm:text-4xl font-normal text-[#0B1F3A] mt-2">
               The Iconic Bestsellers
             </h2>
           </div>
           <Link
             href="/shop"
-            className="inline-flex items-center gap-2 text-xs uppercase tracking-widest font-semibold text-[#121113] hover:text-[#a85845] transition-colors mt-4 sm:mt-0 group"
+            className="inline-flex items-center gap-2 text-xs uppercase tracking-widest font-semibold text-[#0B1F3A] hover:text-[#174EA6] transition-colors mt-4 sm:mt-0 group"
           >
             Explore All Formulas
-            <ArrowRight className="w-4 h-4 text-[#a85845] group-hover:translate-x-1 transition-transform" />
+            <ArrowRight className="w-4 h-4 text-[#174EA6] group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>
 
@@ -57,35 +57,35 @@ export default function HomePage() {
 
       {/* 4. Editorial Ritual Spotlight Feature */}
       {discoverySet && (
-        <section className="py-16 bg-[#f4ede8]/80 border-y border-[#ede4dc]">
+        <section className="py-16 bg-[#F5F9FE] border-y border-[#E5E7EB]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="bg-white rounded-none overflow-hidden shadow-xl border border-[#ede4dc] grid grid-cols-1 lg:grid-cols-12 items-center">
+            <div className="bg-white rounded-none overflow-hidden shadow-sm border border-[#E5E7EB] grid grid-cols-1 lg:grid-cols-12 items-center">
               {/* Left: Big imagery */}
-              <div className="lg:col-span-6 relative aspect-square sm:aspect-[4/3] lg:aspect-auto lg:h-[500px] overflow-hidden bg-[#fbf9f7]">
+              <div className="lg:col-span-6 relative aspect-square sm:aspect-[4/3] lg:aspect-auto lg:h-[500px] overflow-hidden bg-[#F5F9FE]">
                 <img
                   src={discoverySet.images[0]}
                   alt={discoverySet.name}
                   className="w-full h-full object-cover"
                 />
-                <div className="absolute top-4 left-4 bg-[#121113] text-white text-[10px] uppercase font-bold tracking-widest px-3 py-1 rounded-none">
+                <div className="absolute top-4 left-4 bg-[#0B1F3A] text-white text-[10px] uppercase font-bold tracking-widest px-3 py-1 rounded-none">
                   Limited Edition Vault
                 </div>
               </div>
 
               {/* Right: Copy & Bundle Highlights */}
               <div className="lg:col-span-6 p-8 sm:p-12 space-y-6">
-                <span className="text-xs uppercase tracking-[0.25em] text-[#a85845] font-semibold">
+                <span className="text-xs uppercase tracking-[0.25em] text-[#174EA6] font-semibold">
                   Curated Ritual Set
                 </span>
-                <h3 className="font-serif-luxury text-3xl sm:text-4xl font-normal text-[#121113]">
+                <h3 className="font-serif-luxury text-3xl sm:text-4xl font-normal text-[#0B1F3A]">
                   {discoverySet.name}
                 </h3>
-                <p className="text-xs sm:text-sm text-[#5a544e] leading-relaxed">
+                <p className="text-xs sm:text-sm text-[#1F2937]/80 leading-relaxed">
                   {discoverySet.description}
                 </p>
 
-                <div className="space-y-2 text-xs text-[#6b645d] bg-[#fbf9f7] p-4 rounded-none border border-[#ede4dc]">
-                  <p className="font-semibold text-[#121113] mb-1">Ritual includes:</p>
+                <div className="space-y-2 text-xs text-[#1F2937] bg-[#F5F9FE] p-4 rounded-none border border-[#E5E7EB]">
+                  <p className="font-semibold text-[#0B1F3A] mb-1">Ritual includes:</p>
                   <p>&bull; <strong>Lumière Hydra-Dew Serum:</strong> Triple Hyaluronic hydration</p>
                   <p>&bull; <strong>Cloud-Melt Cleanser:</strong> Colloidal oat makeup dissolve</p>
                   <p>&bull; <strong>Botanical Glow Oil:</strong> 12-seed antioxidant seal</p>
@@ -93,11 +93,11 @@ export default function HomePage() {
                 </div>
 
                 <div className="flex items-baseline gap-3">
-                  <span className="text-2xl font-semibold text-[#121113]">
+                  <span className="text-2xl font-semibold text-[#0B1F3A]">
                     {formatPrice(discoverySet.price)}
                   </span>
                   {discoverySet.compareAtPrice && (
-                    <span className="text-sm text-[#8a8075] line-through">
+                    <span className="text-sm text-[#6B7280] line-through">
                       {formatPrice(discoverySet.compareAtPrice)} (Save {formatPrice(discoverySet.compareAtPrice - discoverySet.price)})
                     </span>
                   )}
@@ -106,7 +106,7 @@ export default function HomePage() {
                 <div className="pt-2 flex flex-wrap gap-4">
                   <Link
                     href={`/product/${discoverySet.slug}`}
-                    className="btn-luxury-primary text-white text-xs uppercase tracking-widest font-semibold py-3.5 px-8 rounded-full shadow"
+                    className="bg-[#0B1F3A] hover:bg-[#174EA6] text-white text-xs uppercase tracking-widest font-semibold py-3.5 px-8 rounded-md shadow-sm transition-all"
                   >
                     Claim Discovery Set
                   </Link>
@@ -129,13 +129,13 @@ export default function HomePage() {
       {/* 8. Social UGC Grid (#CityCosmeticsGlow) */}
       <section className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <div className="max-w-xl mx-auto mb-10">
-          <span className="text-xs uppercase tracking-[0.25em] text-[#a85845] font-semibold">
+          <span className="text-xs uppercase tracking-[0.25em] text-[#174EA6] font-semibold">
             Join the Community
           </span>
-          <h2 className="font-serif-luxury text-3xl sm:text-4xl font-normal text-[#121113] mt-2">
+          <h2 className="font-serif-luxury text-3xl sm:text-4xl font-normal text-[#0B1F3A] mt-2">
             #CityCosmeticsGlow
           </h2>
-          <p className="text-xs text-[#8a8075] mt-2">
+          <p className="text-xs text-[#6B7280] mt-2">
             Tag @CityCosmetics on Instagram & TikTok to be featured in our seasonal lookbook.
           </p>
         </div>
@@ -149,14 +149,14 @@ export default function HomePage() {
           ].map((src, i) => (
             <div
               key={i}
-              className="relative aspect-square rounded-2xl overflow-hidden shadow-sm group border border-[#ede4dc]"
+              className="relative aspect-square rounded-none overflow-hidden shadow-sm group border border-[#E5E7EB]"
             >
               <img
                 src={src}
                 alt={`Community glow look ${i + 1}`}
-                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
               />
-              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white">
+              <div className="absolute inset-0 bg-[#0B1F3A]/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white">
                 <Heart className="w-6 h-6 fill-white" />
               </div>
             </div>

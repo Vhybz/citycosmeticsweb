@@ -50,12 +50,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
   return (
     <div
-      className="group relative flex flex-col bg-white rounded-none overflow-hidden border border-[#ede4dc] hover:border-[#121113] hover:shadow-lg transition-all duration-300"
+      className="group relative flex flex-col bg-white rounded-none overflow-hidden border border-[#E5E7EB] hover:border-[#174EA6]/40 hover:shadow-md transition-all duration-300"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       {/* Image Container with Badges and Overlay Actions */}
-      <div className="relative aspect-[4/5] w-full overflow-hidden bg-[#f4ede8]/60">
+      <div className="relative aspect-[4/5] w-full overflow-hidden bg-[#F5F9FE]">
         <Link href={`/product/${product.slug}`} className="block w-full h-full">
           <img
             src={isHovered && product.images.length > 1 ? product.images[1] : product.images[0]}
@@ -69,19 +69,19 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           {product.tags.slice(0, 2).map((tag) => (
             <span
               key={tag}
-              className={`text-[9px] tracking-widest uppercase font-semibold px-2.5 py-1 rounded-none shadow-sm backdrop-blur-md ${
+              className={`text-[9px] tracking-widest uppercase font-semibold px-2 py-0.5 rounded-none shadow-sm backdrop-blur-md ${
                 tag === 'Bestseller'
-                  ? 'bg-[#121113] text-white'
+                  ? 'bg-[#0B1F3A] text-white'
                   : tag === 'Clean'
-                  ? 'bg-[#eaf4eb] text-[#2c6e3b] border border-[#c4e4c9]'
-                  : 'bg-white text-[#a85845] border border-[#ebd2c7]'
+                  ? 'bg-[#DCEBFA] text-[#0B1F3A] border border-[#DCEBFA]'
+                  : 'bg-white text-[#174EA6] border border-[#E5E7EB]'
               }`}
             >
               {tag}
             </span>
           ))}
           {product.compareAtPrice && (
-            <span className="text-[9px] font-bold tracking-widest uppercase px-2 py-0.5 rounded-none bg-[#d64545] text-white shadow-sm w-fit">
+            <span className="text-[9px] font-bold tracking-widest uppercase px-2 py-0.5 rounded-none bg-[#0B1F3A] text-[#DCEBFA] shadow-sm w-fit">
               Save {formatPrice(product.compareAtPrice - product.price)}
             </span>
           )}
@@ -91,11 +91,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         <button
           onClick={handleWishlistToggle}
           aria-label="Wishlist"
-          className="absolute top-3 right-3 w-8 h-8 rounded-none bg-white/95 backdrop-blur-md flex items-center justify-center text-[#1e1b18] hover:text-[#a85845] shadow-sm hover:scale-105 transition-all z-10 border border-[#ede4dc]"
+          className="absolute top-3 right-3 w-8 h-8 rounded-none bg-white/95 backdrop-blur-md flex items-center justify-center text-[#1F2937] hover:text-[#174EA6] shadow-sm hover:scale-105 transition-all z-10 border border-[#E5E7EB]"
         >
           <Heart
             className={`w-3.5 h-3.5 transition-colors ${
-              isFavorited ? 'fill-[#a85845] text-[#a85845]' : 'text-[#1e1b18]'
+              isFavorited ? 'fill-[#174EA6] text-[#174EA6]' : 'text-[#1F2937]'
             }`}
           />
         </button>
@@ -104,9 +104,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         <div className="absolute bottom-3 inset-x-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
           <button
             onClick={handleQuickViewClick}
-            className="flex-1 bg-white/95 hover:bg-white text-[#121113] py-2.5 px-3 rounded-none text-[11px] font-semibold tracking-wider uppercase backdrop-blur-md shadow-md flex items-center justify-center gap-1.5 transition-all hover:shadow-lg border border-[#ede4dc]"
+            className="flex-1 bg-white/95 hover:bg-[#F5F9FE] text-[#0B1F3A] hover:text-[#174EA6] py-2.5 px-3 rounded-none text-[11px] font-semibold tracking-wider uppercase backdrop-blur-md shadow-sm flex items-center justify-center gap-1.5 transition-all hover:shadow-md border border-[#E5E7EB]"
           >
-            <Eye className="w-3.5 h-3.5 text-[#a85845]" />
+            <Eye className="w-3.5 h-3.5 text-[#174EA6]" />
             Quick View
           </button>
         </div>
@@ -117,22 +117,22 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         <div>
           {/* Rating & Reviews */}
           <div className="flex items-center gap-1.5 mb-1.5">
-            <div className="flex items-center text-[#cba258]">
+            <div className="flex text-[#174EA6]">
               <Star className="w-3.5 h-3.5 fill-current" />
             </div>
-            <span className="text-xs font-semibold text-[#1e1b18]">{product.rating.toFixed(1)}</span>
-            <span className="text-xs text-[#8a8075]">({product.reviewCount})</span>
+            <span className="text-xs font-semibold text-[#1F2937]">{product.rating.toFixed(1)}</span>
+            <span className="text-xs text-[#6B7280]">({product.reviewCount})</span>
           </div>
 
           {/* Title */}
-          <Link href={`/product/${product.slug}`} className="group-hover:text-[#a85845] transition-colors">
-            <h3 className="font-serif-luxury text-base font-medium text-[#121113] line-clamp-1">
+          <Link href={`/product/${product.slug}`} className="group-hover:text-[#174EA6] transition-colors">
+            <h3 className="font-serif-luxury text-base font-normal text-[#0B1F3A] line-clamp-1">
               {product.name}
             </h3>
           </Link>
 
           {/* Subtitle / Key Actives */}
-          <p className="text-xs text-[#8a8075] mt-1 line-clamp-1">{product.subtitle}</p>
+          <p className="text-xs text-[#6B7280] mt-1 line-clamp-1">{product.subtitle}</p>
 
           {/* Color Shade Swatches (If variants exist) */}
           {product.variants && product.variants.length > 0 && (
@@ -162,13 +162,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         </div>
 
         {/* Pricing & 1-Click Bag Button */}
-        <div className="mt-4 pt-3 border-t border-[#ede4dc]/60 flex items-center justify-between">
+        <div className="mt-4 pt-3 border-t border-[#E5E7EB] flex items-center justify-between">
           <div className="flex items-baseline gap-2">
-            <span className="text-base font-semibold text-[#121113]">
+            <span className="text-base font-semibold text-[#0B1F3A]">
               {formatPrice(displayPrice)}
             </span>
             {product.compareAtPrice && (
-              <span className="text-xs text-[#a89f91] line-through">
+              <span className="text-xs text-[#6B7280] line-through">
                 {formatPrice(product.compareAtPrice)}
               </span>
             )}
@@ -178,10 +178,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             onClick={handleQuickAdd}
             aria-label="Add to Bag"
             disabled={product.stock === 0}
-            className={`p-2.5 rounded-none transition-all duration-300 ${
+            className={`p-2.5 rounded-none transition-all duration-200 ${
               addedAnimation
-                ? 'bg-[#2c6e3b] text-white scale-105'
-                : 'bg-[#121113] hover:bg-[#a85845] text-white shadow-sm hover:scale-105'
+                ? 'bg-[#174EA6] text-white scale-105'
+                : 'bg-[#0B1F3A] hover:bg-[#174EA6] text-white shadow-sm'
             } ${product.stock === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
             {addedAnimation ? (

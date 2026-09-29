@@ -70,29 +70,29 @@ function ShopContent() {
     searchQuery !== '';
 
   return (
-    <div className="min-h-screen bg-[#fcfaf8] py-10 md:py-16">
+    <div className="min-h-screen bg-white py-10 md:py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Page Header */}
         <div className="text-center max-w-2xl mx-auto mb-10">
-          <span className="text-xs uppercase tracking-[0.25em] text-[#a85845] font-semibold">
+          <span className="text-xs uppercase tracking-[0.25em] text-[#174EA6] font-semibold">
             Botanical Formulations
           </span>
-          <h1 className="font-serif-luxury text-3xl sm:text-4xl lg:text-5xl font-normal text-[#121113] mt-2">
+          <h1 className="font-serif-luxury text-3xl sm:text-4xl lg:text-5xl font-normal text-[#0B1F3A] mt-2">
             The Complete Collection
           </h1>
-          <p className="text-xs sm:text-sm text-[#5a544e] mt-3">
+          <p className="text-xs sm:text-sm text-[#6B7280] mt-3">
             Pure botanical actives crafted for radiant resilience in the modern city.
           </p>
         </div>
 
         {/* Category Pill Tabs */}
-        <div className="flex items-center justify-center gap-2 flex-wrap mb-10 pb-4 border-b border-[#ede4dc]">
+        <div className="flex items-center justify-center gap-2 flex-wrap mb-10 pb-4 border-b border-[#E5E7EB]">
           <button
             onClick={() => setSelectedCategory('all')}
-            className={`px-5 py-2.5 rounded-full text-xs uppercase tracking-wider font-semibold transition-all ${
+            className={`px-5 py-2 rounded-md text-xs uppercase tracking-wider font-semibold transition-all ${
               selectedCategory === 'all'
-                ? 'bg-[#121113] text-white shadow-md'
-                : 'bg-white text-[#5a544e] border border-[#ede4dc] hover:border-[#a85845]'
+                ? 'bg-[#0B1F3A] text-white shadow-sm'
+                : 'bg-white text-[#4B5563] border border-[#E5E7EB] hover:border-[#174EA6] hover:text-[#0B1F3A]'
             }`}
           >
             All Formulas ({PRODUCTS_DATA.length})
@@ -101,10 +101,10 @@ function ShopContent() {
             <button
               key={cat.id}
               onClick={() => setSelectedCategory(cat.slug)}
-              className={`px-5 py-2.5 rounded-full text-xs uppercase tracking-wider font-semibold transition-all ${
+              className={`px-5 py-2 rounded-md text-xs uppercase tracking-wider font-semibold transition-all ${
                 selectedCategory === cat.slug
-                  ? 'bg-[#121113] text-white shadow-md'
-                  : 'bg-white text-[#5a544e] border border-[#ede4dc] hover:border-[#a85845]'
+                  ? 'bg-[#0B1F3A] text-white shadow-sm'
+                  : 'bg-white text-[#4B5563] border border-[#E5E7EB] hover:border-[#174EA6] hover:text-[#0B1F3A]'
               }`}
             >
               {cat.name}
@@ -113,7 +113,7 @@ function ShopContent() {
         </div>
 
         {/* Filter and Sort Toolbar */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white p-4 rounded-2xl border border-[#ede4dc] shadow-sm mb-8">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-[#F5F9FE] p-4 rounded-xl border border-[#E5E7EB] shadow-xs mb-8">
           {/* Search inside catalog */}
           <div className="w-full sm:w-72">
             <input
@@ -121,7 +121,7 @@ function ShopContent() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search in formulas..."
-              className="w-full bg-[#fbf9f7] border border-[#d8cec4] rounded-full px-4 py-2 text-xs text-[#1e1b18] focus:outline-none focus:border-[#a85845]"
+              className="w-full bg-white border border-[#E5E7EB] rounded-md px-4 py-2 text-xs text-[#1F2937] focus:outline-none focus:border-[#0B1F3A]"
             />
           </div>
 
@@ -130,7 +130,7 @@ function ShopContent() {
             <select
               value={selectedSkinType}
               onChange={(e) => setSelectedSkinType(e.target.value)}
-              className="bg-[#fbf9f7] border border-[#d8cec4] rounded-full px-3 py-2 text-xs text-[#1e1b18] focus:outline-none focus:border-[#a85845]"
+              className="bg-white border border-[#E5E7EB] rounded-md px-3 py-2 text-xs text-[#1F2937] focus:outline-none focus:border-[#0B1F3A]"
             >
               <option value="all">Skin Type: All</option>
               <option value="Dry">Dry</option>
@@ -144,7 +144,7 @@ function ShopContent() {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="bg-[#fbf9f7] border border-[#d8cec4] rounded-full px-3 py-2 text-xs text-[#1e1b18] focus:outline-none focus:border-[#a85845]"
+              className="bg-white border border-[#E5E7EB] rounded-md px-3 py-2 text-xs text-[#1F2937] focus:outline-none focus:border-[#0B1F3A]"
             >
               <option value="featured">Sort by: Featured</option>
               <option value="rating">Highest Rated</option>
@@ -157,7 +157,7 @@ function ShopContent() {
             {hasActiveFilters && (
               <button
                 onClick={resetFilters}
-                className="p-2 text-[#a85845] hover:text-[#121113] transition-colors rounded-full hover:bg-[#f4ede8]"
+                className="p-2 text-[#174EA6] hover:text-[#0B1F3A] transition-colors rounded-md hover:bg-[#DCEBFA]"
                 title="Reset all filters"
               >
                 <RotateCcw className="w-4 h-4" />
@@ -167,12 +167,12 @@ function ShopContent() {
         </div>
 
         {/* Results Counter */}
-        <div className="flex items-center justify-between mb-6 text-xs text-[#8a8075]">
+        <div className="flex items-center justify-between mb-6 text-xs text-[#6B7280]">
           <span>
-            Showing <strong className="text-[#121113]">{filteredProducts.length}</strong> items
+            Showing <strong className="text-[#0B1F3A]">{filteredProducts.length}</strong> items
           </span>
           {hasActiveFilters && (
-            <span className="text-[#a85845]">Filters applied</span>
+            <span className="text-[#174EA6] font-medium">Filters applied</span>
           )}
         </div>
 
@@ -184,14 +184,14 @@ function ShopContent() {
             ))}
           </div>
         ) : (
-          <div className="bg-white rounded-3xl p-12 text-center border border-[#ede4dc] shadow-sm max-w-lg mx-auto">
-            <h3 className="font-serif-luxury text-xl text-[#121113]">No formulas match your filters</h3>
-            <p className="text-xs text-[#8a8075] mt-2 mb-6">
+          <div className="bg-white rounded-xl p-12 text-center border border-[#E5E7EB] shadow-sm max-w-lg mx-auto">
+            <h3 className="font-serif-luxury text-xl text-[#0B1F3A]">No formulas match your filters</h3>
+            <p className="text-xs text-[#6B7280] mt-2 mb-6">
               Try adjusting your skin type or category filters to discover products.
             </p>
             <button
               onClick={resetFilters}
-              className="btn-luxury-primary text-white text-xs uppercase tracking-wider py-3 px-6 rounded-full"
+              className="bg-[#0B1F3A] hover:bg-[#174EA6] text-white text-xs uppercase tracking-wider py-3 px-6 rounded-md transition-colors"
             >
               Reset Filters
             </button>
