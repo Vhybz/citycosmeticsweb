@@ -8,7 +8,7 @@ export const CATEGORIES = [
     name: 'Skincare',
     slug: 'skincare',
     description: 'Potent botanicals and clinical actives crafted in Sunyani for an effortless glass-skin glow.',
-    image: 'https://images.unsplash.com/photo-1608248597359-216694663806?auto=format&fit=crop&w=800&q=80',
+    image: '/beautyImages/1.jpg',
     itemCount: 12,
   },
   {
@@ -32,7 +32,7 @@ export const CATEGORIES = [
     name: 'Bath & Body',
     slug: 'body',
     description: 'Silken body elixirs and scrubs infused with antioxidant oils.',
-    image: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=800&q=80',
+    image: '/beautyImages/e2660f8d3d6e02246ae67904661af3e7.jpg',
     itemCount: 9,
   },
   {
@@ -40,7 +40,7 @@ export const CATEGORIES = [
     name: 'Curated Sets & Gifts',
     slug: 'sets',
     description: 'Award-winning discovery routines and exclusive seasonal bundles.',
-    image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=800&q=80',
+    image: '/beautyImages/cc.jpg',
     itemCount: 6,
   },
 ];
@@ -58,6 +58,7 @@ export const PRODUCTS_DATA: Product[] = [
     reviewCount: 342,
     images: [
       'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=1000&q=85',
+      '/beautyImages/1.jpg',
       'https://images.unsplash.com/photo-1608248597359-216694663806?auto=format&fit=crop&w=1000&q=85',
       'https://images.unsplash.com/photo-1601049541289-9b1b7bbbfe19?auto=format&fit=crop&w=1000&q=85',
     ],
@@ -256,8 +257,9 @@ export const PRODUCTS_DATA: Product[] = [
     rating: 4.9,
     reviewCount: 142,
     images: [
+      '/beautyImages/61bc208cf17f0911e9f99c0810ccc200.jpg',
+      '/beautyImages/e2660f8d3d6e02246ae67904661af3e7.jpg',
       'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1000&q=85',
-      'https://images.unsplash.com/photo-1601049541289-9b1b7bbbfe19?auto=format&fit=crop&w=1000&q=85',
     ],
     description:
       'A decadent dry body oil loaded with ultra-fine mineral golden micas that illuminate legs, arms, and collarbones with sun-kissed perfection, scented with tropical vanilla orchid.',
@@ -287,8 +289,9 @@ export const PRODUCTS_DATA: Product[] = [
     rating: 5.0,
     reviewCount: 310,
     images: [
-      'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=1000&q=85',
-      'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=1000&q=85',
+      '/beautyImages/258826bc9ee800fab3177221c23668ef.jpg',
+      '/beautyImages/cc.jpg',
+      '/beautyImages/2.jpg',
     ],
     description:
       'The definitive introduction to City Cosmetics. Features deluxe travel sizes of our #1 Lumière Hydra-Dew Serum, Cloud-Melt Cleanser, Botanical Glow Oil, and Velvet Silk Lipstick in Nude City, nestled in a vegan leather travel pouch.',

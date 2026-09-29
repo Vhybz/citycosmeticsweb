@@ -17,8 +17,8 @@ export const BrandStory: React.FC = () => {
             <div className="space-y-4">
               <div className="rounded-none overflow-hidden shadow-lg aspect-[3/4] bg-[#08172c]">
                 <img
-                  src="https://images.unsplash.com/photo-1608248597359-216694663806?auto=format&fit=crop&w=600&q=80"
-                  alt="City Cosmetics Botanical Sourcing"
+                  src="/beautyImages/258826bc9ee800fab3177221c23668ef.jpg"
+                  alt="City Cosmetics Botanical Skincare Suite - Sunyani Showroom"
                   className="w-full h-full object-cover"
                 />
               </div>
@@ -39,8 +39,8 @@ export const BrandStory: React.FC = () => {
               </div>
               <div className="rounded-none overflow-hidden shadow-lg aspect-[3/4] bg-[#08172c]">
                 <img
-                  src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=600&q=80"
-                  alt="City Cosmetics Velvet Matte Texture"
+                  src="/beautyImages/cc.jpg"
+                  alt="City Cosmetics Formulation Suite"
                   className="w-full h-full object-cover"
                 />
               </div>
@@ -93,7 +93,7 @@ export const BrandStory: React.FC = () => {
             <div className="pt-6">
               <Link
                 href="/shop"
-                className="bg-white hover:bg-[#DCEBFA] text-[#0B1F3A] text-xs uppercase tracking-widest font-semibold py-3.5 px-8 rounded-md inline-flex items-center gap-2 shadow-md transition-all"
+                className="bg-white hover:bg-[#DCEBFA] text-[#0B1F3A] text-xs uppercase tracking-widest font-semibold py-3.5 px-8 rounded-none inline-flex items-center gap-2 shadow-md transition-all"
               >
                 Experience The Formula
               </Link>

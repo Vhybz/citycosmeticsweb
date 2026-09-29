@@ -83,14 +83,23 @@ export default function QuizPage() {
       <div className="max-w-3xl w-full mx-auto px-4 sm:px-6">
         {!isCompleted ? (
           /* Quiz Question Stage */
-          <div className="bg-white rounded-2xl p-8 sm:p-12 shadow-xl border border-[#E5E7EB] animate-fadeIn">
+          <div className="bg-white rounded-none p-8 sm:p-12 shadow-xl border border-[#E5E7EB] animate-fadeIn">
             {/* Top Indicator */}
-            <div className="flex items-center justify-between pb-6 border-b border-[#E5E7EB] mb-8">
-              <div className="flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-[#174EA6]" />
-                <span className="text-xs uppercase tracking-widest text-[#174EA6] font-semibold">
-                  Skin & Routine Diagnostic
-                </span>
+            <div className="flex items-center justify-between pb-6 border-b border-[#E5E7EB] mb-6">
+              <div className="flex items-center gap-3">
+                <img
+                  src="/beautyImages/ca.jpg"
+                  alt="City Cosmetics Consultation"
+                  className="w-10 h-10 object-cover rounded-none border border-[#E5E7EB]"
+                />
+                <div>
+                  <span className="text-xs uppercase tracking-widest text-[#174EA6] font-semibold block">
+                    Skin & Routine Diagnostic
+                  </span>
+                  <span className="text-[10px] text-[#6B7280]">
+                    Sunyani Formulations Consultation
+                  </span>
+                </div>
               </div>
               <span className="text-xs text-[#6B7280] font-semibold">
                 Step {currentStep + 1} of {QUIZ_QUESTIONS.length}
@@ -98,7 +107,7 @@ export default function QuizPage() {
             </div>
 
             {/* Progress bar */}
-            <div className="w-full bg-[#DCEBFA] h-2 rounded-full overflow-hidden mb-8">
+            <div className="w-full bg-[#DCEBFA] h-1.5 rounded-none overflow-hidden mb-8">
               <div
                 className="bg-gradient-to-r from-[#174EA6] to-[#0B1F3A] h-full transition-all duration-300"
                 style={{
@@ -118,7 +127,7 @@ export default function QuizPage() {
                 <button
                   key={idx}
                   onClick={() => handleSelectOption(option)}
-                  className="p-5 rounded-xl border border-[#E5E7EB] hover:border-[#0B1F3A] bg-[#F5F9FE] hover:bg-white text-left transition-all duration-200 hover:shadow-xs group flex items-center justify-between"
+                  className="p-5 rounded-none border border-[#E5E7EB] hover:border-[#0B1F3A] bg-[#F5F9FE] hover:bg-white text-left transition-all duration-200 hover:shadow-xs group flex items-center justify-between"
                 >
                   <span className="text-sm font-medium text-[#1F2937] group-hover:text-[#0B1F3A]">
                     {option.text}
@@ -140,9 +149,9 @@ export default function QuizPage() {
           </div>
         ) : (
           /* Results Stage */
-          <div className="bg-white rounded-2xl p-8 sm:p-12 shadow-xl border border-[#E5E7EB] animate-fadeIn space-y-8">
+          <div className="bg-white rounded-none p-8 sm:p-12 shadow-xl border border-[#E5E7EB] animate-fadeIn space-y-8">
             <div className="text-center max-w-xl mx-auto space-y-3">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#DCEBFA] text-[#0B1F3A] text-xs font-semibold uppercase tracking-wider">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-none bg-[#DCEBFA] text-[#0B1F3A] text-xs font-semibold uppercase tracking-wider">
                 <CheckCircle2 className="w-4 h-4 text-[#174EA6]" /> Diagnostic Complete
               </div>
 
@@ -150,7 +159,7 @@ export default function QuizPage() {
                 Your Bespoke City Glow Ritual
               </h2>
 
-              <p className="text-xs sm:text-sm text-[#4B5563] bg-[#F5F9FE] p-4 rounded-xl border border-[#E5E7EB]">
+              <p className="text-xs sm:text-sm text-[#4B5563] bg-[#F5F9FE] p-4 rounded-none border border-[#E5E7EB]">
                 <strong className="text-[#0B1F3A]">Profile:</strong> {skinDiagnosis}
               </p>
             </div>
@@ -188,7 +197,7 @@ export default function QuizPage() {
             </div>
 
             {/* Promo banner callout */}
-            <div className="bg-[#DCEBFA]/50 p-4 rounded-xl border border-[#DCEBFA] flex items-center justify-between text-xs text-[#0B1F3A]">
+            <div className="bg-[#DCEBFA]/50 p-4 rounded-none border border-[#DCEBFA] flex items-center justify-between text-xs text-[#0B1F3A]">
               <span>
                 Exclusive 15% VIP code <strong className="text-[#174EA6]">CITYGLOW15</strong> will be automatically applied to your ritual bag.
               </span>
@@ -198,7 +207,7 @@ export default function QuizPage() {
             <div className="flex flex-col sm:flex-row items-center gap-4 pt-2">
               <button
                 onClick={handleAddAllToCart}
-                className="w-full sm:flex-1 bg-[#0B1F3A] hover:bg-[#174EA6] text-white text-xs uppercase tracking-widest font-semibold py-4 px-8 rounded-md flex items-center justify-center gap-2 shadow-sm hover:shadow-md transition-all"
+                className="w-full sm:flex-1 bg-[#0B1F3A] hover:bg-[#174EA6] text-white text-xs uppercase tracking-widest font-semibold py-4 px-8 rounded-none flex items-center justify-center gap-2 shadow-sm hover:shadow-md transition-all"
               >
                 <ShoppingBag className="w-4 h-4 text-[#DCEBFA]" /> Add Complete Ritual to Bag
               </button>

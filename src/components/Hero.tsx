@@ -88,30 +88,30 @@ export const Hero: React.FC = () => {
 
           {/* Right Column: Hero Visual Product Display */}
           <div className="lg:col-span-5 relative flex justify-center">
-            <div className="relative w-full max-w-md aspect-[4/5] rounded-lg overflow-hidden shadow-xl border border-[#E5E7EB] bg-white">
+            <div className="relative w-full max-w-md aspect-[4/5] rounded-none overflow-hidden shadow-2xl border border-[#E5E7EB] bg-white">
               <img
-                src="https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=1200&q=85"
-                alt="City Cosmetics Lumiere Hydra-Dew Serum"
+                src="/beautyImages/1.jpg"
+                alt="City Cosmetics Botanical Radiance"
                 className="w-full h-full object-cover object-center transform transition-transform duration-700 hover:scale-105"
               />
 
               {/* Floating Overlay Badge 1 */}
-              <div className="absolute top-5 right-5 bg-white/95 backdrop-blur-md p-3 rounded-md shadow-md border border-[#E5E7EB] max-w-[170px] animate-fadeIn">
+              <div className="absolute top-5 right-5 bg-white/95 backdrop-blur-md p-3.5 rounded-none shadow-md border border-[#E5E7EB] max-w-[180px] animate-fadeIn">
                 <p className="text-[10px] uppercase font-bold tracking-wider text-[#174EA6]">
-                  #1 Best Seller
+                  Sunyani Formulation
                 </p>
                 <h4 className="font-serif-luxury text-xs font-semibold text-[#0B1F3A] mt-0.5">
-                  Lumière Hydra-Dew
+                  Lumière Botanical Elixir
                 </h4>
                 <div className="flex items-center gap-1 mt-1">
                   <div className="flex text-[#174EA6] text-[10px]">★★★★★</div>
-                  <span className="text-[10px] text-[#6B7280]">4.9 (340+)</span>
+                  <span className="text-[10px] text-[#6B7280]">4.9 (340+ Reviews)</span>
                 </div>
               </div>
 
               {/* Floating Overlay Badge 2 */}
-              <div className="absolute bottom-5 left-5 bg-white/95 backdrop-blur-md p-3 rounded-md shadow-md border border-[#E5E7EB] flex items-center gap-3">
-                <div className="w-9 h-9 rounded-md bg-[#DCEBFA] flex items-center justify-center text-[#0B1F3A] font-bold text-xs">
+              <div className="absolute bottom-5 left-5 bg-white/95 backdrop-blur-md p-3.5 rounded-none shadow-md border border-[#E5E7EB] flex items-center gap-3">
+                <div className="w-9 h-9 rounded-none bg-[#0B1F3A] flex items-center justify-center text-[#DCEBFA] font-bold text-xs">
                   98%
                 </div>
                 <div>

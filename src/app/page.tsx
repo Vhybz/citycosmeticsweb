@@ -106,7 +106,7 @@ export default function HomePage() {
                 <div className="pt-2 flex flex-wrap gap-4">
                   <Link
                     href={`/product/${discoverySet.slug}`}
-                    className="bg-[#0B1F3A] hover:bg-[#174EA6] text-white text-xs uppercase tracking-widest font-semibold py-3.5 px-8 rounded-md shadow-sm transition-all"
+                    className="bg-[#0B1F3A] hover:bg-[#174EA6] text-white text-xs uppercase tracking-widest font-semibold py-3.5 px-8 rounded-none shadow-sm transition-all"
                   >
                     Claim Discovery Set
                   </Link>
@@ -136,28 +136,30 @@ export default function HomePage() {
             #CityCosmeticsGlow
           </h2>
           <p className="text-xs text-[#6B7280] mt-2">
-            Tag @CityCosmetics on Instagram & TikTok to be featured in our seasonal lookbook.
+            Tag @CityCosmetics on Instagram & TikTok to be featured in our seasonal Sunyani lookbook.
           </p>
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           {[
-            'https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&w=600&q=80',
-            'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=600&q=80',
-            'https://images.unsplash.com/photo-1586495777744-4413f21062fa?auto=format&fit=crop&w=600&q=80',
-            'https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=600&q=80',
-          ].map((src, i) => (
+            { src: '/beautyImages/ca.jpg', label: '@amina.glow' },
+            { src: '/beautyImages/2.jpg', label: '@akosua.skin' },
+            { src: '/beautyImages/3.jpg', label: '@yaaglow_daily' },
+            { src: '/beautyImages/e2660f8d3d6e02246ae67904661af3e7.jpg', label: '@kofi_beautylabs' },
+          ].map((item, i) => (
             <div
               key={i}
               className="relative aspect-square rounded-none overflow-hidden shadow-sm group border border-[#E5E7EB]"
             >
               <img
-                src={src}
+                src={item.src}
                 alt={`Community glow look ${i + 1}`}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
               />
-              <div className="absolute inset-0 bg-[#0B1F3A]/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white">
-                <Heart className="w-6 h-6 fill-white" />
+              <div className="absolute inset-0 bg-[#0B1F3A]/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-white p-3">
+                <Heart className="w-5 h-5 fill-white mb-1.5" />
+                <span className="text-[11px] font-medium tracking-wide">{item.label}</span>
+                <span className="text-[9px] uppercase tracking-widest text-[#DCEBFA]/75 mt-0.5">Verified Ritual</span>
               </div>
             </div>
           ))}

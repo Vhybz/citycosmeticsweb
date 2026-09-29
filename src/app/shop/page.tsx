@@ -89,7 +89,7 @@ function ShopContent() {
         <div className="flex items-center justify-center gap-2 flex-wrap mb-10 pb-4 border-b border-[#E5E7EB]">
           <button
             onClick={() => setSelectedCategory('all')}
-            className={`px-5 py-2 rounded-md text-xs uppercase tracking-wider font-semibold transition-all ${
+            className={`px-5 py-2 rounded-none text-xs uppercase tracking-wider font-semibold transition-all ${
               selectedCategory === 'all'
                 ? 'bg-[#0B1F3A] text-white shadow-sm'
                 : 'bg-white text-[#4B5563] border border-[#E5E7EB] hover:border-[#174EA6] hover:text-[#0B1F3A]'
@@ -101,7 +101,7 @@ function ShopContent() {
             <button
               key={cat.id}
               onClick={() => setSelectedCategory(cat.slug)}
-              className={`px-5 py-2 rounded-md text-xs uppercase tracking-wider font-semibold transition-all ${
+              className={`px-5 py-2 rounded-none text-xs uppercase tracking-wider font-semibold transition-all ${
                 selectedCategory === cat.slug
                   ? 'bg-[#0B1F3A] text-white shadow-sm'
                   : 'bg-white text-[#4B5563] border border-[#E5E7EB] hover:border-[#174EA6] hover:text-[#0B1F3A]'
@@ -113,7 +113,7 @@ function ShopContent() {
         </div>
 
         {/* Filter and Sort Toolbar */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-[#F5F9FE] p-4 rounded-xl border border-[#E5E7EB] shadow-xs mb-8">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-[#F5F9FE] p-4 rounded-none border border-[#E5E7EB] shadow-xs mb-8">
           {/* Search inside catalog */}
           <div className="w-full sm:w-72">
             <input
@@ -121,7 +121,7 @@ function ShopContent() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search in formulas..."
-              className="w-full bg-white border border-[#E5E7EB] rounded-md px-4 py-2 text-xs text-[#1F2937] focus:outline-none focus:border-[#0B1F3A]"
+              className="w-full bg-white border border-[#E5E7EB] rounded-none px-4 py-2 text-xs text-[#1F2937] focus:outline-none focus:border-[#0B1F3A]"
             />
           </div>
 
@@ -130,7 +130,7 @@ function ShopContent() {
             <select
               value={selectedSkinType}
               onChange={(e) => setSelectedSkinType(e.target.value)}
-              className="bg-white border border-[#E5E7EB] rounded-md px-3 py-2 text-xs text-[#1F2937] focus:outline-none focus:border-[#0B1F3A]"
+              className="bg-white border border-[#E5E7EB] rounded-none px-3 py-2 text-xs text-[#1F2937] focus:outline-none focus:border-[#0B1F3A]"
             >
               <option value="all">Skin Type: All</option>
               <option value="Dry">Dry</option>
@@ -144,7 +144,7 @@ function ShopContent() {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="bg-white border border-[#E5E7EB] rounded-md px-3 py-2 text-xs text-[#1F2937] focus:outline-none focus:border-[#0B1F3A]"
+              className="bg-white border border-[#E5E7EB] rounded-none px-3 py-2 text-xs text-[#1F2937] focus:outline-none focus:border-[#0B1F3A]"
             >
               <option value="featured">Sort by: Featured</option>
               <option value="rating">Highest Rated</option>
@@ -157,7 +157,7 @@ function ShopContent() {
             {hasActiveFilters && (
               <button
                 onClick={resetFilters}
-                className="p-2 text-[#174EA6] hover:text-[#0B1F3A] transition-colors rounded-md hover:bg-[#DCEBFA]"
+                className="p-2 text-[#174EA6] hover:text-[#0B1F3A] transition-colors rounded-none hover:bg-[#DCEBFA]"
                 title="Reset all filters"
               >
                 <RotateCcw className="w-4 h-4" />
