@@ -57,7 +57,7 @@ export const Footer: React.FC = () => {
               <MapPin className="w-4 h-4" />
             </div>
             <div>
-              <h4 className="text-xs uppercase tracking-[0.14em] font-semibold text-white">Sunyani Atelier Dispatch</h4>
+              <h4 className="text-xs uppercase tracking-[0.14em] font-semibold text-white">Sunyani</h4>
               <p className="text-[11px] text-[#DCEBFA]/75 mt-0.5 leading-relaxed">Showroom pickup & immediate regional dispatch</p>
             </div>
           </div>
@@ -72,7 +72,7 @@ export const Footer: React.FC = () => {
                 CITY COSMETICS
               </span>
               <span className="block text-[9px] tracking-[0.42em] text-[#DCEBFA]/70 uppercase font-sans mt-1.5">
-                SUNYANI &bull; GHANA
+                SUNYANI
               </span>
             </Link>
             <p className="text-xs text-[#DCEBFA]/80 leading-relaxed max-w-sm">
@@ -81,7 +81,7 @@ export const Footer: React.FC = () => {
             <div className="pt-1 text-xs text-[#DCEBFA]/80 space-y-1.5">
               <p className="flex items-center gap-2">
                 <MapPin className="w-3.5 h-3.5 text-[#DCEBFA]/60 shrink-0" />
-                <span>Commercial Avenue, Sunyani Central, Bono Region</span>
+                <span>Sunyani</span>
               </p>
               <p className="flex items-center gap-2">
                 <Phone className="w-3.5 h-3.5 text-[#DCEBFA]/60 shrink-0" />
@@ -167,7 +167,7 @@ export const Footer: React.FC = () => {
           {/* VIP Newsletter */}
           <div className="lg:col-span-4 space-y-3.5">
             <h5 className="text-[11px] uppercase tracking-[0.2em] text-white font-semibold">
-              The City Circle
+              City Cosmetics Circle
             </h5>
             <p className="text-xs text-[#DCEBFA]/80 leading-relaxed">
               Receive private preview invitations to limited botanical extractions and 15% off your initial order.
@@ -203,7 +203,7 @@ export const Footer: React.FC = () => {
                 <span className="px-2.5 py-1 bg-white/[0.05] border border-white/10">MTN MoMo</span>
                 <span className="px-2.5 py-1 bg-white/[0.05] border border-white/10">Telecel Cash</span>
                 <span className="px-2.5 py-1 bg-white/[0.05] border border-white/10">Visa / Mastercard</span>
-                <span className="px-2.5 py-1 bg-white/[0.05] border border-white/10">Sunyani Showroom COD</span>
+                <span className="px-2.5 py-1 bg-white/[0.05] border border-white/10">Sunyani COD</span>
               </div>
             </div>
           </div>
@@ -211,7 +211,7 @@ export const Footer: React.FC = () => {
 
         {/* Bottom copyright and legal */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-[#DCEBFA]/60 gap-4">
-          <p>&copy; {new Date().getFullYear()} City Cosmetics International Ltd. Sunyani, Ghana. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} City Cosmetics. Sunyani. All rights reserved.</p>
           <div className="flex items-center space-x-6 text-[11px]">
             <span className="hover:text-white cursor-pointer transition-colors">Privacy Policy</span>
             <span className="hover:text-white cursor-pointer transition-colors">Terms of Service</span>

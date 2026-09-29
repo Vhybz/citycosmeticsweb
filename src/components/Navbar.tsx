@@ -52,8 +52,8 @@ export const Navbar: React.FC = () => {
       {/* Top Luxury Announcement Bar */}
       <div className="bg-[#0B1F3A] text-[#DCEBFA] border-b border-white/10 text-[11px] py-2 px-4 tracking-[0.16em] uppercase font-medium">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <span className="hidden sm:inline-block text-[#DCEBFA]/70 text-[10px]">
-            Sunyani Showroom & Nationwide Express Dispatch
+          <span className="hidden sm:inline-block text-[#DCEBFA]/70 text-[10px] tracking-[0.22em] font-medium uppercase">
+            Sunyani
           </span>
           <span className="mx-auto sm:mx-0 text-center">
             Complimentary Shipping on Orders Over GH₵800 &bull; Code <strong className="text-white font-semibold">CITYGLOW15</strong>
@@ -91,7 +91,7 @@ export const Navbar: React.FC = () => {
                 CITY COSMETICS
               </span>
               <span className="block text-[9px] tracking-[0.42em] text-[#6B7280] uppercase font-sans mt-1">
-                SUNYANI &bull; GHANA
+                SUNYANI
               </span>
             </Link>
           </div>
@@ -250,7 +250,7 @@ export const Navbar: React.FC = () => {
                     CITY COSMETICS
                   </span>
                   <span className="text-[9px] tracking-[0.3em] text-[#6B7280] uppercase">
-                    SUNYANI &bull; GHANA
+                    SUNYANI
                   </span>
                 </div>
                 <button
@@ -284,8 +284,8 @@ export const Navbar: React.FC = () => {
             </div>
 
             <div className="pt-6 border-t border-[#E5E7EB] text-xs text-[#6B7280]">
-              <p className="font-medium text-[#0B1F3A]">Sunyani Flagship Store</p>
-              <p className="text-[11px] text-[#6B7280] mt-0.5">Plot 14, Commercial Avenue &bull; Bono Region</p>
+              <p className="font-medium text-[#0B1F3A]">City Cosmetics</p>
+              <p className="text-[11px] text-[#6B7280] mt-0.5">Sunyani</p>
             </div>
           </div>
         </div>

@@ -32,6 +32,10 @@ import {
   Truck,
   Eye,
   SlidersHorizontal,
+  BarChart3,
+  Activity,
+  Calendar,
+  ArrowUpRight,
 } from 'lucide-react';
 import { PRODUCTS_DATA, CATEGORIES } from '@/lib/productsData';
 import { Product, Category, BeautyImage } from '@/types';
@@ -513,6 +517,33 @@ export default function AdminPage() {
   const lowStockCount = products.filter((p) => (p.stock || 0) < 20).length;
   const processingOrdersCount = orders.filter((o) => o.status === 'Processing').length;
 
+  // Graphs & Activities State
+  const [activityTimeframe, setActivityTimeframe] = useState<'7d' | '30d'>('7d');
+  const [hoveredPointIndex, setHoveredPointIndex] = useState<number | null>(null);
+  const [hoveredBarIndex, setHoveredBarIndex] = useState<number | null>(null);
+
+  const ACTIVITY_DATA_7D = [
+    { label: 'Mon', fullDate: 'Mon, 22 Sep', revenue: 8420, orders: 12, visits: 380, whatsapp: 18, quiz: 22 },
+    { label: 'Tue', fullDate: 'Tue, 23 Sep', revenue: 11250, orders: 16, visits: 440, whatsapp: 25, quiz: 28 },
+    { label: 'Wed', fullDate: 'Wed, 24 Sep', revenue: 9800, orders: 14, visits: 410, whatsapp: 21, quiz: 24 },
+    { label: 'Thu', fullDate: 'Thu, 25 Sep', revenue: 14900, orders: 21, visits: 520, whatsapp: 34, quiz: 36 },
+    { label: 'Fri', fullDate: 'Fri, 26 Sep', revenue: 18340, orders: 28, visits: 660, whatsapp: 42, quiz: 48 },
+    { label: 'Sat', fullDate: 'Sat, 27 Sep', revenue: 24100, orders: 36, visits: 850, whatsapp: 58, quiz: 64 },
+    { label: 'Sun', fullDate: 'Sun, 28 Sep', revenue: 19850, orders: 29, visits: 740, whatsapp: 46, quiz: 51 },
+  ];
+
+  const ACTIVITY_DATA_30D = [
+    { label: 'W1', fullDate: 'Week 1 (Sep 1-7)', revenue: 64500, orders: 98, visits: 2850, whatsapp: 145, quiz: 180 },
+    { label: 'W2', fullDate: 'Week 2 (Sep 8-14)', revenue: 78200, orders: 118, visits: 3290, whatsapp: 182, quiz: 210 },
+    { label: 'W3', fullDate: 'Week 3 (Sep 15-21)', revenue: 89400, orders: 134, visits: 3840, whatsapp: 210, quiz: 245 },
+    { label: 'W4', fullDate: 'Week 4 (Sep 22-28)', revenue: 106660, orders: 156, visits: 4650, whatsapp: 260, quiz: 290 },
+  ];
+
+  const currentChartData = activityTimeframe === '7d' ? ACTIVITY_DATA_7D : ACTIVITY_DATA_30D;
+  const periodTotalRevenue = currentChartData.reduce((acc, curr) => acc + curr.revenue, 0);
+  const periodTotalOrders = currentChartData.reduce((acc, curr) => acc + curr.orders, 0);
+  const maxRevenueVal = Math.max(...currentChartData.map((d) => d.revenue)) * 1.15;
+
   /* ==========================================================================
      PIN LOCK SCREEN
      ========================================================================== */
@@ -525,7 +556,7 @@ export default function AdminPage() {
           </div>
 
           <span className="text-[10px] uppercase tracking-[0.3em] font-semibold text-[#174EA6] block">
-            Sunyani Flagship Store
+            City Cosmetics &bull; Sunyani
           </span>
           <h1 className="font-serif-luxury text-2xl sm:text-3xl text-[#0B1F3A] mt-1 mb-2 font-normal">
             Inventory & Operations Portal
@@ -609,7 +640,7 @@ export default function AdminPage() {
                 </span>
               </div>
               <p className="text-[10px] text-[#DCEBFA]/75 font-sans">
-                Sunyani Showroom Dispatch & Cloud Database Management
+                City Cosmetics Sunyani &bull; Operations & Visuals Portal
               </p>
             </div>
           </div>
@@ -765,6 +796,492 @@ export default function AdminPage() {
                 <p className="text-[11px] text-[#174EA6] mt-2 font-medium">
                   Live in Infinite Radiance Marquee
                 </p>
+              </div>
+            </div>
+
+            {/* ==================================================================
+                GRAPHS & PERFORMANCE ACTIVITIES SECTION
+                ================================================================== */}
+            <div className="space-y-6">
+              {/* Graph 1: Revenue & Order Trajectory Area Graph */}
+              <div className="bg-white p-6 sm:p-7 rounded-none border border-[#E5E7EB] shadow-xs">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-[#E5E7EB]">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <BarChart3 className="w-4 h-4 text-[#174EA6]" />
+                      <h3 className="font-serif-luxury text-xl font-semibold text-[#0B1F3A]">
+                        Store Revenue & Sales Activity Trajectory
+                      </h3>
+                    </div>
+                    <p className="text-xs text-[#6B7280] mt-1">
+                      Real-time retail volume, online checkouts, and customer transactions in Sunyani.
+                    </p>
+                  </div>
+
+                  {/* Timeframe Filter Buttons */}
+                  <div className="flex items-center gap-1.5 bg-[#F5F9FE] p-1 border border-[#E5E7EB] self-start sm:self-auto">
+                    <button
+                      onClick={() => setActivityTimeframe('7d')}
+                      className={`px-3 py-1 text-xs uppercase tracking-wider font-semibold transition-all ${
+                        activityTimeframe === '7d'
+                          ? 'bg-[#0B1F3A] text-white shadow-xs'
+                          : 'text-[#6B7280] hover:text-[#0B1F3A]'
+                      }`}
+                    >
+                      Past 7 Days
+                    </button>
+                    <button
+                      onClick={() => setActivityTimeframe('30d')}
+                      className={`px-3 py-1 text-xs uppercase tracking-wider font-semibold transition-all ${
+                        activityTimeframe === '30d'
+                          ? 'bg-[#0B1F3A] text-white shadow-xs'
+                          : 'text-[#6B7280] hover:text-[#0B1F3A]'
+                      }`}
+                    >
+                      Monthly Trajectory
+                    </button>
+                  </div>
+                </div>
+
+                {/* Metric Summary Badges */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 py-4 border-b border-[#E5E7EB]/60">
+                  <div>
+                    <span className="text-[10px] uppercase tracking-wider text-[#6B7280] block font-mono">
+                      Period Sales Volume
+                    </span>
+                    <span className="text-lg font-bold text-[#0B1F3A]">
+                      {formatPrice(periodTotalRevenue)}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-[10px] uppercase tracking-wider text-[#6B7280] block font-mono">
+                      Orders Fulfilled
+                    </span>
+                    <span className="text-lg font-bold text-[#174EA6]">
+                      {periodTotalOrders} Completed
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-[10px] uppercase tracking-wider text-[#6B7280] block font-mono">
+                      Avg Order Basket
+                    </span>
+                    <span className="text-lg font-bold text-[#0B1F3A]">
+                      {formatPrice(periodTotalOrders > 0 ? periodTotalRevenue / periodTotalOrders : 0)}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-[10px] uppercase tracking-wider text-[#6B7280] block font-mono">
+                      Conversion Spike
+                    </span>
+                    <span className="text-lg font-bold text-emerald-600 flex items-center gap-1">
+                      <TrendingUp className="w-4 h-4" /> +23.8%
+                    </span>
+                  </div>
+                </div>
+
+                {/* SVG Area & Trend Line Graph */}
+                <div className="pt-6 relative">
+                  <div className="w-full h-56 relative">
+                    <svg
+                      viewBox="0 0 760 220"
+                      className="w-full h-full overflow-visible"
+                      preserveAspectRatio="none"
+                    >
+                      <defs>
+                        <linearGradient id="adminRevenueGrad" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor="#174EA6" stopOpacity="0.45" />
+                          <stop offset="60%" stopColor="#174EA6" stopOpacity="0.12" />
+                          <stop offset="100%" stopColor="#174EA6" stopOpacity="0.0" />
+                        </linearGradient>
+                      </defs>
+
+                      {/* Horizontal Grid Guidelines */}
+                      {[0, 0.25, 0.5, 0.75, 1].map((pct, i) => {
+                        const y = 20 + (1 - pct) * 160;
+                        const labelVal = Math.round((pct * maxRevenueVal) / 1000) * 1000;
+                        return (
+                          <g key={i}>
+                            <line
+                              x1="45"
+                              y1={y}
+                              x2="750"
+                              y2={y}
+                              stroke="#E5E7EB"
+                              strokeDasharray="4 4"
+                              strokeWidth="1"
+                            />
+                            <text
+                              x="35"
+                              y={y + 3}
+                              fill="#9CA3AF"
+                              fontSize="9"
+                              textAnchor="end"
+                              fontFamily="monospace"
+                            >
+                              GH₵{labelVal.toLocaleString()}
+                            </text>
+                          </g>
+                        );
+                      })}
+
+                      {/* Area Fill & Line Coordinates */}
+                      {(() => {
+                        const count = currentChartData.length;
+                        const width = 705;
+                        const startX = 45;
+                        const stepX = width / (count - 1);
+
+                        const points = currentChartData.map((d, idx) => {
+                          const x = startX + idx * stepX;
+                          const y = 180 - (d.revenue / maxRevenueVal) * 160 + 20;
+                          return { x, y, data: d };
+                        });
+
+                        const pathPoints = points.map((p) => `${p.x},${p.y}`).join(' L ');
+                        const areaPath = `M ${points[0].x},180 L ${pathPoints} L ${points[points.length - 1].x},180 Z`;
+
+                        return (
+                          <>
+                            {/* Area Gradient Fill */}
+                            <path d={areaPath} fill="url(#adminRevenueGrad)" />
+
+                            {/* Crisp Trend Line */}
+                            <path
+                              d={`M ${pathPoints}`}
+                              fill="none"
+                              stroke="#174EA6"
+                              strokeWidth="3"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+
+                            {/* Data Points with Hover Interaction */}
+                            {points.map((p, idx) => {
+                              const isHovered = hoveredPointIndex === idx;
+                              return (
+                                <g
+                                  key={idx}
+                                  className="cursor-pointer"
+                                  onMouseEnter={() => setHoveredPointIndex(idx)}
+                                  onMouseLeave={() => setHoveredPointIndex(null)}
+                                >
+                                  {/* Vertical Guide Line on Hover */}
+                                  {isHovered && (
+                                    <line
+                                      x1={p.x}
+                                      y1="20"
+                                      x2={p.x}
+                                      y2="180"
+                                      stroke="#0B1F3A"
+                                      strokeWidth="1.5"
+                                      strokeDasharray="2 2"
+                                    />
+                                  )}
+
+                                  {/* Circle Point */}
+                                  <circle
+                                    cx={p.x}
+                                    cy={p.y}
+                                    r={isHovered ? 6 : 4}
+                                    fill={isHovered ? '#0B1F3A' : '#174EA6'}
+                                    stroke="#FFFFFF"
+                                    strokeWidth="2"
+                                    className="transition-all duration-200"
+                                  />
+
+                                  {/* Date Label on X Axis */}
+                                  <text
+                                    x={p.x}
+                                    y="200"
+                                    fill={isHovered ? '#0B1F3A' : '#6B7280'}
+                                    fontWeight={isHovered ? 'bold' : 'normal'}
+                                    fontSize="10"
+                                    textAnchor="middle"
+                                    fontFamily="sans-serif"
+                                  >
+                                    {p.data.label}
+                                  </text>
+                                </g>
+                              );
+                            })}
+                          </>
+                        );
+                      })()}
+                    </svg>
+                  </div>
+
+                  {/* Interactive Floating Tooltip */}
+                  {hoveredPointIndex !== null && currentChartData[hoveredPointIndex] && (
+                    <div
+                      className="absolute top-2 right-4 bg-[#0B1F3A] text-white p-3 shadow-xl border border-white/20 text-xs animate-fade-in pointer-events-none"
+                      style={{ minWidth: '180px' }}
+                    >
+                      <p className="text-[10px] text-[#DCEBFA]/75 font-mono uppercase tracking-wider">
+                        {currentChartData[hoveredPointIndex].fullDate}
+                      </p>
+                      <p className="text-sm font-bold text-white mt-1">
+                        {formatPrice(currentChartData[hoveredPointIndex].revenue)}
+                      </p>
+                      <div className="mt-2 pt-2 border-t border-white/15 flex items-center justify-between text-[11px] text-[#DCEBFA]">
+                        <span>Orders: {currentChartData[hoveredPointIndex].orders}</span>
+                        <span>Visits: {currentChartData[hoveredPointIndex].visits}</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Side-by-Side Activity Graphs: Daily Operations vs Category Breakdown */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                {/* Graph 2: Daily Operations & Customer Activity Bar Chart */}
+                <div className="lg:col-span-7 bg-white p-6 rounded-none border border-[#E5E7EB] shadow-xs flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center justify-between pb-3 border-b border-[#E5E7EB]">
+                      <div className="flex items-center gap-2">
+                        <Activity className="w-4 h-4 text-[#174EA6]" />
+                        <h4 className="font-serif-luxury text-base font-semibold text-[#0B1F3A]">
+                          Daily Customer Engagement & Activity
+                        </h4>
+                      </div>
+                      <span className="text-[10px] uppercase font-mono tracking-widest text-[#6B7280]">
+                        Sunyani Activity
+                      </span>
+                    </div>
+                    <p className="text-xs text-[#6B7280] mt-2 mb-4">
+                      Comparison of web store visitors, skin routine quizzes, and direct WhatsApp sales inquiries.
+                    </p>
+
+                    {/* Chart Legend */}
+                    <div className="flex items-center gap-4 text-[11px] text-[#6B7280] mb-5">
+                      <span className="flex items-center gap-1.5">
+                        <span className="w-2.5 h-2.5 bg-[#0B1F3A]" /> Store Visits
+                      </span>
+                      <span className="flex items-center gap-1.5">
+                        <span className="w-2.5 h-2.5 bg-[#174EA6]" /> Skin Consultations
+                      </span>
+                      <span className="flex items-center gap-1.5">
+                        <span className="w-2.5 h-2.5 bg-emerald-600" /> WhatsApp Orders
+                      </span>
+                    </div>
+
+                    {/* Grouped Bar Chart Display */}
+                    <div className="grid grid-cols-7 gap-2 sm:gap-3 items-end h-44 pt-4 border-b border-[#E5E7EB]">
+                      {ACTIVITY_DATA_7D.map((day, idx) => {
+                        const isHovered = hoveredBarIndex === idx;
+                        const visitHeight = Math.min(100, Math.round((day.visits / 900) * 100));
+                        const quizHeight = Math.min(100, Math.round((day.quiz / 75) * 100));
+                        const waHeight = Math.min(100, Math.round((day.whatsapp / 75) * 100));
+
+                        return (
+                          <div
+                            key={idx}
+                            onMouseEnter={() => setHoveredBarIndex(idx)}
+                            onMouseLeave={() => setHoveredBarIndex(null)}
+                            className="flex flex-col items-center h-full justify-end group cursor-pointer"
+                          >
+                            <div className="w-full flex items-end justify-center gap-0.5 sm:gap-1 h-36">
+                              {/* Visits Bar */}
+                              <div
+                                style={{ height: `${visitHeight}%` }}
+                                className="w-1.5 sm:w-2.5 bg-[#0B1F3A] hover:bg-[#174EA6] transition-all duration-300"
+                                title={`Visits: ${day.visits}`}
+                              />
+                              {/* Quiz Bar */}
+                              <div
+                                style={{ height: `${quizHeight}%` }}
+                                className="w-1.5 sm:w-2.5 bg-[#174EA6] hover:bg-[#0B1F3A] transition-all duration-300"
+                                title={`Skin Quizzes: ${day.quiz}`}
+                              />
+                              {/* WhatsApp Bar */}
+                              <div
+                                style={{ height: `${waHeight}%` }}
+                                className="w-1.5 sm:w-2.5 bg-emerald-600 hover:bg-emerald-700 transition-all duration-300"
+                                title={`WhatsApp Inquiries: ${day.whatsapp}`}
+                              />
+                            </div>
+                            <span
+                              className={`text-[10px] mt-2 font-mono transition-colors ${
+                                isHovered ? 'text-[#0B1F3A] font-bold' : 'text-[#6B7280]'
+                              }`}
+                            >
+                              {day.label}
+                            </span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Active Tooltip Footnote */}
+                  <div className="mt-3 text-[11px] text-[#6B7280] flex items-center justify-between">
+                    <span>
+                      {hoveredBarIndex !== null
+                        ? `${ACTIVITY_DATA_7D[hoveredBarIndex].fullDate}: ${ACTIVITY_DATA_7D[hoveredBarIndex].visits} visitors, ${ACTIVITY_DATA_7D[hoveredBarIndex].quiz} diagnostic quizzes, ${ACTIVITY_DATA_7D[hoveredBarIndex].whatsapp} WhatsApp conversions`
+                        : 'Hover any day to inspect exact engagement metrics'}
+                    </span>
+                    <span className="font-semibold text-emerald-600">
+                      78% Conversion from Sunyani
+                    </span>
+                  </div>
+                </div>
+
+                {/* Graph 3: Category Revenue & Volume Performance */}
+                <div className="lg:col-span-5 bg-white p-6 rounded-none border border-[#E5E7EB] shadow-xs flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center justify-between pb-3 border-b border-[#E5E7EB] mb-4">
+                      <div className="flex items-center gap-2">
+                        <Layers className="w-4 h-4 text-[#174EA6]" />
+                        <h4 className="font-serif-luxury text-base font-semibold text-[#0B1F3A]">
+                          Category Sales & Revenue Share
+                        </h4>
+                      </div>
+                    </div>
+
+                    <div className="space-y-4">
+                      {[
+                        { name: 'Skincare Formulations', pct: 42, revenue: 119490, units: 214, growth: '+28%' },
+                        { name: 'Fine Fragrances & Lasgidi Mists', pct: 28, revenue: 79660, units: 165, growth: '+34%' },
+                        { name: 'Bath & Active Body Care', pct: 18, revenue: 51210, units: 108, growth: '+14%' },
+                        { name: 'Curated Sets & Gift Vaults', pct: 12, revenue: 34140, units: 42, growth: '+45%' },
+                      ].map((cat, idx) => (
+                        <div key={idx} className="space-y-1.5">
+                          <div className="flex items-center justify-between text-xs">
+                            <span className="font-medium text-[#1F2937]">{cat.name}</span>
+                            <div className="flex items-center gap-2">
+                              <span className="text-emerald-600 font-bold text-[10px]">{cat.growth}</span>
+                              <span className="font-bold text-[#0B1F3A]">{cat.pct}%</span>
+                            </div>
+                          </div>
+                          {/* Progress Bar */}
+                          <div className="w-full bg-[#E5E7EB] h-2 rounded-none overflow-hidden">
+                            <div
+                              style={{ width: `${cat.pct}%` }}
+                              className={`h-full transition-all duration-500 ${
+                                idx === 0
+                                  ? 'bg-[#0B1F3A]'
+                                  : idx === 1
+                                  ? 'bg-[#174EA6]'
+                                  : idx === 2
+                                  ? 'bg-blue-400'
+                                  : 'bg-[#DCEBFA]'
+                              }`}
+                            />
+                          </div>
+                          <div className="flex items-center justify-between text-[10px] text-[#6B7280] font-mono">
+                            <span>{formatPrice(cat.revenue)} volume</span>
+                            <span>{cat.units} units sold</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="mt-4 pt-3 border-t border-[#E5E7EB] flex items-center justify-between text-xs">
+                    <span className="text-[#6B7280]">Most active category:</span>
+                    <span className="font-bold text-[#174EA6]">Skincare (Triple Hyaluronic & Body Milk)</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Graph 4: Top 5 Bestselling Formulations Velocity Leaderboard */}
+              <div className="bg-white p-6 rounded-none border border-[#E5E7EB] shadow-xs">
+                <div className="flex items-center justify-between pb-4 border-b border-[#E5E7EB] mb-4">
+                  <div className="flex items-center gap-2">
+                    <TrendingUp className="w-4 h-4 text-emerald-600" />
+                    <h4 className="font-serif-luxury text-lg font-semibold text-[#0B1F3A]">
+                      Top 5 Formulations Velocity Leaderboard
+                    </h4>
+                  </div>
+                  <span className="text-xs text-[#6B7280] font-mono">
+                    Sunyani Boutique Retail & Delivery Metrics
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                  {[
+                    {
+                      rank: 1,
+                      name: '72H Intensive Moisture Body Milk',
+                      category: 'Skincare',
+                      image: '/beautyImages/ca20569827f857496b78c0666cb556c4.jpg',
+                      units: 88,
+                      revenue: 74800,
+                      stock: 45,
+                    },
+                    {
+                      rank: 2,
+                      name: 'Lasgidi Fine Fragrance Mists',
+                      category: 'Fragrance',
+                      image: '/beautyImages/cadd9c6e24c20cf8e79f77ff3f1e9c49.jpg',
+                      units: 64,
+                      revenue: 24320,
+                      stock: 65,
+                    },
+                    {
+                      rank: 3,
+                      name: 'Touch Pocket Perfumes & Oud',
+                      category: 'Fragrance',
+                      image: '/beautyImages/bd545c8751f20e872e51fc45f870cc99.jpg',
+                      units: 48,
+                      revenue: 69600,
+                      stock: 20,
+                    },
+                    {
+                      rank: 4,
+                      name: "Palmer's Pure Cocoa Butter Elixir",
+                      category: 'Body',
+                      image: '/beautyImages/61bc208cf17f0911e9f99c0810ccc200.jpg',
+                      units: 42,
+                      revenue: 38640,
+                      stock: 35,
+                    },
+                    {
+                      rank: 5,
+                      name: 'Sure 48H MotionSense Aerosols',
+                      category: 'Body',
+                      image: '/beautyImages/77261bd99d7a546b2a2d90e473132e83.jpg',
+                      units: 35,
+                      revenue: 23800,
+                      stock: 40,
+                    },
+                  ].map((item) => (
+                    <div
+                      key={item.rank}
+                      className="bg-[#F5F9FE] p-3.5 border border-[#E5E7EB] flex flex-col justify-between"
+                    >
+                      <div>
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="w-5 h-5 bg-[#0B1F3A] text-white text-[10px] font-bold flex items-center justify-center">
+                            #{item.rank}
+                          </span>
+                          <span className="text-[10px] font-mono text-[#174EA6] uppercase">
+                            {item.category}
+                          </span>
+                        </div>
+
+                        <div className="w-full aspect-square overflow-hidden bg-white border border-[#E5E7EB] mb-2.5">
+                          <img
+                            src={item.image}
+                            alt={item.name}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+
+                        <h5 className="font-serif-luxury text-xs text-[#0B1F3A] font-semibold line-clamp-1">
+                          {item.name}
+                        </h5>
+                        <p className="text-[11px] text-[#6B7280] font-bold mt-0.5">
+                          {formatPrice(item.revenue)}
+                        </p>
+                      </div>
+
+                      <div className="mt-3 pt-2 border-t border-[#E5E7EB]/80 text-[10px] text-[#6B7280] flex items-center justify-between">
+                        <span>{item.units} sold</span>
+                        <span className="text-emerald-700 font-semibold">{item.stock} in stock</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
 
