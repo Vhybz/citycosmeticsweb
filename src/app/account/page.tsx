@@ -106,15 +106,13 @@ export default function AccountPage() {
           name: 'Lumière Hydra-Dew Serum',
           price: 720.0,
           quantity: 1,
-          image:
-            'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=300&q=80',
+          image: '/beautyImages/ca20569827f857496b78c0666cb556c4.jpg',
         },
         {
-          name: 'Velvet Silk Cushion Lipstick (Nude City)',
+          name: 'Lasgidi Fine Mist & Tint (Pinky Crush)',
           price: 340.0,
           quantity: 1,
-          image:
-            'https://images.unsplash.com/photo-1586495777744-4413f21062fa?auto=format&fit=crop&w=300&q=80',
+          image: '/beautyImages/cadd9c6e24c20cf8e79f77ff3f1e9c49.jpg',
         },
       ],
     },
@@ -126,11 +124,10 @@ export default function AccountPage() {
       tracking: 'DHL Express: 8192038102',
       items: [
         {
-          name: 'Urban Flora Eau de Parfum',
+          name: 'Touch Majestic Oud Concentrated Flacon',
           price: 1100.0,
           quantity: 1,
-          image:
-            'https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=300&q=80',
+          image: '/beautyImages/bd545c8751f20e872e51fc45f870cc99.jpg',
         },
       ],
     },

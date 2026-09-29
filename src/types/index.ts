@@ -22,6 +22,7 @@ export interface BeautyImage {
   title: string;
   description: string;
   category: string;
+  location?: string;
   displayOrder?: number;
   isActive?: boolean;
 }

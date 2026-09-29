@@ -94,7 +94,7 @@ export async function fetchLiveProducts(): Promise<Product[]> {
       reviewCount: row.review_count || 0,
       images: Array.isArray(row.images) && row.images.length > 0
         ? row.images
-        : ['https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=800&q=80'],
+        : ['/beautyImages/ca20569827f857496b78c0666cb556c4.jpg'],
       description: row.description || '',
       benefits: row.benefits || [],
       ingredients: row.ingredients || '',
@@ -198,7 +198,7 @@ export async function fetchLiveCategories(): Promise<Category[]> {
       name: row.name,
       slug: row.slug,
       description: row.description || '',
-      image: row.image_url || 'https://images.unsplash.com/photo-1608248597359-216694663806?auto=format&fit=crop&w=800&q=80',
+      image: row.image_url || '/beautyImages/ca20569827f857496b78c0666cb556c4.jpg',
       itemCount: row.item_count || 0,
     }));
   } catch {
@@ -473,3 +473,4 @@ export async function updateLiveOrderStatus(orderId: string, status: string, not
     return false;
   }
 }
+

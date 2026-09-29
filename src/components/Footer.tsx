@@ -152,6 +152,11 @@ export const Footer: React.FC = () => {
                 </a>
               </li>
               <li>
+                <Link href="/gallery" className="hover:text-white text-[#DCEBFA] transition-colors">
+                  Showroom & Business Gallery
+                </Link>
+              </li>
+              <li>
                 <Link href="/admin" className="hover:text-white text-[#DCEBFA] transition-colors inline-flex items-center gap-1.5 font-medium pt-1">
                   <Lock className="w-3 h-3 text-[#DCEBFA]" /> Store Inventory Portal
                 </Link>

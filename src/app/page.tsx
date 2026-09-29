@@ -168,6 +168,15 @@ export default function HomePage() {
             </div>
           ))}
         </div>
+
+        <div className="mt-10">
+          <Link
+            href="/gallery"
+            className="inline-flex items-center gap-2 bg-transparent hover:bg-[#0B1F3A] text-[#0B1F3A] hover:text-white border border-[#0B1F3A] px-7 py-3.5 text-xs uppercase tracking-[0.16em] font-semibold transition-all rounded-none"
+          >
+            Explore Sunyani Showroom & Business Gallery &rarr;
+          </Link>
+        </div>
       </section>
     </div>
   );

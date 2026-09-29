@@ -130,8 +130,8 @@ export const Hero: React.FC = () => {
 
               {/* Image 2: Formulation Bottle Packshot */}
               <img
-                src="https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=1200&q=85"
-                alt="City Cosmetics Lumiere Hydra-Dew Flacon"
+                src="/beautyImages/ca20569827f857496b78c0666cb556c4.jpg"
+                alt="City Cosmetics Intensive Moisture Flacon"
                 className={`absolute inset-0 w-full h-full object-cover object-center transition-all duration-700 ${
                   activeVisual === 'product'
                     ? 'opacity-100 scale-100'

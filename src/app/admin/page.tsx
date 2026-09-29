@@ -89,7 +89,7 @@ export default function AdminPage() {
     howToUse: 'Apply 2-3 drops morning and night on cleansed skin.',
     skinTypes: ['All'],
     tags: ['New', 'Clean'],
-    images: ['https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=1000&q=85'],
+    images: ['/beautyImages/ca20569827f857496b78c0666cb556c4.jpg'],
   });
 
   // Categories UI State
@@ -100,7 +100,7 @@ export default function AdminPage() {
     name: '',
     slug: '',
     description: '',
-    image: 'https://images.unsplash.com/photo-1608248597359-216694663806?auto=format&fit=crop&w=800&q=80',
+    image: '/beautyImages/34452e2fc3a3d0262d96d96e2c62e95d.jpg',
     itemCount: 0,
   });
 
@@ -317,7 +317,7 @@ export default function AdminPage() {
       reviewCount: 1,
       images: newProduct.images && newProduct.images.length > 0
         ? newProduct.images
-        : ['https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=1000&q=85'],
+        : ['/beautyImages/ca20569827f857496b78c0666cb556c4.jpg'],
       description: newProduct.description || '',
       benefits: newProduct.benefits || ['Hydrates and softens skin'],
       ingredients: newProduct.ingredients || 'Botanical extracts, Ghanaian shea butter.',
@@ -381,7 +381,7 @@ export default function AdminPage() {
       name: newCategory.name,
       slug,
       description: newCategory.description || 'Artisanal formulations crafted in Sunyani.',
-      image: newCategory.image || 'https://images.unsplash.com/photo-1608248597359-216694663806?auto=format&fit=crop&w=800&q=80',
+      image: newCategory.image || '/beautyImages/34452e2fc3a3d0262d96d96e2c62e95d.jpg',
       itemCount: 0,
     };
 
@@ -391,7 +391,7 @@ export default function AdminPage() {
       name: '',
       slug: '',
       description: '',
-      image: 'https://images.unsplash.com/photo-1608248597359-216694663806?auto=format&fit=crop&w=800&q=80',
+      image: '/beautyImages/34452e2fc3a3d0262d96d96e2c62e95d.jpg',
       itemCount: 0,
     });
 
