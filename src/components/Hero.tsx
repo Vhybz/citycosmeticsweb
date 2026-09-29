@@ -97,12 +97,12 @@ export const Hero: React.FC = () => {
   const { openWhatsAppOrder } = useWhatsAppOrder();
   const { addToCart, setIsCartOpen } = useCart();
 
-  // Auto-advance slideshow every 7 seconds unless paused on hover
+  // Auto-advance slideshow every 3 seconds unless paused on user hover
   useEffect(() => {
     if (isPaused) return;
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % HERO_SLIDES.length);
-    }, 7000);
+    }, 3000);
     return () => clearInterval(interval);
   }, [isPaused]);
 
@@ -127,11 +127,11 @@ export const Hero: React.FC = () => {
     <section
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
-      className="relative overflow-hidden min-h-[720px] lg:min-h-[840px] flex items-center justify-center bg-[#071324] text-white select-none"
-      aria-label="City Cosmetics Centered Magazine Cover Showcase"
+      className="relative overflow-hidden min-h-[700px] lg:min-h-[820px] flex items-center bg-[#071324] text-white select-none"
+      aria-label="City Cosmetics Right-Aligned Editorial Showcase"
     >
       {/* ====================================================================
-          1. FULL-BLEED HIGH-FASHION BACKGROUND PHOTOGRAPHY
+          1. FULL-BLEED HIGH-FASHION BACKGROUND PHOTOGRAPHY (100% VISIBLE)
           ==================================================================== */}
       <div className="absolute inset-0 z-0">
         {HERO_SLIDES.map((slide, idx) => {
@@ -146,7 +146,7 @@ export const Hero: React.FC = () => {
               <img
                 src={slide.image}
                 alt={slide.title}
-                className={`w-full h-full object-cover object-center transition-transform duration-7000 ease-out ${
+                className={`w-full h-full object-cover object-center transition-transform duration-5000 ease-out ${
                   isActive ? 'scale-105' : 'scale-100'
                 }`}
               />
@@ -154,111 +154,114 @@ export const Hero: React.FC = () => {
           );
         })}
 
-        {/* Vogue / Dior Magazine Cover Scrim:
-            Radial dark vignette focusing the eye on the center typography while keeping photo details rich */}
-        <div className="absolute inset-0 bg-radial-[circle_at_center] from-black/45 via-black/60 to-black/85 pointer-events-none" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#071324] via-transparent to-black/50 pointer-events-none" />
+        {/* Right-Leaning Luxury Scrim:
+            Feathers gently from the right to protect the right-aligned typography,
+            leaving the left and center product imagery completely visible and vivid */}
+        <div className="absolute inset-0 bg-gradient-to-l from-[#071324]/95 via-[#071324]/80 via-45% to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#071324] via-transparent to-black/40 pointer-events-none" />
       </div>
 
       {/* ====================================================================
-          2. CENTERED MAGAZINE COVER EDITORIAL STAGE (VOGUE & DIOR STYLE)
+          2. RIGHT-ALIGNED EDITORIAL STAGE CONTENT
           ==================================================================== */}
-      <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-8 py-20 sm:py-24 text-center flex flex-col items-center justify-center space-y-6 sm:space-y-7">
-        
-        {/* Magazine Masthead Kicker */}
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/10 backdrop-blur-md border border-white/20 text-xs font-mono uppercase tracking-[0.25em] text-[#93C5FD]">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#93C5FD] animate-pulse" />
-          <span>Atelier Sunyani &bull; {activeSlide.batchNo} &bull; Compounded in Ghana</span>
-        </div>
+      <div className="relative z-10 max-w-[1560px] w-full mx-auto px-4 sm:px-8 lg:px-14 py-20 sm:py-24 flex justify-end">
+        <div className="max-w-2xl w-full text-right flex flex-col items-end space-y-5 sm:space-y-6">
+          
+          {/* Magazine Masthead Kicker */}
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/10 backdrop-blur-md border border-white/20 text-xs font-mono uppercase tracking-[0.25em] text-[#93C5FD]">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#93C5FD] animate-pulse" />
+            <span>Atelier Sunyani &bull; {activeSlide.batchNo} &bull; Ghana</span>
+          </div>
 
-        {/* Category Kicker */}
-        <p className="text-xs uppercase font-mono tracking-[0.3em] font-semibold text-[#DCEBFA]/90 pt-1">
-          {activeSlide.category}
-        </p>
+          {/* Category Kicker */}
+          <p className="text-xs uppercase font-mono tracking-[0.3em] font-semibold text-[#93C5FD] pt-1">
+            {activeSlide.category}
+          </p>
 
-        {/* Grand Headline (Vogue Serif Style) */}
-        <h1 className="font-serif-luxury text-4xl sm:text-6xl lg:text-7xl font-normal text-white leading-[1.05] tracking-tight max-w-4xl drop-shadow-lg">
-          {activeSlide.title}
-        </h1>
+          {/* Grand Headline (Vogue Serif Style) */}
+          <h1 className="font-serif-luxury text-4xl sm:text-6xl lg:text-7xl font-normal text-white leading-[1.05] tracking-tight drop-shadow-lg">
+            {activeSlide.title}
+          </h1>
 
-        {/* Italic Accent Subtitle */}
-        <p className="italic font-serif font-light text-xl sm:text-2xl text-[#93C5FD] max-w-2xl drop-shadow-sm">
-          {activeSlide.subtitle}
-        </p>
+          {/* Italic Accent Subtitle */}
+          <p className="italic font-serif font-light text-xl sm:text-2xl text-[#93C5FD] drop-shadow-sm">
+            {activeSlide.subtitle}
+          </p>
 
-        {/* Formulation Benefit Description */}
-        <p className="text-sm sm:text-base text-[#DCEBFA]/85 leading-relaxed max-w-2xl font-normal drop-shadow-xs">
-          {activeSlide.description}
-        </p>
+          {/* Formulation Benefit Description */}
+          <p className="text-sm sm:text-base text-[#DCEBFA]/85 leading-relaxed max-w-xl font-normal drop-shadow-xs">
+            {activeSlide.description}
+          </p>
 
-        {/* Botanical Actives Tags */}
-        <div className="flex flex-wrap items-center justify-center gap-2 pt-1">
-          {activeSlide.keyActives.map((active, i) => (
-            <span
-              key={i}
-              className="inline-flex items-center gap-1.5 px-3 py-1 text-[11px] font-mono bg-black/40 backdrop-blur-md border border-white/15 text-white shadow-2xs"
+          {/* Botanical Actives Tags (Aligned Right) */}
+          <div className="flex flex-wrap items-center justify-end gap-2 pt-1">
+            {activeSlide.keyActives.map((active, i) => (
+              <span
+                key={i}
+                className="inline-flex items-center gap-1.5 px-3 py-1 text-[11px] font-mono bg-black/40 backdrop-blur-md border border-white/15 text-white shadow-2xs"
+              >
+                <CheckCircle2 className="w-3 h-3 text-[#93C5FD]" />
+                <span>{active}</span>
+              </span>
+            ))}
+          </div>
+
+          {/* Price & Sunyani Delivery Info (Aligned Right) */}
+          <div className="pt-2 flex items-baseline justify-end gap-3">
+            <span className="text-3xl sm:text-4xl font-mono font-bold text-white tracking-tight">
+              {formatPrice(activeProduct.price)}
+            </span>
+            {activeProduct.compareAtPrice && (
+              <span className="text-lg font-mono line-through text-[#9CA3AF]">
+                {formatPrice(activeProduct.compareAtPrice)}
+              </span>
+            )}
+            <span className="text-xs font-mono text-[#93C5FD]">
+              &bull; Flat GH₵ 20 Delivery in Sunyani
+            </span>
+          </div>
+
+          {/* Action Buttons (Aligned Right) */}
+          <div className="pt-2 flex flex-col sm:flex-row items-center justify-end gap-3.5 w-full sm:w-auto">
+            {/* Details Link */}
+            <Link
+              href={`/product/${activeProduct.slug}`}
+              className="w-full sm:w-auto border border-white/30 hover:border-white text-white hover:bg-white/10 py-4 px-6 text-xs uppercase tracking-widest font-semibold flex items-center justify-center gap-2 transition-all duration-200 order-3 sm:order-1"
             >
-              <CheckCircle2 className="w-3 h-3 text-[#93C5FD]" />
-              <span>{active}</span>
-            </span>
-          ))}
+              <span>Explore Details</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+
+            {/* Add to Bag */}
+            <button
+              type="button"
+              onClick={handleAddDirectToBag}
+              className="w-full sm:w-auto bg-white hover:bg-[#DCEBFA] text-[#071324] py-4 px-7 text-xs uppercase tracking-widest font-semibold flex items-center justify-center gap-2 shadow-2xl hover:scale-[1.02] transition-all duration-200 order-2"
+              title="Add formulation to bag"
+            >
+              <ShoppingBag className="w-4 h-4" />
+              <span>Add to Bag</span>
+            </button>
+
+            {/* Order via WhatsApp */}
+            <button
+              type="button"
+              onClick={() => openWhatsAppOrder(activeProduct, undefined, 1)}
+              className="w-full sm:w-auto bg-[#25D366] hover:bg-[#1EBE5D] text-white py-4 px-7 text-xs uppercase tracking-widest font-semibold flex items-center justify-center gap-2 shadow-2xl hover:scale-[1.02] transition-all duration-200 order-1 sm:order-3"
+              title="Order formulation instantly via WhatsApp"
+            >
+              <MessageCircle className="w-4 h-4 fill-current" />
+              <span>Order via WhatsApp &bull; GH₵ 20 Delivery</span>
+            </button>
+          </div>
+
         </div>
-
-        {/* Price & Sunyani Delivery Info */}
-        <div className="pt-2 flex items-baseline justify-center gap-3">
-          <span className="text-3xl sm:text-4xl font-mono font-bold text-white tracking-tight">
-            {formatPrice(activeProduct.price)}
-          </span>
-          {activeProduct.compareAtPrice && (
-            <span className="text-lg font-mono line-through text-[#9CA3AF]">
-              {formatPrice(activeProduct.compareAtPrice)}
-            </span>
-          )}
-          <span className="text-xs font-mono text-[#93C5FD]">
-            &bull; Flat GH₵ 20 Delivery in Sunyani
-          </span>
-        </div>
-
-        {/* Centered Direct Commerce Actions */}
-        <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3.5 w-full sm:w-auto">
-          {/* Order via WhatsApp */}
-          <button
-            type="button"
-            onClick={() => openWhatsAppOrder(activeProduct, undefined, 1)}
-            className="w-full sm:w-auto bg-[#25D366] hover:bg-[#1EBE5D] text-white py-4 px-8 text-xs uppercase tracking-widest font-semibold flex items-center justify-center gap-2 shadow-2xl hover:scale-[1.03] transition-all duration-200"
-            title="Order formulation instantly via WhatsApp"
-          >
-            <MessageCircle className="w-4 h-4 fill-current" />
-            <span>Order via WhatsApp &bull; GH₵ 20 Delivery</span>
-          </button>
-
-          {/* Add to Bag */}
-          <button
-            type="button"
-            onClick={handleAddDirectToBag}
-            className="w-full sm:w-auto bg-white hover:bg-[#DCEBFA] text-[#071324] py-4 px-8 text-xs uppercase tracking-widest font-semibold flex items-center justify-center gap-2 shadow-2xl hover:scale-[1.03] transition-all duration-200"
-            title="Add formulation to bag"
-          >
-            <ShoppingBag className="w-4 h-4" />
-            <span>Add to Bag</span>
-          </button>
-
-          {/* Details Link */}
-          <Link
-            href={`/product/${activeProduct.slug}`}
-            className="w-full sm:w-auto border border-white/30 hover:border-white text-white hover:bg-white/10 py-4 px-6 text-xs uppercase tracking-widest font-semibold flex items-center justify-center gap-2 transition-all duration-200"
-          >
-            <span>Explore Details</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </Link>
-        </div>
-
       </div>
 
       {/* ====================================================================
           3. FLOATING MAGAZINE BOTTOM HUD (SLIDE TABS & CONTROLS)
           ==================================================================== */}
-      <div className="absolute bottom-6 left-0 right-0 z-20 max-w-5xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div className="absolute bottom-6 left-0 right-0 z-20 max-w-[1560px] mx-auto px-4 sm:px-8 lg:px-14 flex flex-col sm:flex-row items-center justify-between gap-3">
         
         {/* Numbered Formulation Tabs */}
         <div className="flex items-center gap-1.5 overflow-x-auto max-w-full pb-1 scrollbar-none">
@@ -282,7 +285,7 @@ export const Hero: React.FC = () => {
           })}
         </div>
 
-        {/* Tactile Prev/Next Arrows & Counter */}
+        {/* Tactile Prev/Next Arrows & 3s Counter */}
         <div className="flex items-center gap-2 shrink-0 bg-black/40 backdrop-blur-md border border-white/15 p-1.5">
           <div className="px-2 font-mono text-xs text-[#93C5FD]">
             0{currentSlide + 1} / 0{HERO_SLIDES.length}
