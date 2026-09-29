@@ -8,39 +8,48 @@ import { PRODUCTS_DATA } from '@/lib/productsData';
 
 interface Slide {
   id: string;
-  image: string;
+  category: string;
   title: string;
-  subtitle: string;
+  description: string;
+  image: string;
   productId: string;
 }
 
 const HERO_SLIDES: Slide[] = [
   {
     id: '01',
-    image: '/beautyImages/ca20569827f857496b78c0666cb556c4.jpg',
+    category: 'DEEP HYDRATION',
     title: 'Lumière Hydra-Dew Serum',
-    subtitle: 'Triple-molecular hydration compounded with Sunyani shea peptides.',
+    description:
+      'Triple-molecular weight hydration compounded with botanical shea peptides for 72-hour moisture in tropical warmth.',
+    image: '/beautyImages/ca20569827f857496b78c0666cb556c4.jpg',
     productId: 'cc-01',
   },
   {
     id: '02',
-    image: '/beautyImages/1.jpg',
+    category: 'BARRIER DEFENSE',
     title: 'Cellular Renewal Elixir',
-    subtitle: 'Baobab stem cells and golden marula for resilient barrier defense.',
+    description:
+      'Baobab stem cells and golden marula lipids to strengthen the skin barrier against environmental stressors.',
+    image: '/beautyImages/1.jpg',
     productId: 'cc-02',
   },
   {
     id: '03',
-    image: '/beautyImages/3.jpg',
+    category: 'VITAMIN C ILLUMINATOR',
     title: 'Luminous Glow Infusion',
-    subtitle: 'Vitamin C 20% ester and cold-pressed Sunyani papaya actives.',
+    description:
+      'Twenty percent Vitamin C ester and cold-pressed papaya bio-enzymes to visibly clarify and even tone.',
+    image: '/beautyImages/3.jpg',
     productId: 'cc-03',
   },
   {
     id: '04',
-    image: '/beautyImages/ca.jpg',
+    category: 'NOCTURNAL RECOVERY',
     title: 'Atelier Velvet Night Balm',
-    subtitle: 'Restorative wild moringa lipids and botanical squalane.',
+    description:
+      'Rich wild moringa lipids and plant squalane to replenish essential moisture while you sleep.',
+    image: '/beautyImages/ca.jpg',
     productId: 'cc-04',
   },
 ];
@@ -50,7 +59,7 @@ export const Hero: React.FC = () => {
   const [isPaused, setIsPaused] = useState(false);
   const { openWhatsAppOrder } = useWhatsAppOrder();
 
-  // Clean 3-second auto-advance, paused on hover
+  // Auto-advance every 3 seconds, pause on hover
   useEffect(() => {
     if (isPaused) return;
     const interval = setInterval(() => {
@@ -75,11 +84,11 @@ export const Hero: React.FC = () => {
     <section
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
-      className="relative overflow-hidden min-h-[720px] lg:min-h-[820px] flex items-center bg-[#071324] text-white"
-      aria-label="City Cosmetics Hero"
+      className="relative overflow-hidden min-h-[700px] lg:min-h-[800px] flex items-center bg-[#071324] text-white"
+      aria-label="City Cosmetics Formulation Showcase"
     >
       {/* ====================================================================
-          1. FULL-BLEED PHOTOGRAPHIC SLIDESHOW (NATURAL & UNCLUTTERED)
+          1. FULL-BLEED PHOTOGRAPHIC SLIDESHOW
           ==================================================================== */}
       <div className="absolute inset-0 z-0">
         {HERO_SLIDES.map((slide, idx) => {
@@ -94,7 +103,7 @@ export const Hero: React.FC = () => {
               <img
                 src={slide.image}
                 alt={slide.title}
-                className={`w-full h-full object-cover object-center transition-transform duration-7000 ease-out ${
+                className={`w-full h-full object-cover object-center transition-transform duration-5000 ease-out ${
                   isActive ? 'scale-105' : 'scale-100'
                 }`}
               />
@@ -102,41 +111,34 @@ export const Hero: React.FC = () => {
           );
         })}
 
-        {/* Quiet, natural studio vignette:
-            Subtle left-to-right fade so typography is effortlessly legible while imagery remains organic */}
+        {/* Soft lateral vignette for natural text contrast */}
         <div className="absolute inset-0 bg-gradient-to-r from-[#071324]/90 via-[#071324]/60 via-45% to-transparent pointer-events-none" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#071324]/80 via-transparent to-black/30 pointer-events-none" />
       </div>
 
       {/* ====================================================================
-          2. RESTRAINED EDITORIAL CONTENT (BYREDO / DIOR STYLE)
+          2. EDITORIAL HERO STAGE (ZERO REDUNDANCY)
           ==================================================================== */}
       <div className="relative z-10 max-w-[1560px] w-full mx-auto px-6 sm:px-10 lg:px-16 pt-32 sm:pt-40 lg:pt-44 pb-24 sm:pb-28">
-        <div className="max-w-2xl space-y-6 sm:space-y-8">
+        <div className="max-w-2xl space-y-5 sm:space-y-6">
           
-          {/* Quiet Origin Label (No neon pulse, no badge borders) */}
-          <div className="text-[11px] font-mono uppercase tracking-[0.35em] text-[#93C5FD]">
-            Sunyani &bull; Botanical Clinicals
+          {/* Formulation Category */}
+          <div className="text-[11px] font-mono uppercase tracking-[0.3em] font-semibold text-[#93C5FD]">
+            {activeSlide.category}
           </div>
 
-          {/* Striking Editorial Headline */}
+          {/* Active Formulation Title */}
           <h1 className="font-serif-luxury text-4xl sm:text-6xl lg:text-7xl font-normal text-white leading-[1.06] tracking-tight">
-            Sensorial Botanicals for Luminous Skin.
+            {activeSlide.title}
           </h1>
 
-          {/* Understated Editorial Subtext */}
+          {/* Distinct Formulation Story */}
           <p className="text-base sm:text-lg text-[#DCEBFA]/85 leading-relaxed max-w-xl font-normal">
-            Clinical-grade skincare compounded with potent West African botanical actives and multi-molecular hydration for radiant resilience.
+            {activeSlide.description}
           </p>
 
-          {/* Active Formulation Spotlight Line */}
-          <div className="pt-1 text-xs font-mono text-[#93C5FD] tracking-wider">
-            Current Showcase: <span className="text-white font-medium">{activeSlide.title}</span> &bull; {activeSlide.subtitle}
-          </div>
-
-          {/* Two Clean, Intentional Action Buttons */}
-          <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
-            {/* Primary Action: Explore Formulations */}
+          {/* Clean Dual CTAs */}
+          <div className="pt-3 flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5">
             <Link
               href="/shop"
               className="bg-white hover:bg-[#DCEBFA] text-[#071324] py-4 px-8 text-xs uppercase tracking-widest font-semibold inline-flex items-center justify-center gap-2.5 transition-colors shadow-lg"
@@ -145,15 +147,14 @@ export const Hero: React.FC = () => {
               <ArrowRight className="w-4 h-4" />
             </Link>
 
-            {/* Secondary Action: Order via WhatsApp */}
             <button
               type="button"
               onClick={() => openWhatsAppOrder(activeProduct, undefined, 1)}
               className="bg-white/10 hover:bg-white/20 text-white border border-white/25 backdrop-blur-md py-4 px-7 text-xs uppercase tracking-widest font-semibold inline-flex items-center justify-center gap-2.5 transition-colors"
-              title="Instant WhatsApp Order (GH₵ 20 Delivery in Sunyani)"
+              title="Order this formulation directly via WhatsApp"
             >
               <MessageCircle className="w-4 h-4 fill-current text-[#25D366]" />
-              <span>Order via WhatsApp &bull; GH₵ 20 Delivery</span>
+              <span>Order via WhatsApp</span>
             </button>
           </div>
 
@@ -161,24 +162,19 @@ export const Hero: React.FC = () => {
       </div>
 
       {/* ====================================================================
-          3. MINIMALIST SLIDER LINE & PROGRESS (BYREDO STYLE)
+          3. MINIMAL SLIDER PROGRESS TRACK
           ==================================================================== */}
       <div className="absolute bottom-8 left-0 right-0 z-20 max-w-[1560px] mx-auto px-6 sm:px-10 lg:px-16 flex items-center justify-between gap-6">
         
-        {/* Left: Active formulation number & title */}
-        <div className="font-mono text-xs tracking-wider text-[#DCEBFA]/80 flex items-center gap-3">
-          <span className="text-[#93C5FD] font-semibold">{activeSlide.id}</span>
-          <span className="text-white/40">/</span>
+        {/* Simple Slide Counter */}
+        <div className="font-mono text-xs tracking-widest text-[#DCEBFA]/75">
+          <span className="text-white font-semibold">{activeSlide.id}</span>
+          <span className="mx-2 text-white/30">/</span>
           <span className="text-white/40">0{HERO_SLIDES.length}</span>
-          <span className="hidden sm:inline text-white/30">&mdash;</span>
-          <span className="hidden sm:inline font-sans text-xs text-white/90 font-medium">
-            {activeSlide.title}
-          </span>
         </div>
 
-        {/* Right: Slim progress track & tactile arrows */}
+        {/* Progress Track & Navigation */}
         <div className="flex items-center gap-4">
-          {/* Progress Dots / Bars */}
           <div className="flex items-center gap-2">
             {HERO_SLIDES.map((slide, idx) => {
               const isCurrent = idx === currentSlide;
@@ -190,21 +186,20 @@ export const Hero: React.FC = () => {
                   className={`h-0.5 transition-all duration-300 ${
                     isCurrent ? 'w-8 bg-white' : 'w-3 bg-white/30 hover:bg-white/60'
                   }`}
-                  title={`Go to formulation ${slide.id}`}
-                  aria-label={`Go to slide ${idx + 1}`}
+                  aria-label={`Jump to formulation ${slide.id}`}
+                  title={slide.title}
                 />
               );
             })}
           </div>
 
-          {/* Minimalist Prev/Next Controls */}
           <div className="flex items-center gap-1 pl-2">
             <button
               type="button"
               onClick={handlePrev}
               className="w-8 h-8 flex items-center justify-center text-white/70 hover:text-white transition-colors"
-              title="Previous slide"
               aria-label="Previous Slide"
+              title="Previous slide"
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
@@ -212,8 +207,8 @@ export const Hero: React.FC = () => {
               type="button"
               onClick={handleNext}
               className="w-8 h-8 flex items-center justify-center text-white/70 hover:text-white transition-colors"
-              title="Next slide"
               aria-label="Next Slide"
+              title="Next slide"
             >
               <ChevronRight className="w-4 h-4" />
             </button>
