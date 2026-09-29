@@ -2,12 +2,13 @@
 -- City Cosmetics Sunyani - Enterprise Non-Destructive Supabase Database Schema
 -- Location: Sunyani, Bono Region, Ghana
 -- 
--- SAFE TO RUN ON AN EXISTING DATABASE:
+-- 100% SAFE TO RUN ON AN EXISTING DATABASE:
 --   - Will NOT overwrite any products, categories, or images you already uploaded
 --   - Uses "ON CONFLICT DO NOTHING" across all seed operations
 --   - Adds missing columns non-destructively with "ADD COLUMN IF NOT EXISTS"
+--   - Automatically bridges existing 'phone' column to 'customer_phone'
 --   - Recreates RLS policies safely with "DROP POLICY IF EXISTS"
---   - Does NOT delete or drop any of your existing customer data
+--   - Safe conditional index creation preventing column 42703 errors
 -- ==============================================================================
 
 -- Enable essential cryptographic & UUID extensions safely
@@ -45,7 +46,7 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 
 
 -- ==============================================================================
--- 2. TABLE DEFINITIONS (NON-DESTRUCTIVE & SAFE FOR EXISTING DATA)
+-- 2. TABLE DEFINITIONS (NON-DESTRUCTIVE)
 -- ==============================================================================
 
 -- PROFILES TABLE (Extends Supabase Auth users)
@@ -157,30 +158,85 @@ CREATE TABLE IF NOT EXISTS public.reviews (
 
 -- ==============================================================================
 -- 2B. SAFE SCHEMA EVOLUTION (ADD COLUMNS NON-DESTRUCTIVELY TO EXISTING TABLES)
+-- This ensures any table created in older versions gets all new columns safely.
 -- ==============================================================================
 
--- Safely add any new columns to existing orders table without breaking data
+-- Profiles columns
+ALTER TABLE IF EXISTS public.profiles ADD COLUMN IF NOT EXISTS full_name TEXT;
+ALTER TABLE IF EXISTS public.profiles ADD COLUMN IF NOT EXISTS email TEXT;
+ALTER TABLE IF EXISTS public.profiles ADD COLUMN IF NOT EXISTS phone TEXT;
+ALTER TABLE IF EXISTS public.profiles ADD COLUMN IF NOT EXISTS role TEXT DEFAULT 'customer';
+ALTER TABLE IF EXISTS public.profiles ADD COLUMN IF NOT EXISTS avatar_url TEXT;
+ALTER TABLE IF EXISTS public.profiles ADD COLUMN IF NOT EXISTS address JSONB DEFAULT '{}'::jsonb;
+ALTER TABLE IF EXISTS public.profiles ADD COLUMN IF NOT EXISTS created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now());
+ALTER TABLE IF EXISTS public.profiles ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now());
+
+-- Orders columns (ensures customer_phone and all MoMo fields are 100% present)
+ALTER TABLE IF EXISTS public.orders ADD COLUMN IF NOT EXISTS order_number TEXT;
+ALTER TABLE IF EXISTS public.orders ADD COLUMN IF NOT EXISTS customer_name TEXT;
+ALTER TABLE IF EXISTS public.orders ADD COLUMN IF NOT EXISTS customer_email TEXT;
+ALTER TABLE IF EXISTS public.orders ADD COLUMN IF NOT EXISTS customer_phone TEXT;
+ALTER TABLE IF EXISTS public.orders ADD COLUMN IF NOT EXISTS customer_whatsapp TEXT;
+ALTER TABLE IF EXISTS public.orders ADD COLUMN IF NOT EXISTS customer_call_line TEXT;
+ALTER TABLE IF EXISTS public.orders ADD COLUMN IF NOT EXISTS items JSONB DEFAULT '[]'::jsonb;
+ALTER TABLE IF EXISTS public.orders ADD COLUMN IF NOT EXISTS subtotal NUMERIC(10, 2) DEFAULT 0.00;
+ALTER TABLE IF EXISTS public.orders ADD COLUMN IF NOT EXISTS delivery_fee NUMERIC(10, 2) DEFAULT 20.00;
+ALTER TABLE IF EXISTS public.orders ADD COLUMN IF NOT EXISTS total_amount NUMERIC(10, 2) DEFAULT 0.00;
+ALTER TABLE IF EXISTS public.orders ADD COLUMN IF NOT EXISTS shipping_address JSONB DEFAULT '{}'::jsonb;
+ALTER TABLE IF EXISTS public.orders ADD COLUMN IF NOT EXISTS payment_method TEXT DEFAULT 'momo';
+ALTER TABLE IF EXISTS public.orders ADD COLUMN IF NOT EXISTS payment_status TEXT DEFAULT 'Pending';
+ALTER TABLE IF EXISTS public.orders ADD COLUMN IF NOT EXISTS status TEXT DEFAULT 'Processing';
 ALTER TABLE IF EXISTS public.orders ADD COLUMN IF NOT EXISTS momo_transaction_id TEXT;
 ALTER TABLE IF EXISTS public.orders ADD COLUMN IF NOT EXISTS momo_network TEXT;
 ALTER TABLE IF EXISTS public.orders ADD COLUMN IF NOT EXISTS momo_phone TEXT;
-ALTER TABLE IF EXISTS public.orders ADD COLUMN IF NOT EXISTS customer_whatsapp TEXT;
-ALTER TABLE IF EXISTS public.orders ADD COLUMN IF NOT EXISTS customer_call_line TEXT;
-ALTER TABLE IF EXISTS public.orders ADD COLUMN IF NOT EXISTS delivery_fee NUMERIC(10, 2) DEFAULT 20.00;
-ALTER TABLE IF EXISTS public.orders ADD COLUMN IF NOT EXISTS subtotal NUMERIC(10, 2) DEFAULT 0.00;
 ALTER TABLE IF EXISTS public.orders ADD COLUMN IF NOT EXISTS dispatch_notes TEXT;
 ALTER TABLE IF EXISTS public.orders ADD COLUMN IF NOT EXISTS order_source TEXT DEFAULT 'website';
+ALTER TABLE IF EXISTS public.orders ADD COLUMN IF NOT EXISTS created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now());
+ALTER TABLE IF EXISTS public.orders ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now());
 
--- Safely add columns to existing products table
-ALTER TABLE IF EXISTS public.products ADD COLUMN IF NOT EXISTS is_featured BOOLEAN DEFAULT false;
+-- Copy older 'phone' column value to 'customer_phone' if present
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM information_schema.columns 
+    WHERE table_schema = 'public' AND table_name = 'orders' AND column_name = 'phone'
+  ) THEN
+    UPDATE public.orders SET customer_phone = phone WHERE customer_phone IS NULL;
+  END IF;
+END $$;
+
+-- Products columns
+ALTER TABLE IF EXISTS public.products ADD COLUMN IF NOT EXISTS slug TEXT;
+ALTER TABLE IF EXISTS public.products ADD COLUMN IF NOT EXISTS name TEXT;
+ALTER TABLE IF EXISTS public.products ADD COLUMN IF NOT EXISTS subtitle TEXT;
+ALTER TABLE IF EXISTS public.products ADD COLUMN IF NOT EXISTS category TEXT;
+ALTER TABLE IF EXISTS public.products ADD COLUMN IF NOT EXISTS price NUMERIC(10, 2) DEFAULT 0.00;
 ALTER TABLE IF EXISTS public.products ADD COLUMN IF NOT EXISTS compare_at_price NUMERIC(10, 2);
+ALTER TABLE IF EXISTS public.products ADD COLUMN IF NOT EXISTS rating NUMERIC(3, 2) DEFAULT 5.0;
+ALTER TABLE IF EXISTS public.products ADD COLUMN IF NOT EXISTS review_count INTEGER DEFAULT 0;
+ALTER TABLE IF EXISTS public.products ADD COLUMN IF NOT EXISTS images TEXT[] DEFAULT '{}';
+ALTER TABLE IF EXISTS public.products ADD COLUMN IF NOT EXISTS description TEXT;
+ALTER TABLE IF EXISTS public.products ADD COLUMN IF NOT EXISTS benefits TEXT[] DEFAULT '{}';
+ALTER TABLE IF EXISTS public.products ADD COLUMN IF NOT EXISTS ingredients TEXT;
+ALTER TABLE IF EXISTS public.products ADD COLUMN IF NOT EXISTS how_to_use TEXT;
 ALTER TABLE IF EXISTS public.products ADD COLUMN IF NOT EXISTS skin_types TEXT[] DEFAULT '{}';
+ALTER TABLE IF EXISTS public.products ADD COLUMN IF NOT EXISTS tags TEXT[] DEFAULT '{}';
 ALTER TABLE IF EXISTS public.products ADD COLUMN IF NOT EXISTS variants JSONB DEFAULT '[]'::jsonb;
 ALTER TABLE IF EXISTS public.products ADD COLUMN IF NOT EXISTS stock INTEGER DEFAULT 50;
+ALTER TABLE IF EXISTS public.products ADD COLUMN IF NOT EXISTS is_featured BOOLEAN DEFAULT false;
+ALTER TABLE IF EXISTS public.products ADD COLUMN IF NOT EXISTS created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now());
+ALTER TABLE IF EXISTS public.products ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now());
 
--- Safely add columns to existing beauty images table
+-- Beauty images columns
+ALTER TABLE IF EXISTS public.site_beauty_images ADD COLUMN IF NOT EXISTS image_url TEXT;
+ALTER TABLE IF EXISTS public.site_beauty_images ADD COLUMN IF NOT EXISTS tag TEXT;
+ALTER TABLE IF EXISTS public.site_beauty_images ADD COLUMN IF NOT EXISTS title TEXT;
+ALTER TABLE IF EXISTS public.site_beauty_images ADD COLUMN IF NOT EXISTS description TEXT;
 ALTER TABLE IF EXISTS public.site_beauty_images ADD COLUMN IF NOT EXISTS category TEXT DEFAULT 'Skincare';
 ALTER TABLE IF EXISTS public.site_beauty_images ADD COLUMN IF NOT EXISTS display_order INTEGER DEFAULT 0;
 ALTER TABLE IF EXISTS public.site_beauty_images ADD COLUMN IF NOT EXISTS is_active BOOLEAN DEFAULT true;
+ALTER TABLE IF EXISTS public.site_beauty_images ADD COLUMN IF NOT EXISTS created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now());
+ALTER TABLE IF EXISTS public.site_beauty_images ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now());
 
 
 -- ==============================================================================
@@ -220,20 +276,45 @@ CREATE TRIGGER on_auth_user_created
 
 
 -- ==============================================================================
--- 4. PERFORMANCE B-TREE INDEXES
+-- 4. PERFORMANCE B-TREE INDEXES (CONDITIONAL & 100% SAFE)
 -- ==============================================================================
 
-CREATE INDEX IF NOT EXISTS idx_products_category ON public.products(category);
-CREATE INDEX IF NOT EXISTS idx_products_slug ON public.products(slug);
-CREATE INDEX IF NOT EXISTS idx_products_is_featured ON public.products(is_featured);
-CREATE INDEX IF NOT EXISTS idx_products_price ON public.products(price);
-CREATE INDEX IF NOT EXISTS idx_orders_customer_phone ON public.orders(customer_phone);
-CREATE INDEX IF NOT EXISTS idx_orders_momo_txid ON public.orders(momo_transaction_id);
-CREATE INDEX IF NOT EXISTS idx_orders_status ON public.orders(status);
-CREATE INDEX IF NOT EXISTS idx_orders_payment_status ON public.orders(payment_status);
-CREATE INDEX IF NOT EXISTS idx_orders_created_at ON public.orders(created_at DESC);
-CREATE INDEX IF NOT EXISTS idx_reviews_product_id ON public.reviews(product_id);
-CREATE INDEX IF NOT EXISTS idx_beauty_images_active ON public.site_beauty_images(is_active, display_order);
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'products' AND column_name = 'category') THEN
+    CREATE INDEX IF NOT EXISTS idx_products_category ON public.products(category);
+  END IF;
+  IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'products' AND column_name = 'slug') THEN
+    CREATE INDEX IF NOT EXISTS idx_products_slug ON public.products(slug);
+  END IF;
+  IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'products' AND column_name = 'is_featured') THEN
+    CREATE INDEX IF NOT EXISTS idx_products_is_featured ON public.products(is_featured);
+  END IF;
+  IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'products' AND column_name = 'price') THEN
+    CREATE INDEX IF NOT EXISTS idx_products_price ON public.products(price);
+  END IF;
+  IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'orders' AND column_name = 'customer_phone') THEN
+    CREATE INDEX IF NOT EXISTS idx_orders_customer_phone ON public.orders(customer_phone);
+  END IF;
+  IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'orders' AND column_name = 'momo_transaction_id') THEN
+    CREATE INDEX IF NOT EXISTS idx_orders_momo_txid ON public.orders(momo_transaction_id);
+  END IF;
+  IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'orders' AND column_name = 'status') THEN
+    CREATE INDEX IF NOT EXISTS idx_orders_status ON public.orders(status);
+  END IF;
+  IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'orders' AND column_name = 'payment_status') THEN
+    CREATE INDEX IF NOT EXISTS idx_orders_payment_status ON public.orders(payment_status);
+  END IF;
+  IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'orders' AND column_name = 'created_at') THEN
+    CREATE INDEX IF NOT EXISTS idx_orders_created_at ON public.orders(created_at DESC);
+  END IF;
+  IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'reviews' AND column_name = 'product_id') THEN
+    CREATE INDEX IF NOT EXISTS idx_reviews_product_id ON public.reviews(product_id);
+  END IF;
+  IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'site_beauty_images' AND column_name = 'is_active') THEN
+    CREATE INDEX IF NOT EXISTS idx_beauty_images_active ON public.site_beauty_images(is_active, display_order);
+  END IF;
+END $$;
 
 
 -- ==============================================================================
