@@ -154,18 +154,18 @@ export const Hero: React.FC = () => {
           );
         })}
 
-        {/* Right-Leaning Luxury Scrim:
-            Feathers gently from the right to protect the right-aligned typography,
-            leaving the left and center product imagery completely visible and vivid */}
-        <div className="absolute inset-0 bg-gradient-to-l from-[#071324]/95 via-[#071324]/80 via-45% to-transparent pointer-events-none" />
+        {/* Left-Leaning Luxury Scrim:
+            Feathers gently from the left to protect the left-aligned typography,
+            leaving the center and right product imagery completely visible and vivid */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#071324]/95 via-[#071324]/80 via-45% to-transparent pointer-events-none" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#071324] via-transparent to-black/40 pointer-events-none" />
       </div>
 
       {/* ====================================================================
-          2. RIGHT-ALIGNED EDITORIAL STAGE CONTENT
+          2. LEFT-ALIGNED EDITORIAL STAGE CONTENT
           ==================================================================== */}
-      <div className="relative z-10 max-w-[1560px] w-full mx-auto px-4 sm:px-8 lg:px-14 py-20 sm:py-24 flex justify-end">
-        <div className="max-w-2xl w-full text-right flex flex-col items-end space-y-5 sm:space-y-6">
+      <div className="relative z-10 max-w-[1560px] w-full mx-auto px-4 sm:px-8 lg:px-14 py-20 sm:py-24 flex justify-start">
+        <div className="max-w-2xl w-full text-left flex flex-col items-start space-y-5 sm:space-y-6">
           
           {/* Magazine Masthead Kicker */}
           <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/10 backdrop-blur-md border border-white/20 text-xs font-mono uppercase tracking-[0.25em] text-[#93C5FD]">
@@ -193,8 +193,8 @@ export const Hero: React.FC = () => {
             {activeSlide.description}
           </p>
 
-          {/* Botanical Actives Tags (Aligned Right) */}
-          <div className="flex flex-wrap items-center justify-end gap-2 pt-1">
+          {/* Botanical Actives Tags (Aligned Left) */}
+          <div className="flex flex-wrap items-center justify-start gap-2 pt-1">
             {activeSlide.keyActives.map((active, i) => (
               <span
                 key={i}
@@ -206,8 +206,8 @@ export const Hero: React.FC = () => {
             ))}
           </div>
 
-          {/* Price & Sunyani Delivery Info (Aligned Right) */}
-          <div className="pt-2 flex items-baseline justify-end gap-3">
+          {/* Price & Sunyani Delivery Info (Aligned Left) */}
+          <div className="pt-2 flex items-baseline justify-start gap-3">
             <span className="text-3xl sm:text-4xl font-mono font-bold text-white tracking-tight">
               {formatPrice(activeProduct.price)}
             </span>
@@ -221,38 +221,38 @@ export const Hero: React.FC = () => {
             </span>
           </div>
 
-          {/* Action Buttons (Aligned Right) */}
-          <div className="pt-2 flex flex-col sm:flex-row items-center justify-end gap-3.5 w-full sm:w-auto">
-            {/* Details Link */}
-            <Link
-              href={`/product/${activeProduct.slug}`}
-              className="w-full sm:w-auto border border-white/30 hover:border-white text-white hover:bg-white/10 py-4 px-6 text-xs uppercase tracking-widest font-semibold flex items-center justify-center gap-2 transition-all duration-200 order-3 sm:order-1"
+          {/* Action Buttons (Aligned Left) */}
+          <div className="pt-2 flex flex-col sm:flex-row items-center justify-start gap-3.5 w-full sm:w-auto">
+            {/* Order via WhatsApp */}
+            <button
+              type="button"
+              onClick={() => openWhatsAppOrder(activeProduct, undefined, 1)}
+              className="w-full sm:w-auto bg-[#25D366] hover:bg-[#1EBE5D] text-white py-4 px-7 text-xs uppercase tracking-widest font-semibold flex items-center justify-center gap-2 shadow-2xl hover:scale-[1.02] transition-all duration-200"
+              title="Order formulation instantly via WhatsApp"
             >
-              <span>Explore Details</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
+              <MessageCircle className="w-4 h-4 fill-current" />
+              <span>Order via WhatsApp &bull; GH₵ 20 Delivery</span>
+            </button>
 
             {/* Add to Bag */}
             <button
               type="button"
               onClick={handleAddDirectToBag}
-              className="w-full sm:w-auto bg-white hover:bg-[#DCEBFA] text-[#071324] py-4 px-7 text-xs uppercase tracking-widest font-semibold flex items-center justify-center gap-2 shadow-2xl hover:scale-[1.02] transition-all duration-200 order-2"
+              className="w-full sm:w-auto bg-white hover:bg-[#DCEBFA] text-[#071324] py-4 px-7 text-xs uppercase tracking-widest font-semibold flex items-center justify-center gap-2 shadow-2xl hover:scale-[1.02] transition-all duration-200"
               title="Add formulation to bag"
             >
               <ShoppingBag className="w-4 h-4" />
               <span>Add to Bag</span>
             </button>
 
-            {/* Order via WhatsApp */}
-            <button
-              type="button"
-              onClick={() => openWhatsAppOrder(activeProduct, undefined, 1)}
-              className="w-full sm:w-auto bg-[#25D366] hover:bg-[#1EBE5D] text-white py-4 px-7 text-xs uppercase tracking-widest font-semibold flex items-center justify-center gap-2 shadow-2xl hover:scale-[1.02] transition-all duration-200 order-1 sm:order-3"
-              title="Order formulation instantly via WhatsApp"
+            {/* Details Link */}
+            <Link
+              href={`/product/${activeProduct.slug}`}
+              className="w-full sm:w-auto border border-white/30 hover:border-white text-white hover:bg-white/10 py-4 px-6 text-xs uppercase tracking-widest font-semibold flex items-center justify-center gap-2 transition-all duration-200"
             >
-              <MessageCircle className="w-4 h-4 fill-current" />
-              <span>Order via WhatsApp &bull; GH₵ 20 Delivery</span>
-            </button>
+              <span>Explore Details</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
           </div>
 
         </div>
