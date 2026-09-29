@@ -90,7 +90,7 @@ export const Hero: React.FC = () => {
       className="relative overflow-hidden min-h-[640px] lg:min-h-[720px] flex items-center bg-white dark:bg-[#0B1F3A]"
     >
       {/* ====================================================================
-          1. BACKGROUND SLIDESHOW WITH OPACITY 0.7 & LUXURY OVERLAYS
+          1. BACKGROUND SLIDESHOW - VIVID & HIGHLY VISIBLE
           ==================================================================== */}
       <div className="absolute inset-0 z-0 pointer-events-none">
         {HERO_SLIDES.map((slide, idx) => {
@@ -99,13 +99,13 @@ export const Hero: React.FC = () => {
             <div
               key={idx}
               className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
-                isActive ? 'opacity-[0.7] dark:opacity-[0.7]' : 'opacity-0'
+                isActive ? 'opacity-100' : 'opacity-0'
               }`}
             >
               <img
                 src={slide.image}
                 alt={slide.title}
-                className={`w-full h-full object-cover object-center filter saturate-[0.95] transition-transform duration-7000 ease-out ${
+                className={`w-full h-full object-cover object-center transition-transform duration-7000 ease-out ${
                   isActive ? 'scale-105' : 'scale-100'
                 }`}
               />
@@ -113,15 +113,9 @@ export const Hero: React.FC = () => {
           );
         })}
 
-        {/* Softening wash: balanced gradient keeping text easily readable while displaying 0.7 imagery vividly */}
-        <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/70 to-white/30 dark:from-[#0B1F3A]/95 dark:via-[#0B1F3A]/75 dark:to-[#0B1F3A]/35" />
-
-        {/* Subtle royal blue radiance accents */}
-        <div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-[#174EA6]/12 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 left-10 w-[400px] h-[400px] bg-[#DCEBFA]/40 rounded-full blur-2xl pointer-events-none" />
-
-        {/* Film grain subtle touch */}
-        <div className="absolute inset-0 opacity-[0.03] bg-[radial-gradient(#0B1F3A_1px,transparent_1px)] [background-size:16px_16px]" />
+        {/* Directional scrim: gently cushions the left-hand text while keeping the center and right photography 100% visible and vivid */}
+        <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/70 via-40% to-transparent dark:from-[#0B1F3A]/95 dark:via-[#0B1F3A]/70 dark:via-40% dark:to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-white/40 dark:to-[#0B1F3A]/40 pointer-events-none" />
       </div>
 
       {/* ====================================================================
@@ -308,6 +302,26 @@ export const Hero: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Floating Edge Navigation Arrows for Slideshow */}
+      <button
+        type="button"
+        onClick={handlePrev}
+        className="hidden lg:flex absolute left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 items-center justify-center bg-white/90 dark:bg-[#0B1F3A]/90 hover:bg-[#0B1F3A] hover:text-white dark:hover:bg-[#174EA6] text-[#0B1F3A] dark:text-white border border-[#E5E7EB] dark:border-white/20 shadow-xl backdrop-blur-md transition-all duration-200 hover:scale-105"
+        title="Previous formulation"
+        aria-label="Previous Slide"
+      >
+        <ChevronLeft className="w-5 h-5" />
+      </button>
+      <button
+        type="button"
+        onClick={handleNext}
+        className="hidden lg:flex absolute right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 items-center justify-center bg-white/90 dark:bg-[#0B1F3A]/90 hover:bg-[#0B1F3A] hover:text-white dark:hover:bg-[#174EA6] text-[#0B1F3A] dark:text-white border border-[#E5E7EB] dark:border-white/20 shadow-xl backdrop-blur-md transition-all duration-200 hover:scale-105"
+        title="Next formulation"
+        aria-label="Next Slide"
+      >
+        <ChevronRight className="w-5 h-5" />
+      </button>
     </section>
   );
 };
