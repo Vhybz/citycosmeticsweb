@@ -10,9 +10,6 @@ import {
   ShoppingBag,
   Sparkles,
   CheckCircle2,
-  Droplets,
-  Shield,
-  Eye,
 } from 'lucide-react';
 import { formatPrice } from '@/lib/formatPrice';
 import { useWhatsAppOrder } from '@/lib/whatsappOrderContext';
@@ -130,11 +127,11 @@ export const Hero: React.FC = () => {
     <section
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
-      className="relative overflow-hidden min-h-[680px] lg:min-h-[780px] flex items-center bg-[#FAF9F5] dark:bg-[#071324] border-b border-[#E5E7EB] dark:border-white/10"
-      aria-label="City Cosmetics Luminous Showcase"
+      className="relative overflow-hidden min-h-[720px] lg:min-h-[840px] flex items-center justify-center bg-[#071324] text-white select-none"
+      aria-label="City Cosmetics Centered Magazine Cover Showcase"
     >
       {/* ====================================================================
-          1. FULL-SCREEN BRIGHT PHOTOGRAPHIC SLIDESHOW (100% VISIBLE & VIVID)
+          1. FULL-BLEED HIGH-FASHION BACKGROUND PHOTOGRAPHY
           ==================================================================== */}
       <div className="absolute inset-0 z-0">
         {HERO_SLIDES.map((slide, idx) => {
@@ -157,183 +154,186 @@ export const Hero: React.FC = () => {
           );
         })}
 
-        {/* Minimal atmospheric veil: maintains sun-kissed brightness while giving card pop */}
-        <div className="absolute inset-0 bg-gradient-to-r from-black/25 via-transparent to-black/10 pointer-events-none" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent pointer-events-none" />
+        {/* Vogue / Dior Magazine Cover Scrim:
+            Radial dark vignette focusing the eye on the center typography while keeping photo details rich */}
+        <div className="absolute inset-0 bg-radial-[circle_at_center] from-black/45 via-black/60 to-black/85 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#071324] via-transparent to-black/50 pointer-events-none" />
       </div>
 
       {/* ====================================================================
-          2. FLOATING FROSTED GLASS ATELIER CARD (LA MER & ESTÉE LAUDER STYLE)
+          2. CENTERED MAGAZINE COVER EDITORIAL STAGE (VOGUE & DIOR STYLE)
           ==================================================================== */}
-      <div className="relative z-10 max-w-[1560px] w-full mx-auto px-4 sm:px-8 lg:px-14 py-16 sm:py-20 flex flex-col justify-center">
+      <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-8 py-20 sm:py-24 text-center flex flex-col items-center justify-center space-y-6 sm:space-y-7">
         
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-          
-          {/* The Floating Frosted Glass Card */}
-          <div className="lg:col-span-8 xl:col-span-7 bg-white/90 dark:bg-[#0B1F3A]/90 backdrop-blur-2xl p-7 sm:p-10 lg:p-12 border border-white/80 dark:border-white/20 shadow-2xl shadow-black/15 space-y-6">
-            
-            {/* Header: Origin & Slide Counter */}
-            <div className="flex flex-wrap items-center justify-between gap-3 text-xs">
-              <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#0B1F3A] text-white text-[11px] font-mono uppercase tracking-[0.2em]">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#93C5FD] animate-pulse" />
-                <span>Formulated in Sunyani</span>
-              </div>
-              <span className="font-mono text-[11px] tracking-widest text-[#174EA6] dark:text-[#93C5FD] uppercase font-semibold">
-                {activeSlide.batchNo} &bull; 0{currentSlide + 1} / 0{HERO_SLIDES.length}
-              </span>
-            </div>
+        {/* Magazine Masthead Kicker */}
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/10 backdrop-blur-md border border-white/20 text-xs font-mono uppercase tracking-[0.25em] text-[#93C5FD]">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#93C5FD] animate-pulse" />
+          <span>Atelier Sunyani &bull; {activeSlide.batchNo} &bull; Compounded in Ghana</span>
+        </div>
 
-            {/* Title & Category */}
-            <div className="space-y-2.5">
-              <p className="text-[11px] uppercase font-mono tracking-[0.25em] font-semibold text-[#174EA6] dark:text-[#93C5FD]">
-                {activeSlide.category}
-              </p>
-              <h1 className="font-serif-luxury text-3xl sm:text-5xl lg:text-6xl font-normal text-[#0B1F3A] dark:text-white leading-[1.08] tracking-tight">
-                {activeSlide.title}
-              </h1>
-              <p className="italic font-serif font-light text-base sm:text-xl text-[#4B5563] dark:text-[#DCEBFA]/90">
-                {activeSlide.subtitle}
-              </p>
-            </div>
+        {/* Category Kicker */}
+        <p className="text-xs uppercase font-mono tracking-[0.3em] font-semibold text-[#DCEBFA]/90 pt-1">
+          {activeSlide.category}
+        </p>
 
-            {/* Editorial Description */}
-            <p className="text-xs sm:text-sm text-[#4B5563] dark:text-[#DCEBFA]/80 leading-relaxed max-w-xl">
-              {activeSlide.description}
-            </p>
+        {/* Grand Headline (Vogue Serif Style) */}
+        <h1 className="font-serif-luxury text-4xl sm:text-6xl lg:text-7xl font-normal text-white leading-[1.05] tracking-tight max-w-4xl drop-shadow-lg">
+          {activeSlide.title}
+        </h1>
 
-            {/* Key Botanical Actives Tags */}
-            <div className="flex flex-wrap gap-2 pt-1">
-              {activeSlide.keyActives.map((active, i) => (
-                <span
-                  key={i}
-                  className="inline-flex items-center gap-1.5 px-3 py-1 text-[11px] font-mono bg-[#F5F9FE] dark:bg-white/10 border border-[#E5E7EB] dark:border-white/15 text-[#0B1F3A] dark:text-white shadow-2xs"
-                >
-                  <CheckCircle2 className="w-3 h-3 text-[#174EA6] dark:text-[#93C5FD]" />
-                  <span>{active}</span>
-                </span>
-              ))}
-            </div>
+        {/* Italic Accent Subtitle */}
+        <p className="italic font-serif font-light text-xl sm:text-2xl text-[#93C5FD] max-w-2xl drop-shadow-sm">
+          {activeSlide.subtitle}
+        </p>
 
-            {/* Pricing & Direct Commerce CTAs */}
-            <div className="pt-4 border-t border-[#E5E7EB] dark:border-white/15 space-y-4">
-              <div className="flex items-baseline gap-3">
-                <span className="text-2xl sm:text-3xl font-mono font-bold text-[#0B1F3A] dark:text-white">
-                  {formatPrice(activeProduct.price)}
-                </span>
-                {activeProduct.compareAtPrice && (
-                  <span className="text-sm sm:text-base font-mono line-through text-[#9CA3AF]">
-                    {formatPrice(activeProduct.compareAtPrice)}
-                  </span>
-                )}
-                <span className="text-xs font-mono text-[#6B7280] dark:text-[#DCEBFA]/70">
-                  &bull; Flat GH₵ 20 Delivery in Sunyani
-                </span>
-              </div>
+        {/* Formulation Benefit Description */}
+        <p className="text-sm sm:text-base text-[#DCEBFA]/85 leading-relaxed max-w-2xl font-normal drop-shadow-xs">
+          {activeSlide.description}
+        </p>
 
-              {/* Action Buttons */}
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-                {/* 1-Click WhatsApp Quick Order */}
-                <button
-                  type="button"
-                  onClick={() => openWhatsAppOrder(activeProduct, undefined, 1)}
-                  className="bg-[#25D366] hover:bg-[#1EBE5D] text-white py-3.5 px-6 text-xs uppercase tracking-widest font-semibold flex items-center justify-center gap-2 shadow-md transition-all duration-200"
-                  title="Order formulation instantly via WhatsApp"
-                >
-                  <MessageCircle className="w-4 h-4 fill-current" />
-                  <span>Order via WhatsApp &bull; GH₵ 20 Delivery</span>
-                </button>
+        {/* Botanical Actives Tags */}
+        <div className="flex flex-wrap items-center justify-center gap-2 pt-1">
+          {activeSlide.keyActives.map((active, i) => (
+            <span
+              key={i}
+              className="inline-flex items-center gap-1.5 px-3 py-1 text-[11px] font-mono bg-black/40 backdrop-blur-md border border-white/15 text-white shadow-2xs"
+            >
+              <CheckCircle2 className="w-3 h-3 text-[#93C5FD]" />
+              <span>{active}</span>
+            </span>
+          ))}
+        </div>
 
-                {/* Add to Bag */}
-                <button
-                  type="button"
-                  onClick={handleAddDirectToBag}
-                  className="bg-[#0B1F3A] hover:bg-[#174EA6] text-white py-3.5 px-6 text-xs uppercase tracking-widest font-semibold flex items-center justify-center gap-2 shadow-md transition-all duration-200"
-                  title="Add formulation to bag"
-                >
-                  <ShoppingBag className="w-4 h-4" />
-                  <span>Add to Bag</span>
-                </button>
+        {/* Price & Sunyani Delivery Info */}
+        <div className="pt-2 flex items-baseline justify-center gap-3">
+          <span className="text-3xl sm:text-4xl font-mono font-bold text-white tracking-tight">
+            {formatPrice(activeProduct.price)}
+          </span>
+          {activeProduct.compareAtPrice && (
+            <span className="text-lg font-mono line-through text-[#9CA3AF]">
+              {formatPrice(activeProduct.compareAtPrice)}
+            </span>
+          )}
+          <span className="text-xs font-mono text-[#93C5FD]">
+            &bull; Flat GH₵ 20 Delivery in Sunyani
+          </span>
+        </div>
 
-                {/* Details Link */}
-                <Link
-                  href={`/product/${activeProduct.slug}`}
-                  className="border border-[#0B1F3A] dark:border-white/30 text-[#0B1F3A] dark:text-white hover:bg-black/5 dark:hover:bg-white/10 py-3.5 px-5 text-xs uppercase tracking-widest font-semibold flex items-center justify-center gap-1.5 transition-colors"
-                >
-                  <span>Details</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </Link>
-              </div>
-            </div>
+        {/* Centered Direct Commerce Actions */}
+        <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3.5 w-full sm:w-auto">
+          {/* Order via WhatsApp */}
+          <button
+            type="button"
+            onClick={() => openWhatsAppOrder(activeProduct, undefined, 1)}
+            className="w-full sm:w-auto bg-[#25D366] hover:bg-[#1EBE5D] text-white py-4 px-8 text-xs uppercase tracking-widest font-semibold flex items-center justify-center gap-2 shadow-2xl hover:scale-[1.03] transition-all duration-200"
+            title="Order formulation instantly via WhatsApp"
+          >
+            <MessageCircle className="w-4 h-4 fill-current" />
+            <span>Order via WhatsApp &bull; GH₵ 20 Delivery</span>
+          </button>
 
-            {/* Quick Formulation Selector Tabs */}
-            <div className="pt-2 flex flex-wrap gap-1.5 border-t border-[#E5E7EB] dark:border-white/10">
-              {HERO_SLIDES.map((slide, idx) => {
-                const isCurrent = idx === currentSlide;
-                return (
-                  <button
-                    key={slide.id}
-                    type="button"
-                    onClick={() => setCurrentSlide(idx)}
-                    className={`py-1.5 px-2.5 text-[11px] font-mono transition-all border ${
-                      isCurrent
-                        ? 'border-[#0B1F3A] bg-[#0B1F3A] text-white dark:border-[#93C5FD] dark:bg-[#93C5FD] dark:text-[#0B1F3A] font-semibold'
-                        : 'border-[#E5E7EB] dark:border-white/15 bg-white/70 dark:bg-white/5 text-[#4B5563] dark:text-[#DCEBFA]/75 hover:border-[#174EA6]'
-                    }`}
-                  >
-                    <span>{slide.id}</span> &bull;{' '}
-                    <span>{slide.title.replace('Lumière ', '').replace('Sunyani ', '')}</span>
-                  </button>
-                );
-              })}
-            </div>
+          {/* Add to Bag */}
+          <button
+            type="button"
+            onClick={handleAddDirectToBag}
+            className="w-full sm:w-auto bg-white hover:bg-[#DCEBFA] text-[#071324] py-4 px-8 text-xs uppercase tracking-widest font-semibold flex items-center justify-center gap-2 shadow-2xl hover:scale-[1.03] transition-all duration-200"
+            title="Add formulation to bag"
+          >
+            <ShoppingBag className="w-4 h-4" />
+            <span>Add to Bag</span>
+          </button>
 
-          </div>
-
-          {/* Right Floating Quick Controls & Badge */}
-          <div className="lg:col-span-4 xl:col-span-5 flex flex-col items-end justify-between space-y-6">
-            
-            {/* Top Right Atelier Seal */}
-            <div className="bg-white/90 dark:bg-[#0B1F3A]/90 backdrop-blur-xl px-4 py-2 border border-white/80 dark:border-white/20 shadow-xl hidden sm:flex items-center gap-2">
-              <Sparkles className="w-3.5 h-3.5 text-[#174EA6] dark:text-[#93C5FD]" />
-              <span className="text-[10px] font-mono uppercase tracking-[0.2em] font-semibold text-[#0B1F3A] dark:text-white">
-                Sunyani Botanical Atelier
-              </span>
-            </div>
-
-            {/* Bottom Right Floating Slide Navigation HUD */}
-            <div className="bg-white/95 dark:bg-[#0B1F3A]/95 backdrop-blur-xl p-3 border border-white/80 dark:border-white/20 shadow-2xl flex items-center gap-3">
-              <div className="font-mono text-xs font-semibold text-[#0B1F3A] dark:text-white px-2">
-                0{currentSlide + 1} / 0{HERO_SLIDES.length}
-              </div>
-
-              <div className="h-4 w-px bg-[#E5E7EB] dark:border-white/20" />
-
-              <button
-                type="button"
-                onClick={handlePrev}
-                className="w-8 h-8 flex items-center justify-center text-[#0B1F3A] dark:text-white hover:bg-[#0B1F3A] hover:text-white dark:hover:bg-[#174EA6] border border-[#E5E7EB] dark:border-white/20 transition-colors"
-                title="Previous Slide"
-                aria-label="Previous Slide"
-              >
-                <ChevronLeft className="w-4 h-4" />
-              </button>
-
-              <button
-                type="button"
-                onClick={handleNext}
-                className="w-8 h-8 flex items-center justify-center text-[#0B1F3A] dark:text-white hover:bg-[#0B1F3A] hover:text-white dark:hover:bg-[#174EA6] border border-[#E5E7EB] dark:border-white/20 transition-colors"
-                title="Next Slide"
-                aria-label="Next Slide"
-              >
-                <ChevronRight className="w-4 h-4" />
-              </button>
-            </div>
-
-          </div>
-
+          {/* Details Link */}
+          <Link
+            href={`/product/${activeProduct.slug}`}
+            className="w-full sm:w-auto border border-white/30 hover:border-white text-white hover:bg-white/10 py-4 px-6 text-xs uppercase tracking-widest font-semibold flex items-center justify-center gap-2 transition-all duration-200"
+          >
+            <span>Explore Details</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
         </div>
 
       </div>
+
+      {/* ====================================================================
+          3. FLOATING MAGAZINE BOTTOM HUD (SLIDE TABS & CONTROLS)
+          ==================================================================== */}
+      <div className="absolute bottom-6 left-0 right-0 z-20 max-w-5xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+        
+        {/* Numbered Formulation Tabs */}
+        <div className="flex items-center gap-1.5 overflow-x-auto max-w-full pb-1 scrollbar-none">
+          {HERO_SLIDES.map((slide, idx) => {
+            const isCurrent = idx === currentSlide;
+            return (
+              <button
+                key={slide.id}
+                type="button"
+                onClick={() => setCurrentSlide(idx)}
+                className={`py-1.5 px-3 text-xs font-mono uppercase tracking-wider transition-all duration-300 border ${
+                  isCurrent
+                    ? 'border-[#93C5FD] bg-white/20 text-white font-bold'
+                    : 'border-white/15 bg-black/40 text-[#DCEBFA]/60 hover:text-white hover:border-white/40'
+                }`}
+              >
+                <span>{slide.id}</span> &bull;{' '}
+                <span>{slide.title.replace('Lumière ', '').replace('Sunyani ', '')}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Tactile Prev/Next Arrows & Counter */}
+        <div className="flex items-center gap-2 shrink-0 bg-black/40 backdrop-blur-md border border-white/15 p-1.5">
+          <div className="px-2 font-mono text-xs text-[#93C5FD]">
+            0{currentSlide + 1} / 0{HERO_SLIDES.length}
+          </div>
+
+          <div className="h-4 w-px bg-white/20" />
+
+          <button
+            type="button"
+            onClick={handlePrev}
+            className="w-7 h-7 flex items-center justify-center text-white hover:bg-white hover:text-[#071324] transition-colors"
+            title="Previous Formulation"
+            aria-label="Previous Slide"
+          >
+            <ChevronLeft className="w-4 h-4" />
+          </button>
+
+          <button
+            type="button"
+            onClick={handleNext}
+            className="w-7 h-7 flex items-center justify-center text-white hover:bg-white hover:text-[#071324] transition-colors"
+            title="Next Formulation"
+            aria-label="Next Slide"
+          >
+            <ChevronRight className="w-4 h-4" />
+          </button>
+        </div>
+
+      </div>
+
+      {/* Floating Edge Arrows for Quick Navigation */}
+      <button
+        type="button"
+        onClick={handlePrev}
+        className="hidden xl:flex absolute left-6 top-1/2 -translate-y-1/2 z-20 w-11 h-11 items-center justify-center bg-black/40 hover:bg-white hover:text-[#071324] text-white border border-white/20 backdrop-blur-md shadow-2xl transition-all hover:scale-105"
+        title="Previous Slide"
+        aria-label="Previous Slide"
+      >
+        <ChevronLeft className="w-5 h-5" />
+      </button>
+
+      <button
+        type="button"
+        onClick={handleNext}
+        className="hidden xl:flex absolute right-6 top-1/2 -translate-y-1/2 z-20 w-11 h-11 items-center justify-center bg-black/40 hover:bg-white hover:text-[#071324] text-white border border-white/20 backdrop-blur-md shadow-2xl transition-all hover:scale-105"
+        title="Next Slide"
+        aria-label="Next Slide"
+      >
+        <ChevronRight className="w-5 h-5" />
+      </button>
+
     </section>
   );
 };
