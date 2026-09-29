@@ -90,7 +90,7 @@ export const Hero: React.FC = () => {
       className="relative overflow-hidden min-h-[640px] lg:min-h-[720px] flex items-center bg-white dark:bg-[#0B1F3A]"
     >
       {/* ====================================================================
-          1. BACKGROUND SLIDESHOW - VIVID & HIGHLY VISIBLE
+          1. BACKGROUND SLIDESHOW - 0.95 VISIBILITY
           ==================================================================== */}
       <div className="absolute inset-0 z-0 pointer-events-none">
         {HERO_SLIDES.map((slide, idx) => {
@@ -99,7 +99,7 @@ export const Hero: React.FC = () => {
             <div
               key={idx}
               className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
-                isActive ? 'opacity-100' : 'opacity-0'
+                isActive ? 'opacity-[0.95] dark:opacity-[0.95]' : 'opacity-0'
               }`}
             >
               <img
@@ -113,9 +113,8 @@ export const Hero: React.FC = () => {
           );
         })}
 
-        {/* Directional scrim: gently cushions the left-hand text while keeping the center and right photography 100% visible and vivid */}
-        <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/70 via-40% to-transparent dark:from-[#0B1F3A]/95 dark:via-[#0B1F3A]/70 dark:via-40% dark:to-transparent pointer-events-none" />
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-white/40 dark:to-[#0B1F3A]/40 pointer-events-none" />
+        {/* Minimal atmospheric veil: lets 0.95 photography display with clarity */}
+        <div className="absolute inset-0 bg-gradient-to-r from-white/60 via-white/20 to-transparent dark:from-[#0B1F3A]/70 dark:via-[#0B1F3A]/25 dark:to-transparent pointer-events-none" />
       </div>
 
       {/* ====================================================================
@@ -123,8 +122,8 @@ export const Hero: React.FC = () => {
           ==================================================================== */}
       <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
-          {/* Left Column: Editorial Headline & Actions */}
-          <div className="lg:col-span-8 space-y-7 text-left">
+          {/* Left Column: Editorial Headline & Actions in Atelier Glass Panel */}
+          <div className="lg:col-span-8 space-y-7 text-left bg-white/85 dark:bg-[#0B1F3A]/85 backdrop-blur-xl p-6 sm:p-10 border border-white/80 dark:border-white/10 shadow-2xl">
             {/* Location Pill */}
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-[#0B1F3A] text-white text-[11px] font-mono uppercase tracking-[0.2em] rounded-none shadow-sm backdrop-blur-md">
               <span className="w-2 h-2 rounded-full bg-[#93C5FD] animate-pulse" />
