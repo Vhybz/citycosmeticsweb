@@ -22,6 +22,7 @@ import { ProductCard } from '@/components/ProductCard';
 import { BeforeAfterSlider } from '@/components/BeforeAfterSlider';
 import { useCart } from '@/lib/cartContext';
 import { useWishlist } from '@/lib/wishlistContext';
+import { useWhatsAppOrder } from '@/lib/whatsappOrderContext';
 import { ProductVariant, Review } from '@/types';
 import { formatPrice } from '@/lib/formatPrice';
 import { SITE_CONFIG } from '@/lib/siteConfig';
@@ -36,6 +37,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
 
   const { addToCart } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
+  const { openWhatsAppOrder } = useWhatsAppOrder();
 
   const [activeImage, setActiveImage] = useState<string>(product.images[0]);
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant | undefined>(
@@ -328,17 +330,14 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
                 </div>
 
                 {/* Row 2: Instant WhatsApp Order Button */}
-                <a
-                  href={`https://wa.me/${SITE_CONFIG.whatsappNumber}?text=${encodeURIComponent(
-                    `Hello City Cosmetics Sunyani,\n\nI want to order:\n*Product:* ${product.name}${selectedVariant ? ` (${selectedVariant.name})` : ''}\n*Quantity:* ${quantity}\n*Total Price:* ${formatPrice(currentPrice * quantity)}\n\nPlease confirm showroom pickup or immediate delivery in Sunyani/Ghana. Thank you!`
-                  )}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <button
+                  type="button"
+                  onClick={() => openWhatsAppOrder(product, selectedVariant, quantity)}
                   className="w-full bg-[#25D366] hover:bg-[#1EBE5D] text-white py-3.5 px-6 rounded-none text-xs uppercase tracking-wider font-semibold flex items-center justify-center gap-2 transition-all shadow-sm"
                 >
-                  <MessageCircle className="w-4 h-4" />
+                  <MessageCircle className="w-4 h-4 fill-current" />
                   <span>Direct Order on WhatsApp &bull; Fast Sunyani Dispatch</span>
-                </a>
+                </button>
 
                 {/* Guarantees row */}
                 <div className="grid grid-cols-2 gap-3 pt-2 text-[11px] text-[#6B7280]">

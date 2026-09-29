@@ -15,8 +15,9 @@ export const SITE_CONFIG = {
   adminPin: 'CITY1258', // Admin access password
   currency: 'GH₵',
   currencyCode: 'GHS',
+  deliveryFee: 20,
+  shippingFee: 20,
   freeShippingThreshold: 800,
-  shippingFee: 65,
   social: {
     instagram: 'https://instagram.com/citycosmetics.gh',
     facebook: 'https://facebook.com/citycosmetics.gh',

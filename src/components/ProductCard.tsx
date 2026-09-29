@@ -7,6 +7,7 @@ import { Product, ProductVariant } from '@/types';
 import { useCart } from '@/lib/cartContext';
 import { useWishlist } from '@/lib/wishlistContext';
 import { useQuickView } from '@/lib/quickViewContext';
+import { useWhatsAppOrder } from '@/lib/whatsappOrderContext';
 import { formatPrice } from '@/lib/formatPrice';
 import { SITE_CONFIG } from '@/lib/siteConfig';
 
@@ -18,6 +19,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const { addToCart } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
   const { openQuickView } = useQuickView();
+  const { openWhatsAppOrder } = useWhatsAppOrder();
 
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant | undefined>(
     product.variants && product.variants.length > 0 ? product.variants[0] : undefined
@@ -110,17 +112,19 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             <Eye className="w-3.5 h-3.5 text-[#174EA6]" />
             Quick View
           </button>
-          <a
-            href={`https://wa.me/${SITE_CONFIG.whatsappNumber}?text=${encodeURIComponent(`Hello City Cosmetics Sunyani, I would like to order: ${product.name} (${formatPrice(displayPrice)}) for delivery/pickup.`)}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={(e) => e.stopPropagation()}
+          <button
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              openWhatsAppOrder(product, selectedVariant, 1);
+            }}
             className="bg-[#25D366] hover:bg-[#1EBE5D] text-white px-3 py-2 rounded-none text-[10px] font-semibold tracking-wider uppercase backdrop-blur-md shadow-sm flex items-center justify-center gap-1 transition-all"
             title="Instant Order on WhatsApp"
           >
             <MessageCircle className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">Order</span>
-          </a>
+          </button>
         </div>
       </div>
 

@@ -151,7 +151,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, 0);
 
   const discountAmount = (subtotal * discountPercent) / 100;
-  const shippingFee = subtotal >= FREE_SHIPPING_THRESHOLD || subtotal === 0 ? 0 : 65;
+  // Sunyani standard delivery fee is GH₵20 and always added to orders
+  const shippingFee = subtotal === 0 ? 0 : 20;
   const total = Math.max(0, subtotal - discountAmount + shippingFee);
   const totalItemCount = items.reduce((acc, item) => acc + item.quantity, 0);
 

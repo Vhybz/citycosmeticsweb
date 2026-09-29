@@ -8,6 +8,8 @@ import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { CartDrawer } from '@/components/CartDrawer';
 import { QuickViewModal } from '@/components/QuickViewModal';
+import { WhatsAppOrderProvider } from '@/lib/whatsappOrderContext';
+import { WhatsAppOrderModal } from '@/components/WhatsAppOrderModal';
 
 const playfair = Playfair_Display({
   subsets: ['latin'],
@@ -60,11 +62,14 @@ export default function RootLayout({
         <CartProvider>
           <WishlistProvider>
             <QuickViewProvider>
-              <Navbar />
-              <main className="flex-1">{children}</main>
-              <CartDrawer />
-              <QuickViewModal />
-              <Footer />
+              <WhatsAppOrderProvider>
+                <Navbar />
+                <main className="flex-1">{children}</main>
+                <CartDrawer />
+                <QuickViewModal />
+                <WhatsAppOrderModal />
+                <Footer />
+              </WhatsAppOrderProvider>
             </QuickViewProvider>
           </WishlistProvider>
         </CartProvider>
