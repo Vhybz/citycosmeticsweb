@@ -88,11 +88,11 @@ export const Navbar: React.FC = () => {
         className={`transition-all duration-300 ${
           isDark
             ? isScrolled
-              ? 'bg-[#08172c]/98 backdrop-blur-md shadow-md border-b border-white/10 text-white'
-              : 'bg-[#0B1F3A] border-b border-white/15 text-white'
+              ? 'bg-[#08172c]/95 backdrop-blur-xl shadow-[0_4px_30px_-5px_rgba(0,0,0,0.5)] border-b border-white/10 text-white py-3 sm:py-3.5'
+              : 'bg-[#0B1F3A] border-b border-white/15 text-white py-4 sm:py-5'
             : isScrolled
-            ? 'bg-white/98 backdrop-blur-md shadow-sm border-b border-[#E5E7EB] text-[#1F2937]'
-            : 'bg-white border-b border-[#E5E7EB] text-[#1F2937]'
+            ? 'bg-white/95 backdrop-blur-xl shadow-[0_4px_25px_-5px_rgba(11,31,58,0.08)] border-b border-[#E5E7EB] text-[#1F2937] py-3 sm:py-3.5'
+            : 'bg-white border-b border-[#E5E7EB]/90 text-[#1F2937] py-4 sm:py-5'
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
@@ -101,8 +101,10 @@ export const Navbar: React.FC = () => {
             <button
               onClick={() => setMobileMenuOpen(true)}
               aria-label="Open Menu"
-              className={`p-2 transition-colors ${
-                isDark ? 'text-white hover:text-[#DCEBFA]' : 'text-[#0B1F3A] hover:text-[#174EA6]'
+              className={`w-9 h-9 flex items-center justify-center border transition-colors ${
+                isDark
+                  ? 'border-white/15 text-white hover:bg-white/10'
+                  : 'border-[#E5E7EB] text-[#0B1F3A] hover:bg-[#F5F9FE]'
               }`}
             >
               <Menu className="w-5 h-5" />
@@ -111,17 +113,17 @@ export const Navbar: React.FC = () => {
 
           {/* Brand Logo */}
           <div className="flex flex-col items-center lg:items-start">
-            <Link href="/" className="group inline-block text-center lg:text-left">
+            <Link href="/" className="group inline-block text-center lg:text-left transition-transform duration-300 hover:scale-[1.01]">
               <span
-                className={`font-serif-luxury text-2xl sm:text-[26px] tracking-[0.26em] uppercase font-normal transition-colors leading-none ${
+                className={`font-serif-luxury text-2xl sm:text-[27px] tracking-[0.28em] uppercase font-normal transition-colors leading-none block ${
                   isDark ? 'text-white group-hover:text-[#DCEBFA]' : 'text-[#0B1F3A] group-hover:text-[#174EA6]'
                 }`}
               >
                 CITY COSMETICS
               </span>
               <span
-                className={`block text-[9px] tracking-[0.42em] uppercase font-sans mt-1 ${
-                  isDark ? 'text-[#DCEBFA]/75' : 'text-[#6B7280]'
+                className={`block text-[9px] tracking-[0.45em] uppercase font-mono mt-1.5 transition-colors ${
+                  isDark ? 'text-[#93C5FD]' : 'text-[#174EA6]'
                 }`}
               >
                 SUNYANI
@@ -130,44 +132,50 @@ export const Navbar: React.FC = () => {
           </div>
 
           {/* Desktop Navigation Links */}
-          <div className="hidden lg:flex items-center space-x-7">
+          <div className="hidden lg:flex items-center space-x-7 xl:space-x-8">
             {navLinks.map((link) => {
               const isActive = pathname === link.href;
               return (
                 <Link
                   key={link.name}
                   href={link.href}
-                  className={`text-[11px] tracking-[0.18em] uppercase font-medium transition-all duration-200 relative py-1.5 ${
+                  className={`text-[11px] tracking-[0.2em] uppercase font-medium transition-all duration-200 relative py-2 group ${
                     isDark
                       ? isActive
                         ? 'text-white font-semibold'
-                        : 'text-[#DCEBFA]/80 hover:text-white'
+                        : 'text-[#DCEBFA]/75 hover:text-white'
                       : isActive
                       ? 'text-[#0B1F3A] font-semibold'
-                      : 'text-[#4B5563] hover:text-[#174EA6]'
+                      : 'text-[#4B5563] hover:text-[#0B1F3A]'
                   }`}
                 >
-                  {link.name}
-                  {isActive && (
-                    <span
-                      className={`absolute bottom-0 left-0 w-full h-[1.5px] ${
-                        isDark ? 'bg-[#DCEBFA]' : 'bg-[#0B1F3A]'
-                      }`}
-                    />
-                  )}
+                  <span>{link.name}</span>
+                  <span
+                    className={`absolute bottom-0 left-0 h-[2px] transition-all duration-300 ${
+                      isActive
+                        ? isDark
+                          ? 'w-full bg-[#93C5FD]'
+                          : 'w-full bg-[#0B1F3A]'
+                        : isDark
+                        ? 'w-0 group-hover:w-full bg-[#DCEBFA]/60'
+                        : 'w-0 group-hover:w-full bg-[#174EA6]'
+                    }`}
+                  />
                 </Link>
               );
             })}
           </div>
 
           {/* Right Action Icons */}
-          <div className="flex items-center space-x-2 sm:space-x-3">
+          <div className="flex items-center space-x-2 sm:space-x-2.5">
             {/* Search Icon */}
             <button
               onClick={() => setSearchOpen(!searchOpen)}
               aria-label="Search"
-              className={`p-2 transition-colors ${
-                isDark ? 'text-[#DCEBFA] hover:text-white' : 'text-[#1F2937] hover:text-[#174EA6]'
+              className={`w-9 h-9 flex items-center justify-center transition-colors border ${
+                isDark
+                  ? 'border-transparent hover:border-white/20 text-[#DCEBFA] hover:text-white hover:bg-white/10'
+                  : 'border-transparent hover:border-[#E5E7EB] text-[#4B5563] hover:text-[#0B1F3A] hover:bg-[#F5F9FE]'
               }`}
               title="Search Formulations"
             >
@@ -179,10 +187,10 @@ export const Navbar: React.FC = () => {
               onClick={toggleHeaderTheme}
               aria-label={`Switch to ${isDark ? 'light' : 'dark'} header mode`}
               title={`Switch to ${isDark ? 'Light' : 'Dark'} Header Mode`}
-              className={`p-2 transition-all duration-200 rounded-none flex items-center justify-center ${
+              className={`w-9 h-9 flex items-center justify-center transition-all duration-200 border ${
                 isDark
-                  ? 'text-[#DCEBFA] hover:text-white hover:bg-white/10'
-                  : 'text-[#1F2937] hover:text-[#174EA6] hover:bg-[#F5F9FE]'
+                  ? 'border-white/15 text-[#DCEBFA] hover:text-white hover:bg-white/10'
+                  : 'border-[#E5E7EB] text-[#1F2937] hover:text-[#174EA6] hover:bg-[#F5F9FE]'
               }`}
             >
               {isDark ? (
@@ -197,13 +205,15 @@ export const Navbar: React.FC = () => {
               href="/account#wishlist"
               aria-label="Wishlist"
               title="Saved Items"
-              className={`p-2 transition-colors relative hidden sm:flex items-center ${
-                isDark ? 'text-[#DCEBFA] hover:text-white' : 'text-[#1F2937] hover:text-[#174EA6]'
+              className={`w-9 h-9 relative hidden sm:flex items-center justify-center transition-colors border ${
+                isDark
+                  ? 'border-transparent hover:border-white/20 text-[#DCEBFA] hover:text-white hover:bg-white/10'
+                  : 'border-transparent hover:border-[#E5E7EB] text-[#4B5563] hover:text-[#0B1F3A] hover:bg-[#F5F9FE]'
               }`}
             >
               <Heart className="w-4 h-4" />
               {wishlistCount > 0 && (
-                <span className="absolute top-1 right-0.5 w-3.5 h-3.5 bg-[#174EA6] text-white text-[9px] font-bold rounded-full flex items-center justify-center">
+                <span className="absolute top-1.5 right-1.5 w-3.5 h-3.5 bg-[#174EA6] text-white text-[9px] font-bold rounded-full flex items-center justify-center font-mono">
                   {wishlistCount}
                 </span>
               )}
@@ -214,8 +224,10 @@ export const Navbar: React.FC = () => {
               href="/account"
               aria-label="Account"
               title="Client Account"
-              className={`p-2 transition-colors ${
-                isDark ? 'text-[#DCEBFA] hover:text-white' : 'text-[#1F2937] hover:text-[#174EA6]'
+              className={`w-9 h-9 hidden sm:flex items-center justify-center transition-colors border ${
+                isDark
+                  ? 'border-transparent hover:border-white/20 text-[#DCEBFA] hover:text-white hover:bg-white/10'
+                  : 'border-transparent hover:border-[#E5E7EB] text-[#4B5563] hover:text-[#0B1F3A] hover:bg-[#F5F9FE]'
               }`}
             >
               <User className="w-4 h-4" />
@@ -226,25 +238,34 @@ export const Navbar: React.FC = () => {
               href="/admin"
               aria-label="Admin Portal"
               title="Admin Inventory Portal"
-              className={`p-2 transition-colors hidden md:flex items-center ${
-                isDark ? 'text-[#DCEBFA]/75 hover:text-white' : 'text-[#6B7280] hover:text-[#0B1F3A]'
+              className={`w-9 h-9 hidden md:flex items-center justify-center transition-colors border ${
+                isDark
+                  ? 'border-transparent hover:border-white/20 text-[#DCEBFA]/75 hover:text-white hover:bg-white/10'
+                  : 'border-transparent hover:border-[#E5E7EB] text-[#6B7280] hover:text-[#0B1F3A] hover:bg-[#F5F9FE]'
               }`}
             >
               <ShieldCheck className="w-4 h-4" />
             </Link>
 
-            {/* Cart Button */}
+            {/* Premium Bag Button */}
             <button
               onClick={() => setIsCartOpen(true)}
               aria-label="Shopping Bag"
-              className={`flex items-center gap-2.5 px-4 py-2 rounded-none transition-all duration-200 shadow-xs ${
+              className={`flex items-center gap-2 px-3.5 sm:px-4 py-2 rounded-none transition-all duration-300 shadow-xs hover:shadow-md ${
                 isDark
-                  ? 'bg-[#174EA6] hover:bg-white hover:text-[#0B1F3A] text-white border border-white/20'
+                  ? 'bg-white text-[#0B1F3A] hover:bg-[#DCEBFA]'
                   : 'bg-[#0B1F3A] hover:bg-[#174EA6] text-white'
               }`}
             >
-              <ShoppingBag className="w-3.5 h-3.5 text-[#DCEBFA]" />
-              <span className="text-[11px] font-semibold tracking-widest font-mono">
+              <ShoppingBag className="w-3.5 h-3.5" />
+              <span className="text-[11px] uppercase tracking-widest font-semibold hidden sm:inline">
+                Bag
+              </span>
+              <span
+                className={`text-[10px] font-mono font-bold px-1.5 py-0.5 rounded-none ${
+                  isDark ? 'bg-[#0B1F3A] text-white' : 'bg-[#DCEBFA] text-[#0B1F3A]'
+                }`}
+              >
                 {totalItemCount}
               </span>
             </button>
