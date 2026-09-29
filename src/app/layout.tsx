@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next';
-import { Montserrat, Figtree } from 'next/font/google';
+import { Cormorant_Garamond, Figtree } from 'next/font/google';
 import './globals.css';
 import { CartProvider } from '@/lib/cartContext';
 import { WishlistProvider } from '@/lib/wishlistContext';
@@ -11,8 +11,9 @@ import { QuickViewModal } from '@/components/QuickViewModal';
 import { WhatsAppOrderProvider } from '@/lib/whatsappOrderContext';
 import { WhatsAppOrderModal } from '@/components/WhatsAppOrderModal';
 
-const montserrat = Montserrat({
+const cormorant = Cormorant_Garamond({
   subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700'],
   variable: '--font-heading',
   display: 'swap',
 });
@@ -57,7 +58,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${montserrat.variable} ${figtree.variable}`}>
+    <html lang="en" className={`${cormorant.variable} ${figtree.variable}`}>
       <body className="min-h-screen flex flex-col bg-[#FFFFFF] text-[#1F2937] antialiased selection:bg-[#DCEBFA] selection:text-[#0B1F3A]">
         <CartProvider>
           <WishlistProvider>

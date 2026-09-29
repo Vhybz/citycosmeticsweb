@@ -2,7 +2,7 @@
 
 @layer base {
   :root {
-    --font-heading: 'Montserrat', sans-serif;
+    --font-heading: 'Cormorant Garamond', Georgia, serif;
     --font-body: 'Figtree', sans-serif;
 
     /* Blue Brand Color System */
@@ -26,7 +26,7 @@
   }
 
   h1, h2, h3, .font-serif-luxury {
-    font-family: var(--font-heading), 'Montserrat', sans-serif;
+    font-family: var(--font-heading), 'Cormorant Garamond', Georgia, serif;
     letter-spacing: -0.01em;
   }
 }
