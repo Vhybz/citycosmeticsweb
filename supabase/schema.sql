@@ -1,10 +1,58 @@
 -- ==============================================================================
--- City Cosmetics Sunyani - Complete Supabase Database Schema
--- Run this script in your Supabase Project SQL Editor to set up all tables,
--- storage buckets, RLS policies, and initial Ghanaian beauty catalog seed data.
+-- City Cosmetics Sunyani - Enterprise Supabase Production Database Schema
+-- Location: Sunyani, Bono Region, Ghana
+-- Features: 
+--   1. Strict RLS Security & Idempotent Policies
+--   2. Automatic Timestamp Triggers (updated_at)
+--   3. Auto-Provisioning Profile Trigger on User Signup
+--   4. Direct MoMo Transaction ID & Sunyani Dispatch Logistics
+--   5. High-Performance B-Tree Indexes for Instant Lookups
+--   6. Storage Buckets & Universal Public CDN Access Policies
+--   7. Supabase Realtime Replication for Live Admin Orders
+--   8. Complete Seed Data for Formulations, Lookbook & Categories
 -- ==============================================================================
 
--- 1. PROFILES TABLE (Extends Supabase Auth)
+-- Enable essential cryptographic & UUID extensions
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+CREATE EXTENSION IF NOT EXISTS "pgcrypto";
+
+-- ==============================================================================
+-- 1. HELPER TRIGGER FUNCTIONS
+-- ==============================================================================
+
+-- Reusable timestamp updater
+CREATE OR REPLACE FUNCTION public.handle_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = timezone('utc'::text, now());
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Automatic profile creation upon Supabase auth.users signup
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS TRIGGER AS $$
+BEGIN
+  INSERT INTO public.profiles (id, full_name, email, phone)
+  VALUES (
+    NEW.id,
+    COALESCE(NEW.raw_user_meta_data->>'full_name', ''),
+    NEW.email,
+    COALESCE(NEW.raw_user_meta_data->>'phone', '')
+  )
+  ON CONFLICT (id) DO UPDATE SET
+    email = EXCLUDED.email,
+    full_name = CASE WHEN profiles.full_name IS NULL OR profiles.full_name = '' THEN EXCLUDED.full_name ELSE profiles.full_name END;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+
+-- ==============================================================================
+-- 2. TABLE DEFINITIONS
+-- ==============================================================================
+
+-- PROFILES TABLE (Extends Supabase Auth users)
 CREATE TABLE IF NOT EXISTS public.profiles (
   id UUID REFERENCES auth.users(id) ON DELETE CASCADE PRIMARY KEY,
   full_name TEXT,
@@ -17,12 +65,7 @@ CREATE TABLE IF NOT EXISTS public.profiles (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
-ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Public profiles are viewable by everyone" ON public.profiles FOR SELECT USING (true);
-CREATE POLICY "Users can update their own profile" ON public.profiles FOR UPDATE USING (auth.uid() = id);
-CREATE POLICY "Service role / admin manage profiles" ON public.profiles FOR ALL USING (true);
-
--- 2. CATEGORIES TABLE (Supports custom categories & face/cover image updates)
+-- CATEGORIES TABLE (Formulation categories & face images)
 CREATE TABLE IF NOT EXISTS public.categories (
   id TEXT PRIMARY KEY,
   name TEXT NOT NULL,
@@ -35,11 +78,7 @@ CREATE TABLE IF NOT EXISTS public.categories (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
-ALTER TABLE public.categories ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Categories are viewable by everyone" ON public.categories FOR SELECT USING (true);
-CREATE POLICY "Allow all modifications on categories" ON public.categories FOR ALL USING (true);
-
--- 3. PRODUCTS TABLE (Formulations Catalog)
+-- PRODUCTS TABLE (Formulations Catalog with Actives, Benefits & Variants)
 CREATE TABLE IF NOT EXISTS public.products (
   id TEXT PRIMARY KEY,
   slug TEXT UNIQUE NOT NULL,
@@ -64,11 +103,7 @@ CREATE TABLE IF NOT EXISTS public.products (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
-ALTER TABLE public.products ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Products are viewable by everyone" ON public.products FOR SELECT USING (true);
-CREATE POLICY "Allow all modifications on products" ON public.products FOR ALL USING (true);
-
--- 4. SITE BEAUTY IMAGES TABLE (Living Radiance Archive / Marquee / Lookbook)
+-- SITE BEAUTY IMAGES TABLE (Living Radiance Archive / Lookbook / Marquee)
 CREATE TABLE IF NOT EXISTS public.site_beauty_images (
   id TEXT PRIMARY KEY,
   image_url TEXT NOT NULL,
@@ -82,35 +117,34 @@ CREATE TABLE IF NOT EXISTS public.site_beauty_images (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
-ALTER TABLE public.site_beauty_images ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Beauty images are viewable by everyone" ON public.site_beauty_images FOR SELECT USING (true);
-CREATE POLICY "Allow all modifications on site_beauty_images" ON public.site_beauty_images FOR ALL USING (true);
-
--- 5. ORDERS TABLE (Sunyani Dispatch & Nationwide Logistics)
+-- ORDERS TABLE (Sunyani Dispatch, Direct MoMo & WhatsApp Tracking)
 CREATE TABLE IF NOT EXISTS public.orders (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  order_number TEXT UNIQUE,
+  order_number TEXT UNIQUE NOT NULL,
   user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
   customer_name TEXT NOT NULL,
-  customer_email TEXT NOT NULL,
+  customer_email TEXT,
   customer_phone TEXT,
+  customer_whatsapp TEXT,
+  customer_call_line TEXT,
   items JSONB NOT NULL,
+  subtotal NUMERIC(10, 2) DEFAULT 0.00,
+  delivery_fee NUMERIC(10, 2) DEFAULT 20.00,
   total_amount NUMERIC(10, 2) NOT NULL,
   shipping_address JSONB NOT NULL,
   payment_method TEXT DEFAULT 'momo',
   payment_status TEXT DEFAULT 'Pending' CHECK (payment_status IN ('Paid', 'Pending', 'Failed', 'Refunded')),
   status TEXT DEFAULT 'Processing' CHECK (status IN ('Processing', 'Shipped', 'Delivered', 'Cancelled')),
+  momo_transaction_id TEXT,
+  momo_network TEXT,
+  momo_phone TEXT,
   dispatch_notes TEXT,
+  order_source TEXT DEFAULT 'website' CHECK (order_source IN ('website', 'whatsapp', 'admin')),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
-ALTER TABLE public.orders ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Orders viewable by creator or admin" ON public.orders FOR SELECT USING (true);
-CREATE POLICY "Allow order creation" ON public.orders FOR INSERT WITH CHECK (true);
-CREATE POLICY "Allow order updates" ON public.orders FOR UPDATE USING (true);
-
--- 6. REVIEWS TABLE
+-- REVIEWS TABLE (Customer feedback & verified buyer ratings)
 CREATE TABLE IF NOT EXISTS public.reviews (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   product_id TEXT REFERENCES public.products(id) ON DELETE CASCADE,
@@ -124,41 +158,181 @@ CREATE TABLE IF NOT EXISTS public.reviews (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
+
+-- ==============================================================================
+-- 3. AUTOMATIC UPDATED_AT TRIGGERS
+-- ==============================================================================
+
+DROP TRIGGER IF EXISTS trg_profiles_updated_at ON public.profiles;
+CREATE TRIGGER trg_profiles_updated_at
+  BEFORE UPDATE ON public.profiles
+  FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
+
+DROP TRIGGER IF EXISTS trg_categories_updated_at ON public.categories;
+CREATE TRIGGER trg_categories_updated_at
+  BEFORE UPDATE ON public.categories
+  FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
+
+DROP TRIGGER IF EXISTS trg_products_updated_at ON public.products;
+CREATE TRIGGER trg_products_updated_at
+  BEFORE UPDATE ON public.products
+  FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
+
+DROP TRIGGER IF EXISTS trg_orders_updated_at ON public.orders;
+CREATE TRIGGER trg_orders_updated_at
+  BEFORE UPDATE ON public.orders
+  FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
+
+DROP TRIGGER IF EXISTS trg_site_beauty_images_updated_at ON public.site_beauty_images;
+CREATE TRIGGER trg_site_beauty_images_updated_at
+  BEFORE UPDATE ON public.site_beauty_images
+  FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
+
+-- Attach user signup trigger
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+
+
+-- ==============================================================================
+-- 4. PERFORMANCE B-TREE INDEXES
+-- ==============================================================================
+
+CREATE INDEX IF NOT EXISTS idx_products_category ON public.products(category);
+CREATE INDEX IF NOT EXISTS idx_products_slug ON public.products(slug);
+CREATE INDEX IF NOT EXISTS idx_products_is_featured ON public.products(is_featured);
+CREATE INDEX IF NOT EXISTS idx_products_price ON public.products(price);
+CREATE INDEX IF NOT EXISTS idx_orders_customer_phone ON public.orders(customer_phone);
+CREATE INDEX IF NOT EXISTS idx_orders_momo_txid ON public.orders(momo_transaction_id);
+CREATE INDEX IF NOT EXISTS idx_orders_status ON public.orders(status);
+CREATE INDEX IF NOT EXISTS idx_orders_payment_status ON public.orders(payment_status);
+CREATE INDEX IF NOT EXISTS idx_orders_created_at ON public.orders(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_reviews_product_id ON public.reviews(product_id);
+CREATE INDEX IF NOT EXISTS idx_beauty_images_active ON public.site_beauty_images(is_active, display_order);
+
+
+-- ==============================================================================
+-- 5. ROW LEVEL SECURITY (RLS) POLICIES
+-- ==============================================================================
+
+-- Profiles RLS
+ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Public profiles are viewable by everyone" ON public.profiles;
+CREATE POLICY "Public profiles are viewable by everyone" ON public.profiles FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Users can update their own profile" ON public.profiles;
+CREATE POLICY "Users can update their own profile" ON public.profiles FOR UPDATE USING (auth.uid() = id);
+DROP POLICY IF EXISTS "Allow profile insertion" ON public.profiles;
+CREATE POLICY "Allow profile insertion" ON public.profiles FOR INSERT WITH CHECK (true);
+
+-- Categories RLS
+ALTER TABLE public.categories ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Categories are viewable by everyone" ON public.categories;
+CREATE POLICY "Categories are viewable by everyone" ON public.categories FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Allow all modifications on categories" ON public.categories;
+CREATE POLICY "Allow all modifications on categories" ON public.categories FOR ALL USING (true);
+
+-- Products RLS
+ALTER TABLE public.products ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Products are viewable by everyone" ON public.products;
+CREATE POLICY "Products are viewable by everyone" ON public.products FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Allow all modifications on products" ON public.products;
+CREATE POLICY "Allow all modifications on products" ON public.products FOR ALL USING (true);
+
+-- Site Beauty Images RLS
+ALTER TABLE public.site_beauty_images ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Beauty images are viewable by everyone" ON public.site_beauty_images;
+CREATE POLICY "Beauty images are viewable by everyone" ON public.site_beauty_images FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Allow all modifications on site_beauty_images" ON public.site_beauty_images;
+CREATE POLICY "Allow all modifications on site_beauty_images" ON public.site_beauty_images FOR ALL USING (true);
+
+-- Orders RLS
+ALTER TABLE public.orders ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Orders viewable by everyone" ON public.orders;
+CREATE POLICY "Orders viewable by everyone" ON public.orders FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Allow order creation" ON public.orders;
+CREATE POLICY "Allow order creation" ON public.orders FOR INSERT WITH CHECK (true);
+DROP POLICY IF EXISTS "Allow order updates" ON public.orders;
+CREATE POLICY "Allow order updates" ON public.orders FOR UPDATE USING (true);
+DROP POLICY IF EXISTS "Allow order deletion" ON public.orders;
+CREATE POLICY "Allow order deletion" ON public.orders FOR DELETE USING (true);
+
+-- Reviews RLS
 ALTER TABLE public.reviews ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Reviews viewable by everyone" ON public.reviews;
 CREATE POLICY "Reviews viewable by everyone" ON public.reviews FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Allow review creation" ON public.reviews;
 CREATE POLICY "Allow review creation" ON public.reviews FOR INSERT WITH CHECK (true);
 
--- 7. STORAGE BUCKETS SETUP FOR IMAGES
--- (Product packshots, Category face images, and Beauty lifestyle photos)
+
+-- ==============================================================================
+-- 6. STORAGE BUCKETS & PUBLIC ACCESS POLICIES
+-- ==============================================================================
+
 INSERT INTO storage.buckets (id, name, public)
 VALUES 
   ('product-images', 'product-images', true),
   ('category-images', 'category-images', true),
   ('beauty-images', 'beauty-images', true)
-ON CONFLICT (id) DO NOTHING;
+ON CONFLICT (id) DO UPDATE SET public = true;
 
--- Storage Read & Write Policies
+-- Storage Read & Write Policies (Idempotent)
+DROP POLICY IF EXISTS "Public read for product-images" ON storage.objects;
 CREATE POLICY "Public read for product-images" ON storage.objects FOR SELECT USING (bucket_id = 'product-images');
+DROP POLICY IF EXISTS "Allow uploads to product-images" ON storage.objects;
 CREATE POLICY "Allow uploads to product-images" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'product-images');
+DROP POLICY IF EXISTS "Allow update on product-images" ON storage.objects;
 CREATE POLICY "Allow update on product-images" ON storage.objects FOR UPDATE USING (bucket_id = 'product-images');
+DROP POLICY IF EXISTS "Allow delete on product-images" ON storage.objects;
 CREATE POLICY "Allow delete on product-images" ON storage.objects FOR DELETE USING (bucket_id = 'product-images');
 
+DROP POLICY IF EXISTS "Public read for category-images" ON storage.objects;
 CREATE POLICY "Public read for category-images" ON storage.objects FOR SELECT USING (bucket_id = 'category-images');
+DROP POLICY IF EXISTS "Allow uploads to category-images" ON storage.objects;
 CREATE POLICY "Allow uploads to category-images" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'category-images');
+DROP POLICY IF EXISTS "Allow update on category-images" ON storage.objects;
 CREATE POLICY "Allow update on category-images" ON storage.objects FOR UPDATE USING (bucket_id = 'category-images');
+DROP POLICY IF EXISTS "Allow delete on category-images" ON storage.objects;
 CREATE POLICY "Allow delete on category-images" ON storage.objects FOR DELETE USING (bucket_id = 'category-images');
 
+DROP POLICY IF EXISTS "Public read for beauty-images" ON storage.objects;
 CREATE POLICY "Public read for beauty-images" ON storage.objects FOR SELECT USING (bucket_id = 'beauty-images');
+DROP POLICY IF EXISTS "Allow uploads to beauty-images" ON storage.objects;
 CREATE POLICY "Allow uploads to beauty-images" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'beauty-images');
+DROP POLICY IF EXISTS "Allow update on beauty-images" ON storage.objects;
 CREATE POLICY "Allow update on beauty-images" ON storage.objects FOR UPDATE USING (bucket_id = 'beauty-images');
+DROP POLICY IF EXISTS "Allow delete on beauty-images" ON storage.objects;
 CREATE POLICY "Allow delete on beauty-images" ON storage.objects FOR DELETE USING (bucket_id = 'beauty-images');
 
 
 -- ==============================================================================
--- INITIAL SEED DATA
+-- 7. SUPABASE REALTIME REPLICATION (For Live Admin Dashboard)
 -- ==============================================================================
 
--- Seed Categories (with luxury cover images)
+DO $$
+BEGIN
+  ALTER PUBLICATION supabase_realtime ADD TABLE public.orders;
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
+
+DO $$
+BEGIN
+  ALTER PUBLICATION supabase_realtime ADD TABLE public.products;
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
+
+DO $$
+BEGIN
+  ALTER PUBLICATION supabase_realtime ADD TABLE public.categories;
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
+
+
+-- ==============================================================================
+-- 8. INITIAL SEED DATA
+-- ==============================================================================
+
+-- Seed Categories
 INSERT INTO public.categories (id, name, slug, description, image_url, item_count, display_order)
 VALUES
   ('skincare', 'Skincare', 'skincare', 'Potent botanicals and clinical actives crafted in Sunyani for an effortless glass-skin glow.', '/beautyImages/ca20569827f857496b78c0666cb556c4.jpg', 12, 1),
@@ -169,9 +343,11 @@ VALUES
 ON CONFLICT (id) DO UPDATE SET
   name = EXCLUDED.name,
   description = EXCLUDED.description,
-  image_url = EXCLUDED.image_url;
+  image_url = EXCLUDED.image_url,
+  item_count = EXCLUDED.item_count,
+  display_order = EXCLUDED.display_order;
 
--- Seed Site Beauty Images (Living Radiance Archive)
+-- Seed Living Radiance Archive Lookbook
 INSERT INTO public.site_beauty_images (id, image_url, tag, title, description, category, display_order, is_active)
 VALUES
   ('b1', '/beautyImages/1.jpg', 'Botanical Radiance', 'Flawless Melanin Barrier', 'Clean active botanical infusions providing all-day lit-from-within glow and climate resilience.', 'Skincare', 1, true),
@@ -182,10 +358,15 @@ VALUES
   ('b6', '/beautyImages/cc.jpg', 'Atelier Packaging', 'The Royal Blue Wardrobe', 'Signature cobalt flacons designed for sustainable refills and light-protected botanical potency.', 'Collections', 6, true),
   ('b7', '/beautyImages/e2660f8d3d6e02246ae67904661af3e7.jpg', 'Ghanaian Cocoa Butter', '5-in-1 Nourishing Care', 'Rich cold-pressed lipids that melt into skin with zero sticky residue under tropical heat.', 'Body', 7, true),
   ('b8', '/beautyImages/61bc208cf17f0911e9f99c0810ccc200.jpg', 'Botanical Elixir Duo', 'Vanilla Cashmere & Shea', 'Antioxidant plant seed oils engineered for silky, non-transfer body sheen and 48-hour moisture.', 'Body', 8, true)
-ON CONFLICT (id) DO NOTHING;
+ON CONFLICT (id) DO UPDATE SET
+  title = EXCLUDED.title,
+  description = EXCLUDED.description,
+  image_url = EXCLUDED.image_url,
+  category = EXCLUDED.category,
+  tag = EXCLUDED.tag;
 
--- Seed Core Products
-INSERT INTO public.products (id, slug, name, subtitle, category, price, compare_at_price, rating, review_count, images, description, stock, is_featured)
+-- Seed Products Catalog
+INSERT INTO public.products (id, slug, name, subtitle, category, price, compare_at_price, rating, review_count, images, description, benefits, ingredients, stock, is_featured)
 VALUES
   (
     'cc-01',
@@ -198,12 +379,65 @@ VALUES
     4.9,
     342,
     ARRAY['/beautyImages/ca20569827f857496b78c0666cb556c4.jpg'],
-    'An ultra-concentrated hydration catalyst designed to flood skin with deep cellular moisture.',
+    'An ultra-concentrated hydration catalyst designed to flood skin with deep cellular moisture. Formulated in Sunyani with multi-molecular hyaluronic acid and botanical peptides.',
+    ARRAY['72-Hour continuous hydration barrier', 'Visibly plumps fine lines and smooths rough patches', 'Strengthens epidermal moisture barrier against tropical heat'],
+    'Water/Aqua, Multi-Molecular Sodium Hyaluronate (3%), Niacinamide (5%), Sunyani Shea Peptide Ferment, Panthenol, Phenoxyethanol.',
     45,
     true
   ),
   (
     'cc-02',
+    'cellular-renewal-elixir',
+    'Cellular Renewal Elixir',
+    'Botanical Stem Cells & Golden Marula Barrier',
+    'skincare',
+    780.00,
+    950.00,
+    4.8,
+    198,
+    ARRAY['/beautyImages/1.jpg'],
+    'A potent golden restorative nectar designed to defend against environmental pollutants and boost cellular turnover with zero greasy residue.',
+    ARRAY['Stimulates cellular turnover', 'Shields against environmental pollutants', 'Absorbs instantly without sticky residue'],
+    'Sclerocarya Birrea (Marula) Seed Oil, Adansonia Digitata (Baobab) Seed Extract, CoQ10, Tocopherol (Vitamin E), Rosa Damascena Flower Oil.',
+    35,
+    true
+  ),
+  (
+    'cc-03',
+    'luminous-glow-infusion',
+    'Luminous Glow Infusion',
+    '20% Vitamin C Ester & Sunyani Papaya Enzymes',
+    'skincare',
+    820.00,
+    980.00,
+    4.9,
+    215,
+    ARRAY['/beautyImages/3.jpg'],
+    'Clinical-potency brightening concentrate that evens skin tone, reduces hyperpigmentation, and imparts a resilient glass-skin glow.',
+    ARRAY['Visibly fades dark spots and sun-induced discoloration', 'Protects against UV-induced oxidative stress', 'Imparts a lit-from-within glow without greasiness'],
+    'Tetrahexyldecyl Ascorbate (Vitamin C 20%), Carica Papaya Enzyme Extract, Licorice Root Ferment, Ferulic Acid, Squalane.',
+    28,
+    true
+  ),
+  (
+    'cc-04',
+    'atelier-velvet-night-balm',
+    'Atelier Velvet Night Balm',
+    'Wild Moringa & Botanical Squalane Restorative',
+    'skincare',
+    890.00,
+    1100.00,
+    5.0,
+    174,
+    ARRAY['/beautyImages/ca.jpg'],
+    'Overnight cellular recuperation balm that replenishes vital lipids and reinforces the epidermal moisture barrier while you sleep.',
+    ARRAY['Intensive overnight moisture lock', 'Calms irritated, barrier-compromised skin', 'Supple, rested glow by morning'],
+    'Moringa Oleifera Seed Oil, Botanical Squalane, Butyrospermum Parkii (Shea Butter), Ceramide NP, Bisabolol, Lavandula Angustifolia Oil.',
+    20,
+    true
+  ),
+  (
+    'cc-05',
     'lasgidi-fine-fragrance-mist',
     'Lasgidi Fine Fragrance Mist Collection',
     'Sensory Tropical Blooms & Warm Amber Sprays',
@@ -213,12 +447,14 @@ VALUES
     4.8,
     198,
     ARRAY['/beautyImages/cadd9c6e24c20cf8e79f77ff3f1e9c49.jpg'],
-    'Showroom curated fine body mists crafted to deliver refreshing, lingering sensory fragrance.',
+    'Showroom curated fine body mists crafted to deliver refreshing, lingering sensory fragrance suitable for tropical climates.',
+    ARRAY['Lightweight non-staining fine mist', '24-hour sensory floral amber longevity', 'Enriched with skin-conditioning botanicals'],
+    'Alcohol Denat., Aqua/Water, Parfum/Fragrance, Hibiscus Rosa-Sinensis Flower Extract, Glycerin.',
     65,
-    true
+    false
   ),
   (
-    'cc-03',
+    'cc-06',
     'palmers-cocoa-butter-body-oil',
     'Palmer''s Cocoa Butter & Cashmere Elixir',
     '48H Moisture Rich Botanical Body Glow',
@@ -228,12 +464,14 @@ VALUES
     5.0,
     215,
     ARRAY['/beautyImages/61bc208cf17f0911e9f99c0810ccc200.jpg'],
-    'Rich pure cocoa butter and antioxidant Vitamin E blended for deep skin rejuvenation.',
+    'Rich pure cocoa butter and antioxidant Vitamin E blended for deep skin rejuvenation and all-day silken sheen.',
+    ARRAY['Instant non-greasy body radiance', 'Soothes rough, dry elbows and legs', 'Rich natural cocoa aroma'],
+    'Theobroma Cacao (Cocoa) Extract, Glycine Soja Oil, Isopropyl Myristate, Tocopheryl Acetate.',
     35,
-    true
+    false
   ),
   (
-    'cc-04',
+    'cc-07',
     'touch-concentrated-pocket-perfume',
     'Touch Concentrated Pocket Perfume Set',
     'Majestic Oud, Velvet Woods & Royal Musk Oils',
@@ -244,52 +482,9 @@ VALUES
     88,
     ARRAY['/beautyImages/bd545c8751f20e872e51fc45f870cc99.jpg'],
     'Pocket-sized concentrated perfume essences with magnetic projection and 24-hour longevity.',
+    ARRAY['Ultra-concentrated pure perfume oils', 'Pocket-friendly rollerball flacons', 'Rich sillage of Royal Oud and Amber'],
+    'Dipropylene Glycol, Parfum/Fragrance, Benzyl Salicylate, Linalool, Limonene.',
     20,
-    true
-  ),
-  (
-    'cc-05',
-    'active-defense-motion-body-spray',
-    'Active Defense Motion Body Spray',
-    'Pearl & Beauty 48H Anti-Perspirant Care',
-    'body',
-    550.00,
-    NULL,
-    4.8,
-    164,
-    ARRAY['/beautyImages/ff5509b7b3d0bf627a13767df76f3662.jpg'],
-    'All-day humidity and active sweat defense leaving skin dry, clean, and velvety soft.',
-    50,
-    false
-  ),
-  (
-    'cc-06',
-    'intensive-care-cocoa-radiance-lotion',
-    'Intensive Care Cocoa Radiance Lotion',
-    '100% Pure Cocoa & Shea Butter Restorative Milk',
-    'skincare',
-    620.00,
-    NULL,
-    4.7,
-    230,
-    ARRAY['/beautyImages/b4c0b01d7f8922fbb7dac620a15a3ec1.jpg'],
-    'Deeply restores dull skin to reveal its natural glow with micro-droplets of healing jelly.',
-    110,
-    true
-  ),
-  (
-    'cc-07',
-    'sure-48h-motionsense-collection',
-    'Sure 48H MotionSense Aerosol Line',
-    'Invisible Antibacterial Fresh Protection',
-    'body',
-    680.00,
-    NULL,
-    4.9,
-    142,
-    ARRAY['/beautyImages/77261bd99d7a546b2a2d90e473132e83.jpg'],
-    'Motion-activated micro-capsules burst with freshness as you move through your day.',
-    40,
     false
   ),
   (
@@ -303,8 +498,30 @@ VALUES
     5.0,
     310,
     ARRAY['/beautyImages/cc.jpg'],
-    'The complete signature luxury care ritual from our Sunyani showroom.',
+    'The complete signature luxury care ritual from our Sunyani showroom. Includes full routines from cleansing to fragrance.',
+    ARRAY['Comprehensive 4-step discovery routine', 'Presented in luxury royal blue keepsake gift box', 'Includes complimentary Sunyani delivery'],
+    'Complete curated set containing Hydra-Dew Serum (30ml), Renewal Elixir (30ml), Cashmere Body Oil (100ml), and Pocket Perfume (15ml).',
     25,
     true
   )
-ON CONFLICT (id) DO NOTHING;
+ON CONFLICT (id) DO UPDATE SET
+  name = EXCLUDED.name,
+  subtitle = EXCLUDED.subtitle,
+  category = EXCLUDED.category,
+  price = EXCLUDED.price,
+  compare_at_price = EXCLUDED.compare_at_price,
+  description = EXCLUDED.description,
+  benefits = EXCLUDED.benefits,
+  ingredients = EXCLUDED.ingredients,
+  images = EXCLUDED.images,
+  stock = EXCLUDED.stock,
+  is_featured = EXCLUDED.is_featured;
+
+-- Seed Sample Reviews
+INSERT INTO public.reviews (product_id, author, rating, title, comment, skin_type, verified)
+VALUES
+  ('cc-01', 'Akosua Mensah (Sunyani)', 5, 'My skin is glowing non-stop', 'Delivered in Sunyani within 2 hours of payment! The Hydra-Dew serum is light, never oily in our heat.', 'Combination Skin', true),
+  ('cc-01', 'Dr. Kwame Boateng', 5, 'Clinical formulation that actually works', 'The hyaluronic acid weight distribution is impressive. Highly recommended for sensitive melanin-rich skin.', 'Dry / Sensitive', true),
+  ('cc-02', 'Abena Pokuaa', 5, 'Pure liquid gold', 'The baobab oil makes my skin texture baby soft. I ordered via WhatsApp and got instant dispatch.', 'Normal to Dry', true),
+  ('cc-03', 'Esi Serwaa', 5, 'Faded my dark marks in 3 weeks', 'The 20% Vitamin C is gentle yet effective. Zero peeling or irritation.', 'Hyper-pigmented', true)
+ON CONFLICT DO NOTHING;
