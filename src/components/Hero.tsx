@@ -162,9 +162,9 @@ export const Hero: React.FC = () => {
       </div>
 
       {/* ====================================================================
-          2. LEFT-ALIGNED EDITORIAL STAGE CONTENT
+          2. LEFT-ALIGNED EDITORIAL STAGE CONTENT (WITH TRANSPARENT HEADER SPACING)
           ==================================================================== */}
-      <div className="relative z-10 max-w-[1560px] w-full mx-auto px-4 sm:px-8 lg:px-14 py-20 sm:py-24 flex justify-start">
+      <div className="relative z-10 max-w-[1560px] w-full mx-auto px-4 sm:px-8 lg:px-14 pt-28 sm:pt-36 lg:pt-40 pb-20 sm:pb-24 flex justify-start">
         <div className="max-w-2xl w-full text-left flex flex-col items-start space-y-5 sm:space-y-6">
           
           {/* Magazine Masthead Kicker */}

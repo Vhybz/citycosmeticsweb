@@ -78,15 +78,22 @@ export const Navbar: React.FC = () => {
     { name: 'Skin Diagnostic', href: '/quiz' },
   ];
 
-  const isDark = headerTheme === 'dark';
+  const isHome = pathname === '/';
+  const isTransparent = isHome && !isScrolled;
+  const isDark = isTransparent || headerTheme === 'dark';
 
   return (
-    <header className="sticky top-0 z-40 w-full transition-colors duration-300">
-
+    <header
+      className={`z-40 w-full transition-all duration-300 ${
+        isTransparent ? 'absolute top-0 left-0 right-0' : 'sticky top-0'
+      }`}
+    >
       {/* Main Navigation Bar */}
       <nav
         className={`transition-all duration-300 ${
-          isDark
+          isTransparent
+            ? 'bg-transparent border-b border-white/15 text-white py-4 sm:py-5'
+            : isDark
             ? isScrolled
               ? 'bg-[#08172c]/95 backdrop-blur-xl shadow-[0_4px_30px_-5px_rgba(0,0,0,0.5)] border-b border-white/10 text-white py-3 sm:py-3.5'
               : 'bg-[#0B1F3A] border-b border-white/15 text-white py-4 sm:py-5'
@@ -252,7 +259,9 @@ export const Navbar: React.FC = () => {
               onClick={() => setIsCartOpen(true)}
               aria-label="Shopping Bag"
               className={`flex items-center gap-2 px-3.5 sm:px-4 py-2 rounded-none transition-all duration-300 shadow-xs hover:shadow-md ${
-                isDark
+                isTransparent
+                  ? 'bg-white/15 hover:bg-white text-white hover:text-[#071324] border border-white/30 backdrop-blur-md'
+                  : isDark
                   ? 'bg-white text-[#0B1F3A] hover:bg-[#DCEBFA]'
                   : 'bg-[#0B1F3A] hover:bg-[#174EA6] text-white'
               }`}
@@ -263,7 +272,11 @@ export const Navbar: React.FC = () => {
               </span>
               <span
                 className={`text-[10px] font-mono font-bold px-1.5 py-0.5 rounded-none ${
-                  isDark ? 'bg-[#0B1F3A] text-white' : 'bg-[#DCEBFA] text-[#0B1F3A]'
+                  isTransparent
+                    ? 'bg-[#93C5FD] text-[#071324]'
+                    : isDark
+                    ? 'bg-[#0B1F3A] text-white'
+                    : 'bg-[#DCEBFA] text-[#0B1F3A]'
                 }`}
               >
                 {totalItemCount}
