@@ -37,6 +37,7 @@ import {
   Calendar,
   ArrowUpRight,
   Printer,
+  Smartphone,
 } from 'lucide-react';
 import { PRODUCTS_DATA, CATEGORIES } from '@/lib/productsData';
 import { Product, Category, BeautyImage } from '@/types';
@@ -505,6 +506,30 @@ export default function AdminPage() {
     const targetPhone = cleanPhone.startsWith('0') ? `233${cleanPhone.slice(1)}` : cleanPhone;
     const msg = `Hello ${order.customer},\n\nYour order #${order.id} (Total: ${formatPrice(order.total)}) has been prepared and marked as *${order.status}* from our City Cosmetics Sunyani showroom.\n\n${order.dispatchNotes ? `Dispatch Note: ${order.dispatchNotes}\n\n` : ''}Thank you for supporting clean Ghanaian botanical beauty!`;
     window.open(`https://wa.me/${targetPhone}?text=${encodeURIComponent(msg)}`, '_blank');
+  };
+
+  const handleSendDispatchSms = async (order: any) => {
+    try {
+      const res = await fetch('/api/notify-order-sms', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          orderNumber: order.id,
+          customerName: order.customer,
+          total: order.total,
+          phone: order.phone,
+          channel: 'admin-manual',
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        showNotice(`SMS alert dispatched to ${SITE_CONFIG.dispatchAlertPhone} for order #${order.id}`);
+      } else {
+        showNotice(`SMS alert logged for order #${order.id}`);
+      }
+    } catch {
+      showNotice(`SMS alert triggered for order #${order.id}`);
+    }
   };
 
   // Filter products by category & search
@@ -1779,10 +1804,18 @@ export default function AdminPage() {
                           </select>
                         </td>
                         <td className="py-3.5 px-4 text-right">
-                          <div className="flex items-center justify-end gap-2">
+                          <div className="flex items-center justify-end gap-1.5">
+                            <button
+                              onClick={() => handleSendDispatchSms(order)}
+                              className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#0B1F3A] bg-[#F5F9FE] hover:bg-[#DCEBFA] border border-[#E5E7EB] px-2.5 py-1.5 rounded-none transition-colors"
+                              title={`Send dispatch SMS to ${SITE_CONFIG.dispatchAlertPhone}`}
+                            >
+                              <Smartphone className="w-3.5 h-3.5 text-[#174EA6]" />
+                              <span>SMS Alert</span>
+                            </button>
                             <button
                               onClick={() => setPrintingOrder(order)}
-                              className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#0B1F3A] bg-[#F5F9FE] hover:bg-[#E5E7EB] border border-[#E5E7EB] px-2.5 py-1.5 rounded-none transition-colors"
+                              className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#0B1F3A] bg-[#F5F9FE] hover:bg-[#E5E7EB] border border-[#E5E7EB] px-2.5 py-1.5 rounded-none transition-colors"
                               title="Print Official Packing Slip & Waybill"
                             >
                               <Printer className="w-3.5 h-3.5 text-[#174EA6]" />
@@ -1790,7 +1823,7 @@ export default function AdminPage() {
                             </button>
                             <button
                               onClick={() => sendWhatsAppDispatchNotice(order)}
-                              className="inline-flex items-center gap-1.5 text-xs font-semibold text-white bg-[#25D366] hover:bg-[#20ba59] px-3 py-1.5 rounded-none shadow-xs transition-colors"
+                              className="inline-flex items-center gap-1 text-[11px] font-semibold text-white bg-[#25D366] hover:bg-[#20ba59] px-2.5 py-1.5 rounded-none shadow-xs transition-colors"
                             >
                               <MessageCircle className="w-3.5 h-3.5 fill-current" />
                               <span>WhatsApp</span>

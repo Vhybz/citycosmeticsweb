@@ -139,6 +139,21 @@ export default function CheckoutPage() {
       }
     }
 
+    // Send SMS alert to 0503574865 to check WhatsApp, confirm payment & dispatch
+    try {
+      fetch('/api/notify-order-sms', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          orderNumber: generatedOrderNumber,
+          customerName: orderPayload.customerName,
+          total: orderPayload.total,
+          phone: orderPayload.customerPhone,
+          channel: 'checkout',
+        }),
+      }).catch((e) => console.warn('SMS dispatch ping error:', e));
+    } catch {}
+
     setTimeout(() => {
       setOrderNumber(generatedOrderNumber);
       setIsProcessing(false);

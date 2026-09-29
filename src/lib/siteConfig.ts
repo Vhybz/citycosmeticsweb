@@ -12,6 +12,9 @@ export const SITE_CONFIG = {
   phone: '+233 55 965 0921',
   // International format for WhatsApp without '+' or spaces: 233559650921
   whatsappNumber: '233559650921',
+  // Dedicated phone number for order alerts & dispatch SMS
+  dispatchAlertPhone: '0503574865',
+  dispatchAlertPhoneInternational: '233503574865',
   adminPin: 'CITY1258', // Admin access password
   currency: 'GH₵',
   currencyCode: 'GHS',

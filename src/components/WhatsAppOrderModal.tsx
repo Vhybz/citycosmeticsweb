@@ -133,6 +133,21 @@ Please call my phone line (${callLine.trim()}) to confirm payment and deliver fr
       }
     }
 
+    // Send SMS alert to 0503574865 to check WhatsApp, confirm payment & dispatch
+    try {
+      fetch('/api/notify-order-sms', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          orderNumber: generatedOrderRef,
+          customerName: customerName.trim(),
+          total: grandTotal,
+          phone: callLine.trim(),
+          channel: 'whatsapp',
+        }),
+      }).catch((e) => console.warn('SMS dispatch ping error:', e));
+    } catch {}
+
     try {
       confetti({
         particleCount: 80,
