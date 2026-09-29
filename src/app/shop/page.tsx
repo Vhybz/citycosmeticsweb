@@ -85,11 +85,11 @@ function ShopContent() {
           </p>
         </div>
 
-        {/* Category Pill Tabs */}
-        <div className="flex items-center justify-center gap-2 flex-wrap mb-10 pb-4 border-b border-[#E5E7EB]">
+        {/* Category Pill Tabs (horizontally scrollable on mobile, centered on desktop) */}
+        <div className="flex items-center sm:justify-center gap-2 overflow-x-auto no-scrollbar pb-3 mb-8 border-b border-[#E5E7EB]">
           <button
             onClick={() => setSelectedCategory('all')}
-            className={`px-5 py-2 rounded-none text-xs uppercase tracking-wider font-semibold transition-all ${
+            className={`px-4 sm:px-5 py-2 rounded-none text-xs uppercase tracking-wider font-semibold whitespace-nowrap shrink-0 transition-all ${
               selectedCategory === 'all'
                 ? 'bg-[#0B1F3A] text-white shadow-sm'
                 : 'bg-white text-[#4B5563] border border-[#E5E7EB] hover:border-[#174EA6] hover:text-[#0B1F3A]'
@@ -101,7 +101,7 @@ function ShopContent() {
             <button
               key={cat.id}
               onClick={() => setSelectedCategory(cat.slug)}
-              className={`px-5 py-2 rounded-none text-xs uppercase tracking-wider font-semibold transition-all ${
+              className={`px-4 sm:px-5 py-2 rounded-none text-xs uppercase tracking-wider font-semibold whitespace-nowrap shrink-0 transition-all ${
                 selectedCategory === cat.slug
                   ? 'bg-[#0B1F3A] text-white shadow-sm'
                   : 'bg-white text-[#4B5563] border border-[#E5E7EB] hover:border-[#174EA6] hover:text-[#0B1F3A]'
@@ -176,22 +176,22 @@ function ShopContent() {
           )}
         </div>
 
-        {/* Product Cards Grid */}
+        {/* Product Cards Grid (2 cols on mobile, 4 on desktop) */}
         {filteredProducts.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
             {filteredProducts.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
           </div>
         ) : (
-          <div className="bg-white rounded-xl p-12 text-center border border-[#E5E7EB] shadow-sm max-w-lg mx-auto">
+          <div className="bg-white rounded-none p-10 sm:p-12 text-center border border-[#E5E7EB] shadow-sm max-w-lg mx-auto">
             <h3 className="font-serif-luxury text-xl text-[#0B1F3A]">No formulas match your filters</h3>
             <p className="text-xs text-[#6B7280] mt-2 mb-6">
               Try adjusting your skin type or category filters to discover products.
             </p>
             <button
               onClick={resetFilters}
-              className="bg-[#0B1F3A] hover:bg-[#174EA6] text-white text-xs uppercase tracking-wider py-3 px-6 rounded-md transition-colors"
+              className="bg-[#0B1F3A] hover:bg-[#174EA6] text-white text-xs uppercase tracking-wider py-3 px-6 rounded-none transition-colors"
             >
               Reset Filters
             </button>

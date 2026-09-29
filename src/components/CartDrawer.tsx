@@ -61,7 +61,7 @@ export const CartDrawer: React.FC = () => {
         onClick={() => setIsCartOpen(false)}
       />
 
-      <div className="fixed inset-y-0 right-0 max-w-full flex pl-10">
+      <div className="fixed inset-y-0 right-0 max-w-full flex pl-0 sm:pl-10">
         <div className="w-screen max-w-md bg-white shadow-2xl flex flex-col justify-between z-10 border-l border-[#E5E7EB]">
           {/* Header */}
           <div className="p-5 border-b border-[#E5E7EB] bg-white flex items-center justify-between">
@@ -304,7 +304,7 @@ export const CartDrawer: React.FC = () => {
               <Link
                 href="/checkout"
                 onClick={() => setIsCartOpen(false)}
-                className="w-full bg-[#0B1F3A] hover:bg-[#174EA6] text-white text-xs uppercase tracking-widest font-semibold py-3.5 rounded-md flex items-center justify-center gap-2 shadow-sm transition-all"
+                className="w-full bg-[#0B1F3A] hover:bg-[#174EA6] text-white text-xs uppercase tracking-widest font-semibold py-3.5 rounded-none flex items-center justify-center gap-2 shadow-sm transition-all"
               >
                 Proceed to Checkout <ArrowRight className="w-4 h-4" />
               </Link>
@@ -320,7 +320,7 @@ export const CartDrawer: React.FC = () => {
                 cartTotal={total}
                 variant="primary"
                 text="Order via WhatsApp (Sunyani)"
-                className="w-full py-3 text-xs uppercase tracking-wider font-semibold rounded-md shadow-sm"
+                className="w-full py-3 text-xs uppercase tracking-wider font-semibold rounded-none shadow-sm"
               />
             </div>
           )}

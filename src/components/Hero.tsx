@@ -57,6 +57,7 @@ const HERO_SLIDES: Slide[] = [
 export const Hero: React.FC = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const [touchStartX, setTouchStartX] = useState<number | null>(null);
   const { openWhatsAppOrder } = useWhatsAppOrder();
 
   // Auto-advance every 3 seconds, pause on hover
@@ -76,6 +77,23 @@ export const Hero: React.FC = () => {
     setCurrentSlide((prev) => (prev + 1) % HERO_SLIDES.length);
   };
 
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStartX(e.touches[0].clientX);
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX === null) return;
+    const touchEndX = e.changedTouches[0].clientX;
+    const diff = touchStartX - touchEndX;
+    // Swipe threshold 45px
+    if (diff > 45) {
+      handleNext();
+    } else if (diff < -45) {
+      handlePrev();
+    }
+    setTouchStartX(null);
+  };
+
   const activeSlide = HERO_SLIDES[currentSlide];
   const activeProduct =
     PRODUCTS_DATA.find((p) => p.id === activeSlide.productId) || PRODUCTS_DATA[0];
@@ -84,7 +102,9 @@ export const Hero: React.FC = () => {
     <section
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
-      className="relative overflow-hidden min-h-[700px] lg:min-h-[800px] flex items-center bg-[#071324] text-white"
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+      className="relative overflow-hidden min-h-[560px] sm:min-h-[700px] lg:min-h-[800px] flex items-center bg-[#071324] text-white"
       aria-label="City Cosmetics Formulation Showcase"
     >
       {/* ====================================================================
@@ -119,29 +139,29 @@ export const Hero: React.FC = () => {
       {/* ====================================================================
           2. EDITORIAL HERO STAGE (ZERO REDUNDANCY)
           ==================================================================== */}
-      <div className="relative z-10 max-w-[1560px] w-full mx-auto px-6 sm:px-10 lg:px-16 pt-32 sm:pt-40 lg:pt-44 pb-24 sm:pb-28">
-        <div className="max-w-2xl space-y-5 sm:space-y-6">
+      <div className="relative z-10 max-w-[1560px] w-full mx-auto px-5 sm:px-10 lg:px-16 pt-28 sm:pt-40 lg:pt-44 pb-20 sm:pb-28">
+        <div className="max-w-2xl space-y-4 sm:space-y-6">
           
           {/* Formulation Category */}
-          <div className="text-[11px] font-mono uppercase tracking-[0.3em] font-semibold text-[#93C5FD]">
+          <div className="text-[10px] sm:text-[11px] font-mono uppercase tracking-[0.28em] sm:tracking-[0.3em] font-semibold text-[#93C5FD]">
             {activeSlide.category}
           </div>
 
           {/* Active Formulation Title */}
-          <h1 className="font-serif-luxury text-4xl sm:text-6xl lg:text-7xl font-normal text-white leading-[1.06] tracking-tight">
+          <h1 className="font-serif-luxury text-3xl sm:text-5xl lg:text-7xl font-normal text-white leading-[1.08] tracking-tight">
             {activeSlide.title}
           </h1>
 
           {/* Distinct Formulation Story */}
-          <p className="text-base sm:text-lg text-[#DCEBFA]/85 leading-relaxed max-w-xl font-normal">
+          <p className="text-sm sm:text-lg text-[#DCEBFA]/85 leading-relaxed max-w-xl font-normal">
             {activeSlide.description}
           </p>
 
           {/* Clean Dual CTAs */}
-          <div className="pt-3 flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5">
+          <div className="pt-2 sm:pt-3 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
             <Link
               href="/shop"
-              className="bg-white hover:bg-[#DCEBFA] text-[#071324] py-4 px-8 text-xs uppercase tracking-widest font-semibold inline-flex items-center justify-center gap-2.5 transition-colors shadow-lg"
+              className="bg-white hover:bg-[#DCEBFA] text-[#071324] py-3.5 sm:py-4 px-6 sm:px-8 text-xs uppercase tracking-widest font-semibold inline-flex items-center justify-center gap-2.5 transition-colors shadow-lg"
             >
               <span>Explore Formulations</span>
               <ArrowRight className="w-4 h-4" />
@@ -150,7 +170,7 @@ export const Hero: React.FC = () => {
             <button
               type="button"
               onClick={() => openWhatsAppOrder(activeProduct, undefined, 1)}
-              className="bg-white/10 hover:bg-white/20 text-white border border-white/25 backdrop-blur-md py-4 px-7 text-xs uppercase tracking-widest font-semibold inline-flex items-center justify-center gap-2.5 transition-colors"
+              className="bg-white/10 hover:bg-white/20 text-white border border-white/25 backdrop-blur-md py-3.5 sm:py-4 px-6 sm:px-7 text-xs uppercase tracking-widest font-semibold inline-flex items-center justify-center gap-2.5 transition-colors"
               title="Order this formulation directly via WhatsApp"
             >
               <MessageCircle className="w-4 h-4 fill-current text-[#25D366]" />

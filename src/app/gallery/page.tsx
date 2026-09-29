@@ -505,7 +505,7 @@ export default function GalleryPage() {
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {filteredPhotos.map((photo, idx) => (
               <div
                 key={photo.id || idx}
@@ -605,23 +605,23 @@ export default function GalleryPage() {
 
       {/* Lightbox Modal */}
       {selectedPhoto && (
-        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6 animate-fade-in">
-          <div className="bg-white max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-white/20 shadow-2xl flex flex-col md:flex-row rounded-none relative">
+        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-2.5 sm:p-6 animate-fade-in">
+          <div className="bg-white max-w-4xl w-full max-h-[92vh] overflow-y-auto border border-white/20 shadow-2xl flex flex-col md:flex-row rounded-none relative">
             {/* Close Button */}
             <button
               onClick={() => setSelectedPhoto(null)}
-              className="absolute top-4 right-4 z-20 bg-[#0B1F3A] hover:bg-[#174EA6] text-white p-2 transition-colors rounded-none"
+              className="absolute top-3 right-3 z-20 bg-[#0B1F3A] hover:bg-[#174EA6] text-white p-2 transition-colors rounded-none"
               aria-label="Close dialog"
             >
               <X className="w-4 h-4" />
             </button>
 
             {/* Left Image View */}
-            <div className="md:w-3/5 bg-black flex items-center justify-center min-h-[300px] md:min-h-[480px]">
+            <div className="md:w-3/5 bg-black flex items-center justify-center min-h-[220px] sm:min-h-[300px] md:min-h-[480px]">
               <img
                 src={selectedPhoto.image}
                 alt={selectedPhoto.title}
-                className="w-full h-full max-h-[70vh] object-contain"
+                className="w-full h-full max-h-[50vh] md:max-h-[70vh] object-contain"
               />
             </div>
 

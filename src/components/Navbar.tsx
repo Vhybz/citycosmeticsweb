@@ -122,14 +122,14 @@ export const Navbar: React.FC = () => {
           <div className="flex flex-col items-center lg:items-start">
             <Link href="/" className="group inline-block text-center lg:text-left transition-transform duration-300 hover:scale-[1.01]">
               <span
-                className={`font-serif-luxury text-2xl sm:text-[27px] tracking-[0.28em] uppercase font-normal transition-colors leading-none block ${
+                className={`font-serif-luxury text-lg sm:text-2xl sm:text-[27px] tracking-[0.18em] sm:tracking-[0.28em] uppercase font-normal transition-colors leading-none block ${
                   isDark ? 'text-white group-hover:text-[#DCEBFA]' : 'text-[#0B1F3A] group-hover:text-[#174EA6]'
                 }`}
               >
                 CITY COSMETICS
               </span>
               <span
-                className={`block text-[9px] tracking-[0.45em] uppercase font-mono mt-1.5 transition-colors ${
+                className={`block text-[8px] sm:text-[9px] tracking-[0.32em] sm:tracking-[0.45em] uppercase font-mono mt-1 sm:mt-1.5 transition-colors ${
                   isDark ? 'text-[#93C5FD]' : 'text-[#174EA6]'
                 }`}
               >

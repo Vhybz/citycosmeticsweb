@@ -103,7 +103,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
   };
 
   return (
-    <div className="bg-white py-8 md:py-16">
+    <div className="bg-white pt-6 pb-28 md:py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Breadcrumb Navigation */}
         <nav className="flex items-center text-xs text-[#6B7280] mb-8 space-x-2">
@@ -606,12 +606,43 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
             {relatedProducts.map((p) => (
               <ProductCard key={p.id} product={p} />
             ))}
           </div>
         </section>
+      </div>
+
+      {/* Sticky Mobile Purchase Bar (Frictionless 1-Tap Buying on Phone) */}
+      <div className="fixed bottom-0 left-0 right-0 sm:hidden z-30 bg-white/95 backdrop-blur-md border-t border-[#E5E7EB] p-3 shadow-[0_-4px_20px_rgba(0,0,0,0.08)]">
+        <div className="flex items-center justify-between gap-2.5">
+          <div className="flex flex-col min-w-0">
+            <span className="text-[11px] font-semibold text-[#0B1F3A] truncate">{product.name}</span>
+            <span className="text-xs font-mono font-bold text-[#174EA6]">{formatPrice(currentPrice)}</span>
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              type="button"
+              onClick={() => openWhatsAppOrder(product, selectedVariant, quantity)}
+              className="p-2.5 bg-[#25D366] text-white rounded-none"
+              title="Order on WhatsApp"
+            >
+              <MessageCircle className="w-4 h-4 fill-current" />
+            </button>
+            <button
+              type="button"
+              onClick={handleAddToCart}
+              disabled={isAdded}
+              className={`py-2.5 px-4 text-xs uppercase tracking-wider font-semibold rounded-none flex items-center gap-1.5 transition-all ${
+                isAdded ? 'bg-[#174EA6] text-white' : 'bg-[#0B1F3A] text-white'
+              }`}
+            >
+              {isAdded ? <Check className="w-3.5 h-3.5" /> : <ShoppingBag className="w-3.5 h-3.5" />}
+              <span>{isAdded ? 'Added' : 'Add to Bag'}</span>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
