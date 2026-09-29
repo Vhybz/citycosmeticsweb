@@ -238,6 +238,27 @@ ALTER TABLE IF EXISTS public.site_beauty_images ADD COLUMN IF NOT EXISTS is_acti
 ALTER TABLE IF EXISTS public.site_beauty_images ADD COLUMN IF NOT EXISTS created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now());
 ALTER TABLE IF EXISTS public.site_beauty_images ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now());
 
+-- Categories columns (ensures item_count and display_order are 100% present on pre-existing tables)
+ALTER TABLE IF EXISTS public.categories ADD COLUMN IF NOT EXISTS name TEXT;
+ALTER TABLE IF EXISTS public.categories ADD COLUMN IF NOT EXISTS slug TEXT;
+ALTER TABLE IF EXISTS public.categories ADD COLUMN IF NOT EXISTS description TEXT;
+ALTER TABLE IF EXISTS public.categories ADD COLUMN IF NOT EXISTS image_url TEXT;
+ALTER TABLE IF EXISTS public.categories ADD COLUMN IF NOT EXISTS item_count INTEGER DEFAULT 0;
+ALTER TABLE IF EXISTS public.categories ADD COLUMN IF NOT EXISTS display_order INTEGER DEFAULT 0;
+ALTER TABLE IF EXISTS public.categories ADD COLUMN IF NOT EXISTS created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now());
+ALTER TABLE IF EXISTS public.categories ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now());
+
+-- Reviews columns (ensures all fields are 100% present on pre-existing tables)
+ALTER TABLE IF EXISTS public.reviews ADD COLUMN IF NOT EXISTS product_id TEXT;
+ALTER TABLE IF EXISTS public.reviews ADD COLUMN IF NOT EXISTS user_id UUID;
+ALTER TABLE IF EXISTS public.reviews ADD COLUMN IF NOT EXISTS author TEXT;
+ALTER TABLE IF EXISTS public.reviews ADD COLUMN IF NOT EXISTS rating INTEGER;
+ALTER TABLE IF EXISTS public.reviews ADD COLUMN IF NOT EXISTS title TEXT;
+ALTER TABLE IF EXISTS public.reviews ADD COLUMN IF NOT EXISTS comment TEXT;
+ALTER TABLE IF EXISTS public.reviews ADD COLUMN IF NOT EXISTS skin_type TEXT;
+ALTER TABLE IF EXISTS public.reviews ADD COLUMN IF NOT EXISTS verified BOOLEAN DEFAULT true;
+ALTER TABLE IF EXISTS public.reviews ADD COLUMN IF NOT EXISTS created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now());
+
 
 -- ==============================================================================
 -- 3. AUTOMATIC UPDATED_AT TRIGGERS
@@ -313,6 +334,9 @@ BEGIN
   END IF;
   IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'site_beauty_images' AND column_name = 'is_active') THEN
     CREATE INDEX IF NOT EXISTS idx_beauty_images_active ON public.site_beauty_images(is_active, display_order);
+  END IF;
+  IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'categories' AND column_name = 'display_order') THEN
+    CREATE INDEX IF NOT EXISTS idx_categories_display_order ON public.categories(display_order);
   END IF;
 END $$;
 
