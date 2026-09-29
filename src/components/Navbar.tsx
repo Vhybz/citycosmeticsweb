@@ -82,27 +82,6 @@ export const Navbar: React.FC = () => {
 
   return (
     <header className="sticky top-0 z-40 w-full transition-colors duration-300">
-      {/* Top Luxury Announcement Bar */}
-      <div
-        className={`${
-          isDark
-            ? 'bg-[#050E1A] text-[#DCEBFA] border-white/10'
-            : 'bg-[#0B1F3A] text-[#DCEBFA] border-white/10'
-        } border-b text-[11px] py-2 px-4 tracking-[0.16em] uppercase font-medium transition-colors duration-300`}
-      >
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <span className="hidden sm:inline-block text-[#DCEBFA]/75 text-[10px] tracking-[0.22em] font-medium uppercase font-mono">
-            Sunyani
-          </span>
-          <span className="mx-auto sm:mx-0 text-center">
-            Complimentary Shipping on Orders Over GH₵800 &bull; Code{' '}
-            <strong className="text-white font-semibold">CITYGLOW15</strong>
-          </span>
-          <span className="hidden md:inline-block text-[#DCEBFA]/70 text-[10px]">
-            GHS (GH₵)
-          </span>
-        </div>
-      </div>
 
       {/* Main Navigation Bar */}
       <nav
