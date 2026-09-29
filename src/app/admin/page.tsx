@@ -185,6 +185,7 @@ export default function AdminPage() {
             itemsCount: 2,
             status: 'Shipped',
             paymentMethod: 'momo',
+            momoTxId: '28491829402',
             date: '2026-09-24',
             dispatchNotes: 'Dispatched via Sunyani VIP Courier',
           },
@@ -197,6 +198,7 @@ export default function AdminPage() {
             itemsCount: 3,
             status: 'Processing',
             paymentMethod: 'telecel',
+            momoTxId: 'TEL-94028172',
             date: '2026-09-28',
             dispatchNotes: 'Packing at Commercial Avenue showroom',
           },
@@ -1755,9 +1757,14 @@ export default function AdminPage() {
                           <span className="text-[10px] text-[#6B7280]">{order.itemsCount} items</span>
                         </td>
                         <td className="py-3.5 px-4">
-                          <span className="uppercase font-mono text-[10px] px-2 py-0.5 bg-[#F5F9FE] border border-[#E5E7EB]">
+                          <span className="uppercase font-mono text-[10px] px-2 py-0.5 bg-[#F5F9FE] border border-[#E5E7EB] block w-fit">
                             {order.paymentMethod || 'momo'}
                           </span>
+                          {(order.momoTxId || order.shippingAddress?.momo_txid) && (
+                            <span className="text-[10px] text-emerald-800 font-mono font-semibold block mt-1">
+                              TxID: {order.momoTxId || order.shippingAddress?.momo_txid}
+                            </span>
+                          )}
                         </td>
                         <td className="py-3.5 px-4">
                           <select
@@ -2707,6 +2714,11 @@ export default function AdminPage() {
                       {printingOrder.paymentMethod || 'momo'}
                     </span>
                   </p>
+                  {(printingOrder.momoTxId || printingOrder.shippingAddress?.momo_txid) && (
+                    <p className="text-xs mt-0.5 text-emerald-800 font-mono font-semibold">
+                      <strong>MoMo TxID:</strong> {printingOrder.momoTxId || printingOrder.shippingAddress?.momo_txid}
+                    </p>
+                  )}
                   <p className="text-xs mt-0.5">
                     <strong>Payment State:</strong>{' '}
                     <span className="font-semibold text-emerald-700">

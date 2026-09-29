@@ -449,6 +449,7 @@ export async function fetchLiveOrders(): Promise<any[]> {
       date: new Date(o.created_at).toISOString().split('T')[0],
       items: o.items || [],
       shippingAddress: o.shipping_address,
+      momoTxId: o.shipping_address?.momo_txid || '',
       dispatchNotes: o.dispatch_notes || '',
     }));
   } catch {

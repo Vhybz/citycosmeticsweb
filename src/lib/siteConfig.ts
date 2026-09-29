@@ -22,4 +22,12 @@ export const SITE_CONFIG = {
     facebook: 'https://facebook.com/citycosmetics.gh',
     tiktok: 'https://tiktok.com/@citycosmetics.gh',
   },
+  momo: {
+    merchantName: 'CITY COSMETICS',
+    accountName: 'City Cosmetics Enterprise',
+    mtnNumber: '055 965 0921',
+    telecelNumber: '055 965 0921',
+    atNumber: '055 965 0921',
+    merchantCode: '68214',
+  },
 };

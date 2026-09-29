@@ -13,6 +13,8 @@ import {
   Smartphone,
   Truck,
   MessageCircle,
+  Copy,
+  Check,
 } from 'lucide-react';
 import { useCart } from '@/lib/cartContext';
 import { formatPrice } from '@/lib/formatPrice';
@@ -32,6 +34,19 @@ export default function CheckoutPage() {
     clearCart,
   } = useCart();
 
+  const [orderRef] = useState<string>(
+    () => `CC-${Math.floor(100000 + Math.random() * 900000)}`
+  );
+  const [copiedField, setCopiedField] = useState<'number' | 'ref' | 'amount' | null>(null);
+
+  const handleCopy = (text: string, field: 'number' | 'ref' | 'amount') => {
+    if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      navigator.clipboard.writeText(text);
+      setCopiedField(field);
+      setTimeout(() => setCopiedField(null), 2200);
+    }
+  };
+
   const [formData, setFormData] = useState({
     firstName: 'Ama',
     lastName: 'Osei',
@@ -45,6 +60,7 @@ export default function CheckoutPage() {
     paymentMethod: 'momo', // 'momo' | 'paystack' | 'cod'
     momoNetwork: 'MTN Mobile Money',
     momoPhone: '024 412 3456',
+    momoTransactionId: '',
     cardNumber: '•••• •••• •••• 4242',
     cardExp: '12/28',
     cardCvc: '•••',
@@ -65,7 +81,7 @@ export default function CheckoutPage() {
 
     setIsProcessing(true);
 
-    const generatedOrderNumber = `CC-${Math.floor(100000 + Math.random() * 900000)}`;
+    const generatedOrderNumber = orderRef;
 
     const orderPayload = {
       orderNumber: generatedOrderNumber,
@@ -80,11 +96,15 @@ export default function CheckoutPage() {
         variant: it.selectedVariant?.name || 'Default',
       })),
       shippingAddress: `${formData.address}, ${formData.city}, ${formData.state}, ${formData.country}`,
-      paymentMethod: formData.paymentMethod === 'momo'
-        ? `${formData.momoNetwork} (${formData.momoPhone})`
-        : formData.paymentMethod === 'paystack'
-        ? 'Card (Paystack Encrypted)'
-        : 'Pay on Delivery (Sunyani)',
+      paymentMethod:
+        formData.paymentMethod === 'momo'
+          ? `Direct MoMo: ${formData.momoNetwork} (TxID: ${formData.momoTransactionId.trim() || 'Pending Verification'})`
+          : formData.paymentMethod === 'paystack'
+          ? 'Card (Paystack Encrypted)'
+          : 'Pay on Delivery (Sunyani)',
+      momoTransactionId: formData.momoTransactionId.trim(),
+      momoNetwork: formData.momoNetwork,
+      momoPhone: formData.momoPhone,
     };
 
     setLastOrderDetails(orderPayload);
@@ -93,8 +113,10 @@ export default function CheckoutPage() {
     if (isSupabaseConfigured()) {
       try {
         await supabase.from('orders').insert({
+          order_number: generatedOrderNumber,
           customer_name: orderPayload.customerName,
           customer_email: orderPayload.customerEmail,
+          customer_phone: orderPayload.customerPhone,
           items: orderPayload.items,
           total_amount: orderPayload.total,
           shipping_address: {
@@ -104,7 +126,11 @@ export default function CheckoutPage() {
             country: formData.country,
             phone: formData.phone,
             method: orderPayload.paymentMethod,
+            momo_txid: formData.momoTransactionId.trim(),
+            momo_network: formData.momoNetwork,
+            momo_phone: formData.momoPhone,
           },
+          payment_method: orderPayload.paymentMethod,
           status: 'Processing',
           payment_status: formData.paymentMethod === 'cod' ? 'Pending' : 'Paid',
         });
@@ -133,32 +159,70 @@ export default function CheckoutPage() {
 
   const handleSendWhatsAppConfirmation = () => {
     if (!lastOrderDetails) return;
-    const msg = `Hello City Cosmetics Sunyani,\n\nI just placed an order on your website:\n*Order Ref:* #${lastOrderDetails.orderNumber}\n*Customer:* ${lastOrderDetails.customerName}\n*Phone:* ${lastOrderDetails.customerPhone}\n*Delivery Address:* ${lastOrderDetails.shippingAddress}\n*Total:* ${formatPrice(lastOrderDetails.total)}\n*Payment:* ${lastOrderDetails.paymentMethod}\n\nPlease confirm order preparation and dispatch in Sunyani. Thank you!`;
+    const isMomo = formData.paymentMethod === 'momo';
+    const msg = isMomo
+      ? `Hello City Cosmetics Sunyani,\n\nI just completed a Direct MoMo order on your website:\n*Order Ref:* #${lastOrderDetails.orderNumber}\n*MoMo Network:* ${formData.momoNetwork}\n*MoMo Sender:* ${formData.momoPhone}\n*MoMo Transaction ID:* ${formData.momoTransactionId.trim() || 'Awaiting manual check'}\n*Total Paid:* ${formatPrice(lastOrderDetails.total)}\n*Customer:* ${lastOrderDetails.customerName}\n*Delivery Address:* ${lastOrderDetails.shippingAddress}\n\nPlease confirm payment and prepare my dispatch in Sunyani. Medaase!`
+      : `Hello City Cosmetics Sunyani,\n\nI just placed an order on your website:\n*Order Ref:* #${lastOrderDetails.orderNumber}\n*Customer:* ${lastOrderDetails.customerName}\n*Phone:* ${lastOrderDetails.customerPhone}\n*Delivery Address:* ${lastOrderDetails.shippingAddress}\n*Total:* ${formatPrice(lastOrderDetails.total)}\n*Payment:* ${lastOrderDetails.paymentMethod}\n\nPlease confirm order preparation and dispatch in Sunyani. Thank you!`;
     const url = `https://wa.me/${SITE_CONFIG.whatsappNumber}?text=${encodeURIComponent(msg)}`;
     window.open(url, '_blank');
   };
 
   if (orderComplete) {
+    const isMomo = formData.paymentMethod === 'momo';
     return (
       <div className="min-h-screen bg-white py-16 flex items-center justify-center">
-        <div className="max-w-xl w-full mx-auto px-4 text-center bg-white p-8 sm:p-12 rounded-2xl shadow-xl border border-[#E5E7EB] animate-fadeIn space-y-6">
-          <div className="w-16 h-16 rounded-full bg-[#DCEBFA] text-[#0B1F3A] flex items-center justify-center mx-auto shadow-inner">
+        <div className="max-w-xl w-full mx-auto px-4 text-center bg-white p-8 sm:p-12 rounded-none shadow-xl border border-[#E5E7EB] animate-fadeIn space-y-6">
+          <div className="w-16 h-16 rounded-none bg-[#DCEBFA] text-[#0B1F3A] flex items-center justify-center mx-auto shadow-inner border border-[#174EA6]/20">
             <CheckCircle2 className="w-8 h-8 text-[#174EA6]" />
           </div>
 
           <div>
             <span className="text-xs uppercase tracking-widest text-[#174EA6] font-semibold">
-              Payment Confirmed &bull; Sunyani, Ghana
+              Order Registered &bull; Sunyani, Ghana
             </span>
             <h1 className="font-serif-luxury text-3xl font-normal text-[#0B1F3A] mt-1">
               Medaase! Thank You for Your Order!
             </h1>
             <p className="text-xs text-[#6B7280] mt-2">
-              Order reference: <strong className="text-[#0B1F3A] font-mono text-sm">{orderNumber}</strong>
+              Order reference: <strong className="text-[#0B1F3A] font-mono text-sm">#{orderNumber}</strong>
             </p>
           </div>
 
-          <div className="text-xs sm:text-sm text-[#4B5563] leading-relaxed bg-[#F5F9FE] p-5 rounded-xl border border-[#E5E7EB] text-left space-y-2">
+          {/* Payment summary box */}
+          {isMomo && (
+            <div className="bg-[#F5F9FE] border border-[#DCEBFA] p-4 rounded-none text-left space-y-2 text-xs">
+              <div className="flex items-center justify-between pb-2 border-b border-[#E5E7EB]">
+                <span className="font-semibold text-[#0B1F3A] uppercase tracking-wider text-[10px]">
+                  Mobile Money Verification
+                </span>
+                <span className="px-2 py-0.5 bg-[#0B1F3A] text-white text-[10px] font-mono font-semibold">
+                  {formData.momoNetwork}
+                </span>
+              </div>
+              <div className="grid grid-cols-2 gap-2 pt-1 font-mono text-[11px]">
+                <div>
+                  <span className="text-[#6B7280] block text-[10px] uppercase font-sans">MoMo TxID</span>
+                  <span className="font-bold text-emerald-800">
+                    {formData.momoTransactionId.trim() || 'Awaiting Confirmation'}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-[#6B7280] block text-[10px] uppercase font-sans">Sender Number</span>
+                  <span className="text-[#1F2937]">{formData.momoPhone}</span>
+                </div>
+                <div>
+                  <span className="text-[#6B7280] block text-[10px] uppercase font-sans">Merchant Paid</span>
+                  <span className="text-[#1F2937]">{SITE_CONFIG.momo?.merchantName || 'CITY COSMETICS'}</span>
+                </div>
+                <div>
+                  <span className="text-[#6B7280] block text-[10px] uppercase font-sans">Total Transferred</span>
+                  <span className="font-bold text-[#0B1F3A]">{formatPrice(lastOrderDetails?.total || total)}</span>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <div className="text-xs sm:text-sm text-[#4B5563] leading-relaxed bg-[#F5F9FE] p-5 rounded-none border border-[#E5E7EB] text-left space-y-2">
             <p className="font-semibold text-[#0B1F3A] flex items-center gap-1.5">
               <Sparkles className="w-4 h-4 text-[#174EA6]" /> Your botanical ritual is being hand-prepared.
             </p>
@@ -170,21 +234,24 @@ export default function CheckoutPage() {
           <div className="pt-2 flex flex-col gap-3">
             <button
               onClick={handleSendWhatsAppConfirmation}
-              className="w-full bg-[#25D366] hover:bg-[#20ba59] text-white py-3.5 px-6 rounded-md text-xs uppercase tracking-wider font-semibold flex items-center justify-center gap-2 shadow-sm transition-all"
+              className="w-full bg-[#25D366] hover:bg-[#20ba59] text-white py-3.5 px-6 rounded-none text-xs uppercase tracking-wider font-semibold flex items-center justify-center gap-2 shadow-sm transition-all"
             >
-              <MessageCircle className="w-4 h-4 fill-current" /> Send Order Notification to WhatsApp
+              <MessageCircle className="w-4 h-4 fill-current" />
+              <span>
+                {isMomo ? 'Send MoMo Payment Proof to WhatsApp' : 'Send Order Notification to WhatsApp'}
+              </span>
             </button>
 
             <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
               <Link
                 href="/shop"
-                className="bg-[#0B1F3A] hover:bg-[#174EA6] text-white text-xs uppercase tracking-widest font-semibold py-3.5 px-8 rounded-md shadow-sm transition-colors"
+                className="bg-[#0B1F3A] hover:bg-[#174EA6] text-white text-xs uppercase tracking-widest font-semibold py-3.5 px-8 rounded-none shadow-sm transition-colors"
               >
                 Continue Shopping
               </Link>
               <Link
                 href="/account"
-                className="bg-white border border-[#E5E7EB] text-[#0B1F3A] text-xs uppercase tracking-widest font-semibold py-3.5 px-6 rounded-md hover:border-[#174EA6] transition-colors"
+                className="bg-white border border-[#E5E7EB] text-[#0B1F3A] text-xs uppercase tracking-widest font-semibold py-3.5 px-6 rounded-none hover:border-[#174EA6] transition-colors"
               >
                 View in Account
               </Link>
@@ -384,26 +451,135 @@ export default function CheckoutPage() {
                   </button>
                 </div>
 
-                {/* MoMo Options */}
+                {/* MoMo Options (Direct Transfer & MoMoPay) */}
                 {formData.paymentMethod === 'momo' && (
-                  <div className="p-4 rounded-xl border border-[#DCEBFA] bg-[#F5F9FE] space-y-3">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-semibold text-[#0B1F3A]">
-                        Ghana Mobile Money
+                  <div className="p-4 sm:p-5 rounded-none border border-[#DCEBFA] bg-[#F5F9FE] space-y-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 pb-3 border-b border-[#E5E7EB]">
+                      <div>
+                        <span className="text-xs font-bold text-[#0B1F3A] uppercase tracking-wider block">
+                          Direct MoMo Transfer &amp; MoMoPay
+                        </span>
+                        <span className="text-[11px] text-[#6B7280]">
+                          Zero transaction fee &bull; Instant dispatch verification
+                        </span>
+                      </div>
+                      <span className="text-[10px] font-mono px-2 py-0.5 bg-[#0B1F3A] text-[#DCEBFA] uppercase tracking-widest w-fit">
+                        Official Sunyani Account
                       </span>
-                      <span className="text-[10px] text-[#6B7280]">MTN &bull; Telecel &bull; AT</span>
                     </div>
 
+                    {/* Official Merchant Credentials Card */}
+                    <div className="bg-white p-4 rounded-none border-2 border-[#174EA6]/30 shadow-xs space-y-3">
+                      <div className="flex items-center justify-between text-[11px] font-semibold text-[#174EA6]">
+                        <span>Official Account Credentials</span>
+                        <span>Recipient: {SITE_CONFIG.momo?.merchantName || 'CITY COSMETICS'}</span>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                        {/* Number */}
+                        <div className="bg-[#F5F9FE] p-2.5 border border-[#E5E7EB] flex flex-col justify-between">
+                          <span className="text-[10px] text-[#6B7280] uppercase tracking-wider block font-semibold">
+                            MoMo Number
+                          </span>
+                          <span className="font-mono text-xs font-bold text-[#0B1F3A] my-1">
+                            {SITE_CONFIG.momo?.mtnNumber || '055 965 0921'}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              handleCopy(SITE_CONFIG.momo?.mtnNumber || '055 965 0921', 'number')
+                            }
+                            className="inline-flex items-center justify-center gap-1 text-[10px] font-semibold text-[#174EA6] hover:text-[#0B1F3A] transition-colors pt-1 border-t border-[#E5E7EB]"
+                          >
+                            {copiedField === 'number' ? (
+                              <>
+                                <Check className="w-3 h-3 text-emerald-600" /> Copied!
+                              </>
+                            ) : (
+                              <>
+                                <Copy className="w-3 h-3" /> Copy Number
+                              </>
+                            )}
+                          </button>
+                        </div>
+
+                        {/* Amount */}
+                        <div className="bg-[#F5F9FE] p-2.5 border border-[#E5E7EB] flex flex-col justify-between">
+                          <span className="text-[10px] text-[#6B7280] uppercase tracking-wider block font-semibold">
+                            Exact Amount
+                          </span>
+                          <span className="font-mono text-xs font-bold text-[#174EA6] my-1">
+                            {formatPrice(total)}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => handleCopy(total.toFixed(2), 'amount')}
+                            className="inline-flex items-center justify-center gap-1 text-[10px] font-semibold text-[#174EA6] hover:text-[#0B1F3A] transition-colors pt-1 border-t border-[#E5E7EB]"
+                          >
+                            {copiedField === 'amount' ? (
+                              <>
+                                <Check className="w-3 h-3 text-emerald-600" /> Copied!
+                              </>
+                            ) : (
+                              <>
+                                <Copy className="w-3 h-3" /> Copy Amount
+                              </>
+                            )}
+                          </button>
+                        </div>
+
+                        {/* Reference */}
+                        <div className="bg-[#F5F9FE] p-2.5 border border-[#E5E7EB] flex flex-col justify-between">
+                          <span className="text-[10px] text-[#6B7280] uppercase tracking-wider block font-semibold">
+                            Payment Ref
+                          </span>
+                          <span className="font-mono text-xs font-bold text-[#0B1F3A] my-1">
+                            {orderRef}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => handleCopy(orderRef, 'ref')}
+                            className="inline-flex items-center justify-center gap-1 text-[10px] font-semibold text-[#174EA6] hover:text-[#0B1F3A] transition-colors pt-1 border-t border-[#E5E7EB]"
+                          >
+                            {copiedField === 'ref' ? (
+                              <>
+                                <Check className="w-3 h-3 text-emerald-600" /> Copied!
+                              </>
+                            ) : (
+                              <>
+                                <Copy className="w-3 h-3" /> Copy Ref
+                              </>
+                            )}
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Instructions Steps */}
+                      <div className="bg-[#FAF5E6] border border-[#F3E8B5] p-3 text-[11px] text-[#785E0E] space-y-1">
+                        <span className="font-bold text-[#0B1F3A] block text-[10px] uppercase tracking-wider">
+                          How to transfer via phone:
+                        </span>
+                        <ol className="list-decimal list-inside space-y-0.5 text-[11px] leading-relaxed">
+                          <li>Dial <strong>*170#</strong> (MTN) or <strong>*110#</strong> (Telecel / AT).</li>
+                          <li>Select <strong>Transfer Money</strong> or <strong>MoMoPay</strong> and send <strong>{formatPrice(total)}</strong> to <strong>055 965 0921</strong>.</li>
+                          <li>Recipient displays as: <strong>{SITE_CONFIG.momo?.merchantName || 'CITY COSMETICS'}</strong>.</li>
+                          <li>Enter Reference: <strong>{orderRef}</strong> and authorize with your PIN.</li>
+                          <li>Copy the <strong>Transaction ID</strong> from your SMS receipt and enter it below.</li>
+                        </ol>
+                      </div>
+                    </div>
+
+                    {/* Customer Sender Details & TxID Input */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
                       <div>
-                        <label className="text-[11px] font-medium text-[#6B7280] block mb-1">
+                        <label className="text-[11px] font-semibold text-[#1F2937] block mb-1">
                           Network Provider
                         </label>
                         <select
                           name="momoNetwork"
                           value={formData.momoNetwork}
                           onChange={handleInputChange}
-                          className="w-full bg-white border border-[#E5E7EB] rounded-md px-3 py-2 text-xs text-[#1F2937]"
+                          className="w-full bg-white border border-[#E5E7EB] rounded-none px-3 py-2 text-xs text-[#1F2937] focus:outline-none focus:border-[#0B1F3A]"
                         >
                           <option value="MTN Mobile Money">MTN Mobile Money</option>
                           <option value="Telecel Cash">Telecel Cash (Vodafone)</option>
@@ -412,8 +588,8 @@ export default function CheckoutPage() {
                       </div>
 
                       <div>
-                        <label className="text-[11px] font-medium text-[#6B7280] block mb-1">
-                          MoMo Wallet Number
+                        <label className="text-[11px] font-semibold text-[#1F2937] block mb-1">
+                          Your Sender Wallet Number *
                         </label>
                         <input
                           type="tel"
@@ -421,15 +597,34 @@ export default function CheckoutPage() {
                           required
                           value={formData.momoPhone}
                           onChange={handleInputChange}
-                          className="w-full bg-white border border-[#E5E7EB] rounded-md px-3 py-2 text-xs text-[#1F2937]"
+                          className="w-full bg-white border border-[#E5E7EB] rounded-none px-3 py-2 text-xs text-[#1F2937] focus:outline-none focus:border-[#0B1F3A]"
                           placeholder="024 123 4567"
                         />
                       </div>
-                    </div>
 
-                    <p className="text-[11px] text-[#6B7280] bg-white p-2.5 rounded-none border border-[#E5E7EB]">
-                      You will receive an instant payment push prompt on your handset to approve the GH₵ transaction.
-                    </p>
+                      <div className="sm:col-span-2">
+                        <div className="flex items-center justify-between mb-1">
+                          <label className="text-[11px] font-semibold text-[#0B1F3A]">
+                            MoMo Transaction ID (From SMS Receipt) *
+                          </label>
+                          <span className="text-[10px] text-[#174EA6] font-mono">
+                            e.g. 28491829402 or MTN-38291
+                          </span>
+                        </div>
+                        <input
+                          type="text"
+                          name="momoTransactionId"
+                          required={formData.paymentMethod === 'momo'}
+                          value={formData.momoTransactionId}
+                          onChange={handleInputChange}
+                          placeholder="Enter the Transaction ID from your confirmation SMS..."
+                          className="w-full bg-white border-2 border-[#174EA6]/40 rounded-none px-3 py-2.5 text-xs text-[#0B1F3A] font-mono focus:outline-none focus:border-[#0B1F3A]"
+                        />
+                        <p className="text-[10px] text-[#6B7280] mt-1">
+                          Our Sunyani dispatch desk matches this ID with our merchant notification to prepare your parcel immediately.
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 )}
 
