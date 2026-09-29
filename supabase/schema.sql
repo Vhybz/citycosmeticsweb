@@ -1,18 +1,16 @@
 -- ==============================================================================
--- City Cosmetics Sunyani - Enterprise Supabase Production Database Schema
+-- City Cosmetics Sunyani - Enterprise Non-Destructive Supabase Database Schema
 -- Location: Sunyani, Bono Region, Ghana
--- Features: 
---   1. Strict RLS Security & Idempotent Policies
---   2. Automatic Timestamp Triggers (updated_at)
---   3. Auto-Provisioning Profile Trigger on User Signup
---   4. Direct MoMo Transaction ID & Sunyani Dispatch Logistics
---   5. High-Performance B-Tree Indexes for Instant Lookups
---   6. Storage Buckets & Universal Public CDN Access Policies
---   7. Supabase Realtime Replication for Live Admin Orders
---   8. Complete Seed Data for Formulations, Lookbook & Categories
+-- 
+-- SAFE TO RUN ON AN EXISTING DATABASE:
+--   - Will NOT overwrite any products, categories, or images you already uploaded
+--   - Uses "ON CONFLICT DO NOTHING" across all seed operations
+--   - Adds missing columns non-destructively with "ADD COLUMN IF NOT EXISTS"
+--   - Recreates RLS policies safely with "DROP POLICY IF EXISTS"
+--   - Does NOT delete or drop any of your existing customer data
 -- ==============================================================================
 
--- Enable essential cryptographic & UUID extensions
+-- Enable essential cryptographic & UUID extensions safely
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
@@ -40,16 +38,14 @@ BEGIN
     NEW.email,
     COALESCE(NEW.raw_user_meta_data->>'phone', '')
   )
-  ON CONFLICT (id) DO UPDATE SET
-    email = EXCLUDED.email,
-    full_name = CASE WHEN profiles.full_name IS NULL OR profiles.full_name = '' THEN EXCLUDED.full_name ELSE profiles.full_name END;
+  ON CONFLICT (id) DO NOTHING;
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
 
 -- ==============================================================================
--- 2. TABLE DEFINITIONS
+-- 2. TABLE DEFINITIONS (NON-DESTRUCTIVE & SAFE FOR EXISTING DATA)
 -- ==============================================================================
 
 -- PROFILES TABLE (Extends Supabase Auth users)
@@ -160,6 +156,34 @@ CREATE TABLE IF NOT EXISTS public.reviews (
 
 
 -- ==============================================================================
+-- 2B. SAFE SCHEMA EVOLUTION (ADD COLUMNS NON-DESTRUCTIVELY TO EXISTING TABLES)
+-- ==============================================================================
+
+-- Safely add any new columns to existing orders table without breaking data
+ALTER TABLE IF EXISTS public.orders ADD COLUMN IF NOT EXISTS momo_transaction_id TEXT;
+ALTER TABLE IF EXISTS public.orders ADD COLUMN IF NOT EXISTS momo_network TEXT;
+ALTER TABLE IF EXISTS public.orders ADD COLUMN IF NOT EXISTS momo_phone TEXT;
+ALTER TABLE IF EXISTS public.orders ADD COLUMN IF NOT EXISTS customer_whatsapp TEXT;
+ALTER TABLE IF EXISTS public.orders ADD COLUMN IF NOT EXISTS customer_call_line TEXT;
+ALTER TABLE IF EXISTS public.orders ADD COLUMN IF NOT EXISTS delivery_fee NUMERIC(10, 2) DEFAULT 20.00;
+ALTER TABLE IF EXISTS public.orders ADD COLUMN IF NOT EXISTS subtotal NUMERIC(10, 2) DEFAULT 0.00;
+ALTER TABLE IF EXISTS public.orders ADD COLUMN IF NOT EXISTS dispatch_notes TEXT;
+ALTER TABLE IF EXISTS public.orders ADD COLUMN IF NOT EXISTS order_source TEXT DEFAULT 'website';
+
+-- Safely add columns to existing products table
+ALTER TABLE IF EXISTS public.products ADD COLUMN IF NOT EXISTS is_featured BOOLEAN DEFAULT false;
+ALTER TABLE IF EXISTS public.products ADD COLUMN IF NOT EXISTS compare_at_price NUMERIC(10, 2);
+ALTER TABLE IF EXISTS public.products ADD COLUMN IF NOT EXISTS skin_types TEXT[] DEFAULT '{}';
+ALTER TABLE IF EXISTS public.products ADD COLUMN IF NOT EXISTS variants JSONB DEFAULT '[]'::jsonb;
+ALTER TABLE IF EXISTS public.products ADD COLUMN IF NOT EXISTS stock INTEGER DEFAULT 50;
+
+-- Safely add columns to existing beauty images table
+ALTER TABLE IF EXISTS public.site_beauty_images ADD COLUMN IF NOT EXISTS category TEXT DEFAULT 'Skincare';
+ALTER TABLE IF EXISTS public.site_beauty_images ADD COLUMN IF NOT EXISTS display_order INTEGER DEFAULT 0;
+ALTER TABLE IF EXISTS public.site_beauty_images ADD COLUMN IF NOT EXISTS is_active BOOLEAN DEFAULT true;
+
+
+-- ==============================================================================
 -- 3. AUTOMATIC UPDATED_AT TRIGGERS
 -- ==============================================================================
 
@@ -213,7 +237,7 @@ CREATE INDEX IF NOT EXISTS idx_beauty_images_active ON public.site_beauty_images
 
 
 -- ==============================================================================
--- 5. ROW LEVEL SECURITY (RLS) POLICIES
+-- 5. ROW LEVEL SECURITY (RLS) POLICIES (SAFE RE-CREATION)
 -- ==============================================================================
 
 -- Profiles RLS
@@ -266,7 +290,7 @@ CREATE POLICY "Allow review creation" ON public.reviews FOR INSERT WITH CHECK (t
 
 
 -- ==============================================================================
--- 6. STORAGE BUCKETS & PUBLIC ACCESS POLICIES
+-- 6. STORAGE BUCKETS & PUBLIC ACCESS POLICIES (SAFE NO-CONFLICT)
 -- ==============================================================================
 
 INSERT INTO storage.buckets (id, name, public)
@@ -274,7 +298,7 @@ VALUES
   ('product-images', 'product-images', true),
   ('category-images', 'category-images', true),
   ('beauty-images', 'beauty-images', true)
-ON CONFLICT (id) DO UPDATE SET public = true;
+ON CONFLICT (id) DO NOTHING;
 
 -- Storage Read & Write Policies (Idempotent)
 DROP POLICY IF EXISTS "Public read for product-images" ON storage.objects;
@@ -329,10 +353,12 @@ END $$;
 
 
 -- ==============================================================================
--- 8. INITIAL SEED DATA
+-- 8. INITIAL SEED DATA (SAFE: ZERO CONFLICT WITH USER-UPLOADED DATA)
+-- Notice: ALL inserts below use "ON CONFLICT (id) DO NOTHING" so anything you
+-- have already uploaded or edited will NEVER be overwritten or replaced!
 -- ==============================================================================
 
--- Seed Categories
+-- Seed Categories (will NOT overwrite existing uploaded categories)
 INSERT INTO public.categories (id, name, slug, description, image_url, item_count, display_order)
 VALUES
   ('skincare', 'Skincare', 'skincare', 'Potent botanicals and clinical actives crafted in Sunyani for an effortless glass-skin glow.', '/beautyImages/ca20569827f857496b78c0666cb556c4.jpg', 12, 1),
@@ -340,14 +366,9 @@ VALUES
   ('fragrance', 'Fine Fragrance', 'fragrance', 'Sensory perfumes blending West African florals and modern tropical woods.', '/beautyImages/bd545c8751f20e872e51fc45f870cc99.jpg', 8, 3),
   ('body', 'Bath & Body', 'body', 'Silken body elixirs and scrubs infused with antioxidant oils.', '/beautyImages/61bc208cf17f0911e9f99c0810ccc200.jpg', 9, 4),
   ('sets', 'Curated Sets & Gifts', 'sets', 'Award-winning discovery routines and exclusive seasonal bundles.', '/beautyImages/cadd9c6e24c20cf8e79f77ff3f1e9c49.jpg', 6, 5)
-ON CONFLICT (id) DO UPDATE SET
-  name = EXCLUDED.name,
-  description = EXCLUDED.description,
-  image_url = EXCLUDED.image_url,
-  item_count = EXCLUDED.item_count,
-  display_order = EXCLUDED.display_order;
+ON CONFLICT (id) DO NOTHING;
 
--- Seed Living Radiance Archive Lookbook
+-- Seed Living Radiance Archive Lookbook (will NOT overwrite existing uploaded images)
 INSERT INTO public.site_beauty_images (id, image_url, tag, title, description, category, display_order, is_active)
 VALUES
   ('b1', '/beautyImages/1.jpg', 'Botanical Radiance', 'Flawless Melanin Barrier', 'Clean active botanical infusions providing all-day lit-from-within glow and climate resilience.', 'Skincare', 1, true),
@@ -358,14 +379,9 @@ VALUES
   ('b6', '/beautyImages/cc.jpg', 'Atelier Packaging', 'The Royal Blue Wardrobe', 'Signature cobalt flacons designed for sustainable refills and light-protected botanical potency.', 'Collections', 6, true),
   ('b7', '/beautyImages/e2660f8d3d6e02246ae67904661af3e7.jpg', 'Ghanaian Cocoa Butter', '5-in-1 Nourishing Care', 'Rich cold-pressed lipids that melt into skin with zero sticky residue under tropical heat.', 'Body', 7, true),
   ('b8', '/beautyImages/61bc208cf17f0911e9f99c0810ccc200.jpg', 'Botanical Elixir Duo', 'Vanilla Cashmere & Shea', 'Antioxidant plant seed oils engineered for silky, non-transfer body sheen and 48-hour moisture.', 'Body', 8, true)
-ON CONFLICT (id) DO UPDATE SET
-  title = EXCLUDED.title,
-  description = EXCLUDED.description,
-  image_url = EXCLUDED.image_url,
-  category = EXCLUDED.category,
-  tag = EXCLUDED.tag;
+ON CONFLICT (id) DO NOTHING;
 
--- Seed Products Catalog
+-- Seed Products Catalog (will NOT overwrite any product you have uploaded or modified)
 INSERT INTO public.products (id, slug, name, subtitle, category, price, compare_at_price, rating, review_count, images, description, benefits, ingredients, stock, is_featured)
 VALUES
   (
@@ -504,20 +520,9 @@ VALUES
     25,
     true
   )
-ON CONFLICT (id) DO UPDATE SET
-  name = EXCLUDED.name,
-  subtitle = EXCLUDED.subtitle,
-  category = EXCLUDED.category,
-  price = EXCLUDED.price,
-  compare_at_price = EXCLUDED.compare_at_price,
-  description = EXCLUDED.description,
-  benefits = EXCLUDED.benefits,
-  ingredients = EXCLUDED.ingredients,
-  images = EXCLUDED.images,
-  stock = EXCLUDED.stock,
-  is_featured = EXCLUDED.is_featured;
+ON CONFLICT (id) DO NOTHING;
 
--- Seed Sample Reviews
+-- Seed Sample Reviews (will NOT duplicate)
 INSERT INTO public.reviews (product_id, author, rating, title, comment, skin_type, verified)
 VALUES
   ('cc-01', 'Akosua Mensah (Sunyani)', 5, 'My skin is glowing non-stop', 'Delivered in Sunyani within 2 hours of payment! The Hydra-Dew serum is light, never oily in our heat.', 'Combination Skin', true),
