@@ -13,22 +13,67 @@ export async function POST(request: Request) {
       channel = 'store',
     } = body;
 
-    const recipient = SITE_CONFIG.dispatchAlertPhone || '0503574865';
-    const recipientIntl = SITE_CONFIG.dispatchAlertPhoneInternational || '233503574865';
+    const rawRecipient = (process.env.ADMIN_PHONE || SITE_CONFIG.dispatchAlertPhone || '0503574865').trim();
+    const cleanPhone = rawRecipient.replace(/[^0-9]/g, '');
+    const recipientIntl = cleanPhone.startsWith('0') ? `233${cleanPhone.slice(1)}` : cleanPhone;
+    const recipient = cleanPhone;
     const formattedAmount = typeof total === 'number' ? total.toFixed(2) : total;
 
     // The user's exact required instruction for the SMS alert:
     // "go and check whatsapp for order details, confirm payment of the amount and give order to delivery for dispatch"
     const smsMessage = `CITY COSMETICS: New order #${orderNumber} placed by ${customerName}! Total: GH₵ ${formattedAmount}. Please check WhatsApp for order details, confirm payment of the amount and give order to delivery for dispatch.`;
 
-    console.log(`[SMS DISPATCH ALERT] Triggered for Order #${orderNumber} to ${recipient}:`);
+    console.log(`[SMS DISPATCH ALERT] Triggered for Order #${orderNumber} to ${recipient} (${recipientIntl}):`);
     console.log(`[SMS BODY] ${smsMessage}`);
 
     let providerUsed = 'simulated';
     let providerResponse: any = null;
 
-    // 1. mNotify Ghana Integration (if MNOTIFY_API_KEY exists)
-    if (process.env.MNOTIFY_API_KEY) {
+    // 1. Arkesel Ghana Integration (Primary configured gateway)
+    if (process.env.ARKESEL_API_KEY) {
+      try {
+        const configuredSender = (process.env.ARKESEL_SENDER_ID || '').trim() || 'CityCosmet';
+        let res = await fetch('https://sms.arkesel.com/api/v2/sms/send', {
+          method: 'POST',
+          headers: {
+            'api-key': process.env.ARKESEL_API_KEY.trim(),
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            sender: configuredSender,
+            message: smsMessage,
+            recipients: [recipientIntl],
+          }),
+        });
+        providerResponse = await res.json();
+
+        // If custom sender ID is not yet approved in Arkesel account, fallback to default 'Arkesel' sender
+        if (providerResponse?.status === 'error' && configuredSender !== 'Arkesel') {
+          console.warn(`Arkesel custom sender [${configuredSender}] returned error. Retrying with default 'Arkesel' sender...`);
+          res = await fetch('https://sms.arkesel.com/api/v2/sms/send', {
+            method: 'POST',
+            headers: {
+              'api-key': process.env.ARKESEL_API_KEY.trim(),
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              sender: 'Arkesel',
+              message: smsMessage,
+              recipients: [recipientIntl],
+            }),
+          });
+          providerResponse = await res.json();
+        }
+
+        providerUsed = 'arkesel';
+        console.log('[ARKESEL RESULT]', providerResponse);
+      } catch (aErr) {
+        console.warn('Arkesel dispatch error:', aErr);
+      }
+    }
+
+    // 2. mNotify Ghana Integration (if MNOTIFY_API_KEY exists)
+    else if (process.env.MNOTIFY_API_KEY) {
       try {
         const res = await fetch(`https://api.mnotify.com/api/sms/quick?key=${process.env.MNOTIFY_API_KEY}`, {
           method: 'POST',
@@ -43,28 +88,6 @@ export async function POST(request: Request) {
         providerUsed = 'mnotify';
       } catch (mErr) {
         console.warn('mNotify dispatch error:', mErr);
-      }
-    }
-
-    // 2. Arkesel Ghana Integration (if ARKESEL_API_KEY exists)
-    else if (process.env.ARKESEL_API_KEY) {
-      try {
-        const res = await fetch('https://sms.arkesel.com/api/v2/sms/send', {
-          method: 'POST',
-          headers: {
-            'api-key': process.env.ARKESEL_API_KEY,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            sender: process.env.ARKESEL_SENDER_ID || 'CityCosmet',
-            message: smsMessage,
-            recipients: [recipientIntl],
-          }),
-        });
-        providerResponse = await res.json();
-        providerUsed = 'arkesel';
-      } catch (aErr) {
-        console.warn('Arkesel dispatch error:', aErr);
       }
     }
 
