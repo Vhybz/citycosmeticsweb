@@ -4,6 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { ArrowRight, Sparkles, Star, ShieldCheck, Heart } from 'lucide-react';
 import { Hero } from '@/components/Hero';
+import { BeautyMarquee } from '@/components/BeautyMarquee';
 import { CategorySection } from '@/components/CategorySection';
 import { ProductCard } from '@/components/ProductCard';
 import { SkinQuizTeaser } from '@/components/SkinQuizTeaser';
@@ -18,15 +19,18 @@ export default function HomePage() {
 
   return (
     <div className="space-y-0">
-      {/* 1. Cinematic Hero */}
+      {/* 1. Cinematic Hero with Dynamic Visual Toggle */}
       <Hero />
 
-      {/* 2. Bestsellers Section */}
+      {/* 2. Infinite Living Glow Marquee Ribbon */}
+      <BeautyMarquee />
+
+      {/* 3. Bestsellers Section (Clean Product Packshots) */}
       <section className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-12">
           <div>
             <div className="flex items-center gap-2">
-              <Sparkles className="w-3.5 h-3.5 text-[#174EA6]" />
+              <span className="w-1.5 h-1.5 rounded-full bg-[#174EA6]" />
               <span className="text-xs uppercase tracking-[0.25em] text-[#174EA6] font-semibold">
                 Client Favorites
               </span>
