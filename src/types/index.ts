@@ -6,12 +6,32 @@ export interface ProductVariant {
   stock: number;
 }
 
+export interface Category {
+  id: string;
+  name: string;
+  slug: string;
+  description: string;
+  image: string;
+  itemCount: number;
+}
+
+export interface BeautyImage {
+  id: string;
+  image: string;
+  tag: string;
+  title: string;
+  description: string;
+  category: string;
+  displayOrder?: number;
+  isActive?: boolean;
+}
+
 export interface Product {
   id: string;
   slug: string;
   name: string;
   subtitle: string;
-  category: 'skincare' | 'makeup' | 'fragrance' | 'body' | 'sets';
+  category: string;
   price: number;
   compareAtPrice?: number;
   rating: number;
@@ -22,7 +42,7 @@ export interface Product {
   ingredients: string;
   howToUse: string;
   skinTypes: ('All' | 'Dry' | 'Oily' | 'Combination' | 'Sensitive' | 'Normal')[];
-  tags: ('Bestseller' | 'New' | 'Clean' | 'Award Winner' | 'Vegan' | 'Limited Edition')[];
+  tags: ('Bestseller' | 'New' | 'Clean' | 'Award Winner' | 'Vegan' | 'Limited Edition' | string)[];
   variants?: ProductVariant[];
   stock: number;
   isFeatured?: boolean;
@@ -51,6 +71,7 @@ export interface Order {
   date: string;
   customerName: string;
   customerEmail: string;
+  customerPhone?: string;
   items: {
     productId: string;
     productName: string;
@@ -65,11 +86,12 @@ export interface Order {
     addressLine: string;
     city: string;
     state: string;
-    postalCode: string;
+    postalCode?: string;
     country: string;
   };
   status: 'Processing' | 'Shipped' | 'Delivered' | 'Cancelled';
   paymentStatus: 'Paid' | 'Pending';
+  paymentMethod?: string;
 }
 
 export interface UserProfile {
