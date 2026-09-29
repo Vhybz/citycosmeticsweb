@@ -263,6 +263,24 @@ export async function deleteCategoryFromSupabase(categoryId: string): Promise<{ 
 
 export const DEFAULT_BEAUTY_IMAGES: BeautyImage[] = [
   {
+    id: 'b-store-01',
+    image: '/beautyImages/5897727668306776133_121.jpg',
+    tag: 'Sunyani Boutique Team',
+    title: 'Authentic Store Inventory & MoMo Desk',
+    description: 'Direct from our Sunyani showroom shelves: Queen Helene Cocoa Butter, Jergens Enriching, and prompt dispatch.',
+    category: 'Showroom',
+    isActive: true,
+  },
+  {
+    id: 'b-store-02',
+    image: '/beautyImages/5897727668306776137_121.jpg',
+    tag: 'Boutique Radiance',
+    title: 'In-Store Melanin Vitality',
+    description: 'Natural radiant glow and client skin consultation inside our Sunyani store.',
+    category: 'Radiance',
+    isActive: true,
+  },
+  {
     id: 'b1',
     image: '/beautyImages/1.jpg',
     tag: 'Botanical Radiance',

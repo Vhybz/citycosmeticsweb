@@ -476,14 +476,16 @@ ON CONFLICT (id) DO NOTHING;
 -- Seed Living Radiance Archive Lookbook (will NOT overwrite existing uploaded images)
 INSERT INTO public.site_beauty_images (id, image_url, tag, title, description, category, display_order, is_active)
 VALUES
-  ('b1', '/beautyImages/1.jpg', 'Botanical Radiance', 'Flawless Melanin Barrier', 'Clean active botanical infusions providing all-day lit-from-within glow and climate resilience.', 'Skincare', 1, true),
-  ('b2', '/beautyImages/258826bc9ee800fab3177221c23668ef.jpg', 'Sunyani Showroom Suite', 'The Complete Daily Ritual', 'Artisanal small-batch compounded serums, body elixirs, and raw black soap formulated in Bono Region.', 'Sets', 2, true),
-  ('b3', '/beautyImages/ca.jpg', 'Clinical Hydration', 'Morning Awakening Ritual', 'Triple-molecular Hyaluronic hydration delivering supple, glass-skin resilience from first application.', 'Skincare', 3, true),
-  ('b4', '/beautyImages/2.jpg', 'Bio-Active Vitamin C', 'Tone Clarifying Complex', 'Dermatologist-tested antioxidant formulations that defend against hyperpigmentation and sun fatigue.', 'Skincare', 4, true),
-  ('b5', '/beautyImages/3.jpg', 'Clinical Proof', '24-Hour Barrier Defense', 'Clinically proven Before & After results showing visible texture softening and dry skin alleviation.', 'Body', 5, true),
-  ('b6', '/beautyImages/cc.jpg', 'Atelier Packaging', 'The Royal Blue Wardrobe', 'Signature cobalt flacons designed for sustainable refills and light-protected botanical potency.', 'Collections', 6, true),
-  ('b7', '/beautyImages/e2660f8d3d6e02246ae67904661af3e7.jpg', 'Ghanaian Cocoa Butter', '5-in-1 Nourishing Care', 'Rich cold-pressed lipids that melt into skin with zero sticky residue under tropical heat.', 'Body', 7, true),
-  ('b8', '/beautyImages/61bc208cf17f0911e9f99c0810ccc200.jpg', 'Botanical Elixir Duo', 'Vanilla Cashmere & Shea', 'Antioxidant plant seed oils engineered for silky, non-transfer body sheen and 48-hour moisture.', 'Body', 8, true)
+  ('b-store-01', '/beautyImages/5897727668306776133_121.jpg', 'Sunyani Boutique Team', 'Authentic Store Inventory & MoMo Desk', 'Direct from our Sunyani showroom shelves: Queen Helene Cocoa Butter, Jergens Enriching, and prompt dispatch.', 'Showroom', 1, true),
+  ('b-store-02', '/beautyImages/5897727668306776137_121.jpg', 'Boutique Radiance', 'In-Store Melanin Vitality', 'Natural radiant glow and client skin consultation inside our Sunyani store.', 'Radiance', 2, true),
+  ('b1', '/beautyImages/1.jpg', 'Botanical Radiance', 'Flawless Melanin Barrier', 'Clean active botanical infusions providing all-day lit-from-within glow and climate resilience.', 'Skincare', 3, true),
+  ('b2', '/beautyImages/258826bc9ee800fab3177221c23668ef.jpg', 'Sunyani Showroom Suite', 'The Complete Daily Ritual', 'Artisanal small-batch compounded serums, body elixirs, and raw black soap formulated in Bono Region.', 'Sets', 4, true),
+  ('b3', '/beautyImages/ca.jpg', 'Clinical Hydration', 'Morning Awakening Ritual', 'Triple-molecular Hyaluronic hydration delivering supple, glass-skin resilience from first application.', 'Skincare', 5, true),
+  ('b4', '/beautyImages/2.jpg', 'Bio-Active Vitamin C', 'Tone Clarifying Complex', 'Dermatologist-tested antioxidant formulations that defend against hyperpigmentation and sun fatigue.', 'Skincare', 6, true),
+  ('b5', '/beautyImages/3.jpg', 'Clinical Proof', '24-Hour Barrier Defense', 'Clinically proven Before & After results showing visible texture softening and dry skin alleviation.', 'Body', 7, true),
+  ('b6', '/beautyImages/cc.jpg', 'Atelier Packaging', 'The Royal Blue Wardrobe', 'Signature cobalt flacons designed for sustainable refills and light-protected botanical potency.', 'Collections', 8, true),
+  ('b7', '/beautyImages/e2660f8d3d6e02246ae67904661af3e7.jpg', 'Ghanaian Cocoa Butter', '5-in-1 Nourishing Care', 'Rich cold-pressed lipids that melt into skin with zero sticky residue under tropical heat.', 'Body', 9, true),
+  ('b8', '/beautyImages/61bc208cf17f0911e9f99c0810ccc200.jpg', 'Botanical Elixir Duo', 'Vanilla Cashmere & Shea', 'Antioxidant plant seed oils engineered for silky, non-transfer body sheen and 48-hour moisture.', 'Body', 10, true)
 ON CONFLICT (id) DO NOTHING;
 
 -- Seed Products Catalog (will NOT overwrite any product you have uploaded or modified)

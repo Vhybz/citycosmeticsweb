@@ -29,6 +29,28 @@ import {
 
 const INITIAL_BUSINESS_GALLERY: BeautyImage[] = [
   {
+    id: 'gal-real-01',
+    image: '/beautyImages/5897727668306776133_121.jpg',
+    title: 'Sunyani Boutique Team & Direct Store Stock',
+    tag: 'Boutique Team',
+    category: 'Showroom & Shelves',
+    location: 'City Cosmetics Sunyani Main Boutique',
+    description: 'Our in-store skincare advisor ready with authentic Queen Helene Cocoa Butter, Jergens Enriching Shea Butter, and fresh stock. Instant MoMo payments and same-day Sunyani collection.',
+    displayOrder: 1,
+    isActive: true,
+  },
+  {
+    id: 'gal-real-02',
+    image: '/beautyImages/5897727668306776137_121.jpg',
+    title: 'Radiant In-Boutique Client Glow',
+    tag: 'Client Glow',
+    category: 'Client Glow & Radiance',
+    location: 'Sunyani Showroom Consultation Area',
+    description: 'Natural melanin radiance and nourished skin vitality celebrated inside our Sunyani boutique.',
+    displayOrder: 2,
+    isActive: true,
+  },
+  {
     id: 'gal-01',
     image: '/beautyImages/cadd9c6e24c20cf8e79f77ff3f1e9c49.jpg',
     title: 'Lasgidi Fine Fragrance Mists Showroom Display',
@@ -36,7 +58,7 @@ const INITIAL_BUSINESS_GALLERY: BeautyImage[] = [
     category: 'Showroom & Shelves',
     location: 'Sunyani Showroom - Display Shelf 1',
     description: 'Authentic shelf display of our popular Lasgidi Fine Fragrance Mists lineup at our Sunyani boutique. Ready for immediate in-store collection or regional delivery.',
-    displayOrder: 1,
+    displayOrder: 3,
     isActive: true,
   },
   {
