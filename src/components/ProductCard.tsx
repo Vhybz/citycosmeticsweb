@@ -2,12 +2,13 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Heart, Eye, ShoppingBag, Star, Check } from 'lucide-react';
+import { Heart, Eye, ShoppingBag, Star, Check, MessageCircle } from 'lucide-react';
 import { Product, ProductVariant } from '@/types';
 import { useCart } from '@/lib/cartContext';
 import { useWishlist } from '@/lib/wishlistContext';
 import { useQuickView } from '@/lib/quickViewContext';
 import { formatPrice } from '@/lib/formatPrice';
+import { SITE_CONFIG } from '@/lib/siteConfig';
 
 interface ProductCardProps {
   product: Product;
@@ -100,15 +101,26 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           />
         </button>
 
-        {/* Quick View Floating Button */}
-        <div className="absolute bottom-3 inset-x-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+        {/* Quick View & WhatsApp Floating Action Buttons */}
+        <div className="absolute bottom-3 inset-x-3 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
           <button
             onClick={handleQuickViewClick}
-            className="flex-1 bg-white/95 hover:bg-[#F5F9FE] text-[#0B1F3A] hover:text-[#174EA6] py-2.5 px-3 rounded-none text-[11px] font-semibold tracking-wider uppercase backdrop-blur-md shadow-sm flex items-center justify-center gap-1.5 transition-all hover:shadow-md border border-[#E5E7EB]"
+            className="flex-1 bg-white/95 hover:bg-[#F5F9FE] text-[#0B1F3A] hover:text-[#174EA6] py-2 px-2.5 rounded-none text-[10px] font-semibold tracking-wider uppercase backdrop-blur-md shadow-sm flex items-center justify-center gap-1.5 transition-all hover:shadow-md border border-[#E5E7EB]"
           >
             <Eye className="w-3.5 h-3.5 text-[#174EA6]" />
             Quick View
           </button>
+          <a
+            href={`https://wa.me/${SITE_CONFIG.whatsappNumber}?text=${encodeURIComponent(`Hello City Cosmetics Sunyani, I would like to order: ${product.name} (${formatPrice(displayPrice)}) for delivery/pickup.`)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => e.stopPropagation()}
+            className="bg-[#25D366] hover:bg-[#1EBE5D] text-white px-3 py-2 rounded-none text-[10px] font-semibold tracking-wider uppercase backdrop-blur-md shadow-sm flex items-center justify-center gap-1 transition-all"
+            title="Instant Order on WhatsApp"
+          >
+            <MessageCircle className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Order</span>
+          </a>
         </div>
       </div>
 

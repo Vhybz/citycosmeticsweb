@@ -15,14 +15,16 @@ import {
   Check,
   CheckCircle,
   Share2,
+  MessageCircle,
 } from 'lucide-react';
 import { PRODUCTS_DATA, MOCK_REVIEWS } from '@/lib/productsData';
 import { ProductCard } from '@/components/ProductCard';
+import { BeforeAfterSlider } from '@/components/BeforeAfterSlider';
 import { useCart } from '@/lib/cartContext';
 import { useWishlist } from '@/lib/wishlistContext';
 import { ProductVariant, Review } from '@/types';
 import { formatPrice } from '@/lib/formatPrice';
-import { WhatsAppButton } from '@/components/WhatsAppButton';
+import { SITE_CONFIG } from '@/lib/siteConfig';
 
 export default function ProductDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const resolvedParams = use(params);
@@ -46,9 +48,11 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
   // Accordion state
   const [openAccordion, setOpenAccordion] = useState<string>('benefits');
 
-  // Customer reviews for this product (or fallback)
+  // Customer reviews for this product
   const [reviews, setReviews] = useState<Review[]>(MOCK_REVIEWS);
   const [newReviewAuthor, setNewReviewAuthor] = useState('');
+  const [newReviewTitle, setNewReviewTitle] = useState('');
+  const [newReviewSkinType, setNewReviewSkinType] = useState('Dry');
   const [newReviewRating, setNewReviewRating] = useState(5);
   const [newReviewComment, setNewReviewComment] = useState('');
   const [reviewSubmitted, setReviewSubmitted] = useState(false);
@@ -80,18 +84,19 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
     const newRev: Review = {
       id: `rev-${Date.now()}`,
       productId: product.id,
-      author: newReviewAuthor,
+      author: newReviewAuthor.trim(),
       rating: newReviewRating,
       date: 'Just now',
-      title: 'Verified Customer Experience',
-      comment: newReviewComment,
+      title: newReviewTitle.trim() || 'Verified Customer Experience',
+      comment: newReviewComment.trim(),
       verified: true,
-      skinType: 'All',
+      skinType: newReviewSkinType as any,
     };
 
     setReviews([newRev, ...reviews]);
     setReviewSubmitted(true);
     setNewReviewAuthor('');
+    setNewReviewTitle('');
     setNewReviewComment('');
   };
 
@@ -278,31 +283,32 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
                 </div>
               )}
 
-              {/* Quantity & Add to Cart Button */}
-              <div className="mt-8 pt-6 border-t border-[#E5E7EB] space-y-4">
-                <div className="flex items-center gap-4">
-                  {/* Quantity selector */}
-                  <div className="flex items-center border border-[#E5E7EB] rounded-md px-4 py-2.5 bg-[#F5F9FE]">
+              {/* Quantity & Add to Cart & WhatsApp Order Buttons */}
+              <div className="mt-8 pt-6 border-t border-[#E5E7EB] space-y-3">
+                {/* Row 1: Quantity selector & Add to Bag */}
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center border border-[#E5E7EB] rounded-none px-3.5 py-3 bg-[#F5F9FE]">
                     <button
                       onClick={() => setQuantity(Math.max(1, quantity - 1))}
                       className="text-sm font-bold text-[#6B7280] hover:text-[#0B1F3A] px-2"
+                      aria-label="Decrease quantity"
                     >
                       -
                     </button>
-                    <span className="text-sm font-semibold px-3 text-[#0B1F3A]">{quantity}</span>
+                    <span className="text-sm font-semibold px-3 text-[#0B1F3A] font-mono">{quantity}</span>
                     <button
                       onClick={() => setQuantity(quantity + 1)}
                       className="text-sm font-bold text-[#6B7280] hover:text-[#0B1F3A] px-2"
+                      aria-label="Increase quantity"
                     >
                       +
                     </button>
                   </div>
 
-                  {/* Add to Bag Button */}
                   <button
                     onClick={handleAddToCart}
                     disabled={isAdded}
-                    className={`flex-1 py-4 px-8 rounded-md text-xs uppercase tracking-widest font-semibold flex items-center justify-center gap-3 transition-all ${
+                    className={`flex-1 py-3.5 px-6 rounded-none text-xs uppercase tracking-widest font-semibold flex items-center justify-center gap-2.5 transition-all ${
                       isAdded
                         ? 'bg-[#174EA6] text-white shadow-md'
                         : 'bg-[#0B1F3A] hover:bg-[#174EA6] text-white shadow-sm hover:shadow-md'
@@ -319,17 +325,20 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
                       </>
                     )}
                   </button>
-
-                  <WhatsAppButton
-                    productName={product.name}
-                    variantName={selectedVariant?.name}
-                    price={currentPrice}
-                    quantity={quantity}
-                    variant="primary"
-                    text="Order via WhatsApp"
-                    className="w-full py-3.5 px-6 text-xs uppercase tracking-wider font-semibold rounded-md"
-                  />
                 </div>
+
+                {/* Row 2: Instant WhatsApp Order Button */}
+                <a
+                  href={`https://wa.me/${SITE_CONFIG.whatsappNumber}?text=${encodeURIComponent(
+                    `Hello City Cosmetics Sunyani,\n\nI want to order:\n*Product:* ${product.name}${selectedVariant ? ` (${selectedVariant.name})` : ''}\n*Quantity:* ${quantity}\n*Total Price:* ${formatPrice(currentPrice * quantity)}\n\nPlease confirm showroom pickup or immediate delivery in Sunyani/Ghana. Thank you!`
+                  )}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full bg-[#25D366] hover:bg-[#1EBE5D] text-white py-3.5 px-6 rounded-none text-xs uppercase tracking-wider font-semibold flex items-center justify-center gap-2 transition-all shadow-sm"
+                >
+                  <MessageCircle className="w-4 h-4" />
+                  <span>Direct Order on WhatsApp &bull; Fast Sunyani Dispatch</span>
+                </a>
 
                 {/* Guarantees row */}
                 <div className="grid grid-cols-2 gap-3 pt-2 text-[11px] text-[#6B7280]">
@@ -420,12 +429,20 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
           </div>
         </div>
 
-        {/* Customer Reviews & Feedback Submission */}
+        {/* Clinical Proof Before/After Comparison */}
+        <div className="mt-16">
+          <BeforeAfterSlider
+            title={`Clinical Results & Transformation with ${product.name}`}
+            subtitle="Documented visible texture softening and barrier hydration under tropical climate conditions."
+          />
+        </div>
+
+        {/* Customer Reviews Section with Form */}
         <section className="mt-20 pt-12 border-t border-[#E5E7EB]">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 gap-4">
+          <div className="flex items-center justify-between mb-8">
             <div>
               <span className="text-xs uppercase tracking-[0.25em] text-[#174EA6] font-semibold">
-                Customer Community
+                Customer Testimonials
               </span>
               <h2 className="font-serif-luxury text-3xl font-normal text-[#0B1F3A] mt-1">
                 Verified Reviews ({reviews.length})
@@ -439,7 +456,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
               {reviews.map((rev) => (
                 <div
                   key={rev.id}
-                  className="bg-white p-5 rounded-xl border border-[#E5E7EB] shadow-xs space-y-2"
+                  className="bg-white p-5 rounded-none border border-[#E5E7EB] shadow-xs space-y-2"
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex text-amber-500">
@@ -451,11 +468,18 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
                   </div>
                   <h4 className="text-sm font-semibold text-[#0B1F3A]">{rev.title}</h4>
                   <p className="text-xs sm:text-sm text-[#4B5563] leading-relaxed">{rev.comment}</p>
-                  <div className="pt-2 flex items-center gap-2 text-xs text-[#6B7280]">
-                    <span className="font-semibold text-[#0B1F3A]">{rev.author}</span>
-                    {rev.verified && (
-                      <span className="text-[#174EA6] flex items-center gap-0.5 text-[11px] font-medium">
-                        <CheckCircle className="w-3 h-3" /> Verified Buyer
+                  <div className="pt-2 flex items-center justify-between text-xs text-[#6B7280]">
+                    <div className="flex items-center gap-2">
+                      <span className="font-semibold text-[#0B1F3A]">{rev.author}</span>
+                      {rev.verified && (
+                        <span className="text-[#174EA6] flex items-center gap-0.5 text-[11px] font-medium">
+                          <CheckCircle className="w-3 h-3" /> Verified Buyer
+                        </span>
+                      )}
+                    </div>
+                    {rev.skinType && (
+                      <span className="text-[10px] uppercase font-mono px-2 py-0.5 bg-[#F5F9FE] border border-[#E5E7EB]">
+                        Skin: {rev.skinType}
                       </span>
                     )}
                   </div>
@@ -464,31 +488,32 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
             </div>
 
             {/* Write a Review Box */}
-            <div className="lg:col-span-5 bg-[#F5F9FE] p-6 rounded-xl border border-[#E5E7EB] shadow-xs h-fit space-y-4">
+            <div className="lg:col-span-5 bg-[#F5F9FE] p-6 rounded-none border border-[#E5E7EB] shadow-xs h-fit space-y-4">
               <h3 className="font-serif-luxury text-lg font-semibold text-[#0B1F3A]">
                 Share Your Experience
               </h3>
               <p className="text-xs text-[#6B7280]">
-                Tell our community how {product.name} feels on your skin.
+                Tell our Sunyani community how {product.name} feels on your skin.
               </p>
 
               {reviewSubmitted ? (
-                <div className="bg-[#DCEBFA] text-[#0B1F3A] p-4 rounded-md text-xs font-semibold flex items-center gap-2">
+                <div className="bg-[#DCEBFA] text-[#0B1F3A] p-4 rounded-none text-xs font-semibold flex items-center gap-2">
                   <CheckCircle className="w-4 h-4 text-[#174EA6]" /> Thank you! Your review has been posted.
                 </div>
               ) : (
-                <form onSubmit={handleReviewSubmit} className="space-y-3">
+                <form onSubmit={handleReviewSubmit} className="space-y-3.5">
                   <div>
-                    <label className="text-xs font-medium text-[#1F2937] block mb-1">
-                      Your Rating:
+                    <label className="text-xs font-semibold text-[#0B1F3A] block mb-1">
+                      Your Rating *
                     </label>
-                    <div className="flex gap-1">
+                    <div className="flex gap-1.5">
                       {[1, 2, 3, 4, 5].map((star) => (
                         <button
                           type="button"
                           key={star}
                           onClick={() => setNewReviewRating(star)}
-                          className="p-1 text-amber-500"
+                          className="p-1 text-amber-500 hover:scale-110 transition-transform"
+                          title={`${star} Star${star > 1 ? 's' : ''}`}
                         >
                           <Star
                             className={`w-5 h-5 ${
@@ -501,20 +526,53 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
                   </div>
 
                   <div>
-                    <label className="text-xs font-medium text-[#1F2937] block mb-1">Name:</label>
+                    <label className="text-xs font-semibold text-[#0B1F3A] block mb-1">
+                      Your Skin Type
+                    </label>
+                    <div className="flex flex-wrap gap-1.5">
+                      {['All', 'Dry', 'Oily', 'Combination', 'Sensitive'].map((type) => (
+                        <button
+                          type="button"
+                          key={type}
+                          onClick={() => setNewReviewSkinType(type)}
+                          className={`px-2.5 py-1 text-[11px] uppercase tracking-wider font-medium border transition-colors ${
+                            newReviewSkinType === type
+                              ? 'bg-[#0B1F3A] text-white border-[#0B1F3A]'
+                              : 'bg-white text-[#6B7280] border-[#E5E7EB] hover:border-[#0B1F3A]'
+                          }`}
+                        >
+                          {type}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-semibold text-[#0B1F3A] block mb-1">Name *</label>
                     <input
                       type="text"
                       required
                       value={newReviewAuthor}
                       onChange={(e) => setNewReviewAuthor(e.target.value)}
                       placeholder="e.g. Eleanor W."
-                      className="w-full bg-white border border-[#E5E7EB] rounded-md px-3 py-2 text-xs text-[#1F2937] focus:outline-none focus:border-[#0B1F3A]"
+                      className="w-full bg-white border border-[#E5E7EB] rounded-none px-3 py-2 text-xs text-[#1F2937] focus:outline-none focus:border-[#0B1F3A]"
                     />
                   </div>
 
                   <div>
-                    <label className="text-xs font-medium text-[#1F2937] block mb-1">
-                      Review Comments:
+                    <label className="text-xs font-semibold text-[#0B1F3A] block mb-1">Review Headline</label>
+                    <input
+                      type="text"
+                      value={newReviewTitle}
+                      onChange={(e) => setNewReviewTitle(e.target.value)}
+                      placeholder="e.g. Incredible hydration under Ghana heat"
+                      className="w-full bg-white border border-[#E5E7EB] rounded-none px-3 py-2 text-xs text-[#1F2937] focus:outline-none focus:border-[#0B1F3A]"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-semibold text-[#0B1F3A] block mb-1">
+                      Review Comments *
                     </label>
                     <textarea
                       required
@@ -522,15 +580,15 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
                       value={newReviewComment}
                       onChange={(e) => setNewReviewComment(e.target.value)}
                       placeholder="Describe hydration, scent, texture, or results..."
-                      className="w-full bg-white border border-[#E5E7EB] rounded-md px-3 py-2 text-xs text-[#1F2937] focus:outline-none focus:border-[#0B1F3A]"
+                      className="w-full bg-white border border-[#E5E7EB] rounded-none px-3 py-2 text-xs text-[#1F2937] focus:outline-none focus:border-[#0B1F3A]"
                     />
                   </div>
 
                   <button
                     type="submit"
-                    className="w-full bg-[#0B1F3A] hover:bg-[#174EA6] text-white text-xs uppercase tracking-wider font-semibold py-3 rounded-md shadow-sm transition-colors"
+                    className="w-full bg-[#0B1F3A] hover:bg-[#174EA6] text-white text-xs uppercase tracking-wider font-semibold py-3 rounded-none shadow-sm transition-colors"
                   >
-                    Post Review
+                    Submit Verified Review
                   </button>
                 </form>
               )}

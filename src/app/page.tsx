@@ -9,6 +9,7 @@ import { CategorySection } from '@/components/CategorySection';
 import { ProductCard } from '@/components/ProductCard';
 import { SkinQuizTeaser } from '@/components/SkinQuizTeaser';
 import { BrandStory } from '@/components/BrandStory';
+import { BeforeAfterSlider } from '@/components/BeforeAfterSlider';
 import { ReviewsSection } from '@/components/ReviewsSection';
 import { PRODUCTS_DATA } from '@/lib/productsData';
 import { formatPrice } from '@/lib/formatPrice';
@@ -127,7 +128,10 @@ export default function HomePage() {
       {/* 6. Brand Story & Ethical Philosophy */}
       <BrandStory />
 
-      {/* 7. Customer Reviews & Ratings */}
+      {/* 7. Clinical Proof & Hydration Before/After Slider */}
+      <BeforeAfterSlider />
+
+      {/* 8. Customer Reviews & Ratings */}
       <ReviewsSection />
 
       {/* 8. Social UGC Grid (#CityCosmeticsGlow) */}

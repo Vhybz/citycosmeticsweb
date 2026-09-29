@@ -36,6 +36,7 @@ import {
   Activity,
   Calendar,
   ArrowUpRight,
+  Printer,
 } from 'lucide-react';
 import { PRODUCTS_DATA, CATEGORIES } from '@/lib/productsData';
 import { Product, Category, BeautyImage } from '@/types';
@@ -75,6 +76,7 @@ export default function AdminPage() {
   const [orders, setOrders] = useState<any[]>([]);
   const [isLoadingData, setIsLoadingData] = useState<boolean>(false);
   const [notification, setNotification] = useState<string>('');
+  const [printingOrder, setPrintingOrder] = useState<any | null>(null);
 
   // Products UI State
   const [searchQuery, setSearchQuery] = useState('');
@@ -1770,13 +1772,23 @@ export default function AdminPage() {
                           </select>
                         </td>
                         <td className="py-3.5 px-4 text-right">
-                          <button
-                            onClick={() => sendWhatsAppDispatchNotice(order)}
-                            className="inline-flex items-center gap-1.5 text-xs font-semibold text-white bg-[#25D366] hover:bg-[#20ba59] px-3 py-1.5 rounded-none shadow-xs transition-colors"
-                          >
-                            <MessageCircle className="w-3.5 h-3.5 fill-current" />
-                            <span>WhatsApp Dispatch</span>
-                          </button>
+                          <div className="flex items-center justify-end gap-2">
+                            <button
+                              onClick={() => setPrintingOrder(order)}
+                              className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#0B1F3A] bg-[#F5F9FE] hover:bg-[#E5E7EB] border border-[#E5E7EB] px-2.5 py-1.5 rounded-none transition-colors"
+                              title="Print Official Packing Slip & Waybill"
+                            >
+                              <Printer className="w-3.5 h-3.5 text-[#174EA6]" />
+                              <span>Waybill</span>
+                            </button>
+                            <button
+                              onClick={() => sendWhatsAppDispatchNotice(order)}
+                              className="inline-flex items-center gap-1.5 text-xs font-semibold text-white bg-[#25D366] hover:bg-[#20ba59] px-3 py-1.5 rounded-none shadow-xs transition-colors"
+                            >
+                              <MessageCircle className="w-3.5 h-3.5 fill-current" />
+                              <span>WhatsApp</span>
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     ))}
@@ -2597,6 +2609,193 @@ export default function AdminPage() {
               >
                 <Save className="w-3.5 h-3.5" /> Save Changes
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ====================================================================
+          MODAL: OFFICIAL PRINTABLE PACKING SLIP & COURIER WAYBILL
+          ==================================================================== */}
+      {printingOrder && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/75 backdrop-blur-sm animate-fadeIn">
+          <div className="bg-white max-w-2xl w-full border-2 border-[#0B1F3A] shadow-2xl p-6 sm:p-8 rounded-none max-h-[95vh] overflow-y-auto print:p-0 print:border-0 print:max-h-none print:shadow-none">
+            {/* Top Toolbar (Hidden on actual print) */}
+            <div className="flex items-center justify-between pb-4 border-b border-[#E5E7EB] mb-6 print:hidden">
+              <span className="text-xs uppercase tracking-widest font-mono text-[#174EA6] font-semibold">
+                Print Preview &bull; Courier Waybill
+              </span>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => window.print()}
+                  className="bg-[#0B1F3A] hover:bg-[#174EA6] text-white px-4 py-2 text-xs uppercase tracking-wider font-semibold flex items-center gap-1.5 transition-colors shadow-sm"
+                >
+                  <Printer className="w-4 h-4 text-[#DCEBFA]" />
+                  <span>Print Waybill</span>
+                </button>
+                <button
+                  onClick={() => setPrintingOrder(null)}
+                  className="p-2 border border-[#E5E7EB] hover:bg-[#F5F9FE] text-[#6B7280]"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+
+            {/* Official Printable Waybill Body */}
+            <div className="space-y-6 text-[#1F2937] font-sans">
+              {/* Header Letterhead */}
+              <div className="flex justify-between items-start border-b-2 border-[#0B1F3A] pb-4">
+                <div>
+                  <h1 className="font-serif-luxury text-2xl tracking-[0.2em] uppercase font-bold text-[#0B1F3A]">
+                    CITY COSMETICS
+                  </h1>
+                  <p className="text-[10px] tracking-[0.3em] uppercase text-[#174EA6] font-mono mt-0.5">
+                    SUNYANI SHOWROOM &bull; DISPATCH HUB
+                  </p>
+                  <p className="text-[11px] text-[#6B7280] mt-1">
+                    Plot 14, Commercial Avenue &bull; Sunyani Central, Bono Region, Ghana
+                  </p>
+                  <p className="text-[11px] text-[#6B7280]">
+                    Concierge Hotline / WhatsApp: +233 (0)55 965 0921
+                  </p>
+                </div>
+
+                <div className="text-right">
+                  <div className="inline-block bg-[#0B1F3A] text-white px-3 py-1 text-xs uppercase tracking-widest font-bold mb-1">
+                    OFFICIAL WAYBILL
+                  </div>
+                  <p className="font-mono text-xs font-bold text-[#0B1F3A]">
+                    #{printingOrder.id}
+                  </p>
+                  <p className="text-[11px] text-[#6B7280] font-mono">
+                    Date: {printingOrder.date || new Date().toISOString().split('T')[0]}
+                  </p>
+                </div>
+              </div>
+
+              {/* Delivery Consignee & Order Metadata */}
+              <div className="grid grid-cols-2 gap-4 p-4 bg-[#F5F9FE] border border-[#E5E7EB] text-xs">
+                <div>
+                  <span className="text-[10px] uppercase font-bold tracking-wider text-[#6B7280] block mb-1">
+                    Consignee / Customer Details:
+                  </span>
+                  <p className="font-bold text-sm text-[#0B1F3A]">{printingOrder.customer}</p>
+                  <p className="font-mono text-xs text-[#1F2937] mt-0.5">
+                    {printingOrder.phone || 'No phone provided'}
+                  </p>
+                  <p className="text-xs text-[#6B7280] mt-0.5">{printingOrder.email}</p>
+                  <p className="text-xs font-medium text-[#0B1F3A] mt-1.5">
+                    <strong>Delivery Address:</strong>{' '}
+                    {printingOrder.shippingAddress || 'Sunyani Central Showroom Pickup'}
+                  </p>
+                </div>
+
+                <div>
+                  <span className="text-[10px] uppercase font-bold tracking-wider text-[#6B7280] block mb-1">
+                    Dispatch & Logistics Info:
+                  </span>
+                  <p className="text-xs">
+                    <strong>Status:</strong>{' '}
+                    <span className="uppercase font-semibold text-[#174EA6]">
+                      {printingOrder.status}
+                    </span>
+                  </p>
+                  <p className="text-xs mt-0.5">
+                    <strong>Payment Channel:</strong>{' '}
+                    <span className="uppercase font-mono font-semibold">
+                      {printingOrder.paymentMethod || 'momo'}
+                    </span>
+                  </p>
+                  <p className="text-xs mt-0.5">
+                    <strong>Payment State:</strong>{' '}
+                    <span className="font-semibold text-emerald-700">
+                      {printingOrder.paymentMethod === 'cod' ? 'Collect on Delivery (COD)' : 'Prepaid & Verified'}
+                    </span>
+                  </p>
+                  {printingOrder.dispatchNotes && (
+                    <p className="text-[11px] text-[#1F2937] mt-1 bg-white p-1.5 border border-[#E5E7EB]">
+                      <strong>Dispatch Note:</strong> {printingOrder.dispatchNotes}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              {/* Items Manifest Table */}
+              <div>
+                <table className="w-full text-left text-xs border border-[#E5E7EB]">
+                  <thead>
+                    <tr className="bg-[#0B1F3A] text-white uppercase text-[10px] tracking-wider">
+                      <th className="py-2.5 px-3">Item / Formulation Description</th>
+                      <th className="py-2.5 px-3 text-center">Qty</th>
+                      <th className="py-2.5 px-3 text-right">Unit Price</th>
+                      <th className="py-2.5 px-3 text-right">Total (GHS)</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[#E5E7EB]">
+                    {Array.isArray(printingOrder.items) && printingOrder.items.length > 0 ? (
+                      printingOrder.items.map((it: any, idx: number) => (
+                        <tr key={idx} className="hover:bg-gray-50">
+                          <td className="py-2.5 px-3 font-medium text-[#0B1F3A]">
+                            {it.name || it.productName || 'Botanical Cosmetic Formulation'}
+                            {it.variant && <span className="text-[#6B7280] text-[10px] block font-normal">Variant: {it.variant}</span>}
+                          </td>
+                          <td className="py-2.5 px-3 text-center font-mono font-semibold">{it.quantity || 1}</td>
+                          <td className="py-2.5 px-3 text-right font-mono">{formatPrice(it.price || printingOrder.total / printingOrder.items.length)}</td>
+                          <td className="py-2.5 px-3 text-right font-mono font-bold">{formatPrice((it.price || printingOrder.total / printingOrder.items.length) * (it.quantity || 1))}</td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td className="py-2.5 px-3 font-medium text-[#0B1F3A]">
+                          City Cosmetics Formulations Package ({printingOrder.itemsCount || 1} item{printingOrder.itemsCount > 1 ? 's' : ''})
+                        </td>
+                        <td className="py-2.5 px-3 text-center font-mono font-semibold">{printingOrder.itemsCount || 1}</td>
+                        <td className="py-2.5 px-3 text-right font-mono">{formatPrice(printingOrder.total)}</td>
+                        <td className="py-2.5 px-3 text-right font-mono font-bold">{formatPrice(printingOrder.total)}</td>
+                      </tr>
+                    )}
+                  </tbody>
+                  <tfoot>
+                    <tr className="bg-[#F5F9FE] border-t-2 border-[#0B1F3A] font-bold">
+                      <td colSpan={3} className="py-3 px-3 text-right uppercase text-[11px] text-[#0B1F3A]">
+                        Grand Total Payable:
+                      </td>
+                      <td className="py-3 px-3 text-right text-sm text-[#0B1F3A] font-mono">
+                        {formatPrice(printingOrder.total)}
+                      </td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+
+              {/* Courier Dispatch Inspection & Signoff */}
+              <div className="grid grid-cols-2 gap-6 pt-4 border-t border-[#E5E7EB] text-xs">
+                <div>
+                  <span className="text-[10px] uppercase font-bold text-[#6B7280] block mb-2 font-mono">
+                    Dispatcher / Courier Signoff (Sunyani Hub)
+                  </span>
+                  <div className="border-b border-[#0B1F3A] h-10 flex items-end pb-1 text-[11px] text-[#6B7280]">
+                    <span>Inspected by Store Associate: _______________</span>
+                  </div>
+                  <p className="text-[10px] text-[#6B7280] mt-1">Date & Time: ________________________</p>
+                </div>
+
+                <div>
+                  <span className="text-[10px] uppercase font-bold text-[#6B7280] block mb-2 font-mono">
+                    Client / Consignee Acceptance
+                  </span>
+                  <div className="border-b border-[#0B1F3A] h-10 flex items-end pb-1 text-[11px] text-[#6B7280]">
+                    <span>Received in pristine condition: _______________</span>
+                  </div>
+                  <p className="text-[10px] text-[#6B7280] mt-1">Signature / Date: ___________________</p>
+                </div>
+              </div>
+
+              {/* Security & Authenticity Stamp */}
+              <div className="pt-2 text-center text-[10px] text-[#6B7280] font-mono border-t border-[#E5E7EB]">
+                City Cosmetics Official Dispatch &bull; Sunyani Flagship Boutique &bull; Thank you for choosing clean botanical beauty.
+              </div>
             </div>
           </div>
         </div>

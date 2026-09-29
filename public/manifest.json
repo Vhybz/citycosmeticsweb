@@ -1,0 +1,25 @@
+{
+  "name": "City Cosmetics",
+  "short_name": "City Cosmetics",
+  "description": "Clean Luxury Skincare, Fine Fragrances & Botanical Beauty — Sunyani, Ghana",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0B1F3A",
+  "theme_color": "#0B1F3A",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/logo.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/logo.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["shopping", "lifestyle", "beauty"]
+}
