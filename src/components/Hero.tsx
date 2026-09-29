@@ -4,15 +4,16 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
   ArrowRight,
-  Droplets,
-  Leaf,
-  Shield,
   ChevronLeft,
   ChevronRight,
   MessageCircle,
   ShoppingBag,
   Sparkles,
   CheckCircle2,
+  Droplets,
+  Shield,
+  Play,
+  Pause,
 } from 'lucide-react';
 import { formatPrice } from '@/lib/formatPrice';
 import { useWhatsAppOrder } from '@/lib/whatsappOrderContext';
@@ -28,6 +29,7 @@ interface Slide {
   description: string;
   keyActives: string[];
   batchNo: string;
+  skinType: string;
   productId: string;
 }
 
@@ -42,6 +44,7 @@ const HERO_SLIDES: Slide[] = [
       'Formulated in Sunyani with multi-molecular weight hyaluronic acid and botanical shea peptides for 72-hour weightless dew lock in tropical warmth.',
     keyActives: ['Triple-Hyaluronic 3%', 'Shea Peptide Matrix', 'Niacinamide 5%'],
     batchNo: 'BATCH SY-01',
+    skinType: 'All Skin Types • Tropical Tested',
     productId: 'cc-01',
   },
   {
@@ -51,9 +54,10 @@ const HERO_SLIDES: Slide[] = [
     title: 'Cellular Renewal Elixir',
     subtitle: 'Botanical Stem Cells & Golden Marula Barrier',
     description:
-      'A potent restorative nectar designed to defend against environmental pollutants and boost cellular turnover with zero greasy residue.',
+      'A potent golden restorative nectar designed to defend against environmental pollutants and boost cellular turnover with zero greasy residue.',
     keyActives: ['Baobab Stem Cells', 'Golden Marula Oil', 'CoQ10 Infusion'],
     batchNo: 'BATCH SY-02',
+    skinType: 'Resilient Barrier • Sensitive Safe',
     productId: 'cc-02',
   },
   {
@@ -66,6 +70,7 @@ const HERO_SLIDES: Slide[] = [
       'Clinical-potency brightening concentrate that evens skin tone, reduces hyperpigmentation, and imparts a resilient glass-skin glow.',
     keyActives: ['Vitamin C Ester 20%', 'Papaya Enzyme Ferment', 'Licorice Root'],
     batchNo: 'BATCH SY-03',
+    skinType: 'Dullness & Tone Correction',
     productId: 'cc-03',
   },
   {
@@ -78,6 +83,7 @@ const HERO_SLIDES: Slide[] = [
       'Overnight cellular recuperation balm that replenishes vital lipids and reinforces the epidermal moisture barrier while you sleep.',
     keyActives: ['Wild Moringa Lipids', 'Botanical Squalane', 'Ceramide NP'],
     batchNo: 'BATCH SY-04',
+    skinType: 'Overnight Barrier Renewal',
     productId: 'cc-04',
   },
   {
@@ -90,6 +96,7 @@ const HERO_SLIDES: Slide[] = [
       'The definitive botanical regimen compounding gentle cleansing, deep hydration, antioxidant barrier defense, and restorative sun care.',
     keyActives: ['Full Discovery Ritual', 'Bono Botanical Extracts', 'Travel Atelier Box'],
     batchNo: 'BATCH SY-08',
+    skinType: 'Complete 4-Step Regimen',
     productId: 'cc-08',
   },
 ];
@@ -130,238 +137,246 @@ export const Hero: React.FC = () => {
     <section
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
-      className="relative bg-[#FAF9F5] dark:bg-[#071324] border-b border-[#E5E7EB] dark:border-white/10 transition-colors"
-      aria-label="City Cosmetics Atelier Showcase"
+      className="relative overflow-hidden min-h-[680px] lg:min-h-[780px] flex items-center bg-[#071324] text-white select-none"
+      aria-label="City Cosmetics Full-Bleed Cinematic Showcase"
     >
-      <div className="max-w-[1560px] mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-12 min-h-[660px] lg:min-h-[740px]">
+      {/* ====================================================================
+          1. FULL-BLEED CINEMATIC PHOTOGRAPHIC BACKGROUND (100% VISIBLE)
+          ==================================================================== */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        {HERO_SLIDES.map((slide, idx) => {
+          const isActive = idx === currentSlide;
+          return (
+            <div
+              key={slide.id}
+              className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+                isActive ? 'opacity-100' : 'opacity-0'
+              }`}
+            >
+              <img
+                src={slide.image}
+                alt={slide.title}
+                className={`w-full h-full object-cover object-center transition-transform duration-7000 ease-out ${
+                  isActive ? 'scale-105' : 'scale-100'
+                }`}
+              />
+            </div>
+          );
+        })}
+
+        {/* Chanel / Tom Ford Signature Scrim:
+            Protects the left-hand editorial typography while keeping the center and right photography vivid */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#071324]/95 via-[#071324]/80 via-45% to-[#071324]/20" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#071324] via-transparent to-[#071324]/60" />
+      </div>
+
+      {/* ====================================================================
+          2. EDITORIAL HERO STAGE CONTENT (CHANEL & TOM FORD LUXURY)
+          ==================================================================== */}
+      <div className="relative z-10 max-w-[1560px] w-full mx-auto px-4 sm:px-8 lg:px-14 py-20 sm:py-24 lg:py-28 flex flex-col justify-between min-h-[640px] lg:min-h-[720px]">
+        
+        {/* Main Grid: Left Storytelling & Right Floating Atelier Pill */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center pt-2 pb-16">
           
-          {/* ====================================================================
-              LEFT COLUMN: EDITORIAL ATELIER STORY & DIRECT ACTION
-              (Augustinus Bader & Aesop Architectural Layout)
-              ==================================================================== */}
-          <div className="lg:col-span-6 xl:col-span-5 flex flex-col justify-between p-6 sm:p-10 lg:p-12 xl:p-16 border-b lg:border-b-0 lg:border-r border-[#E5E7EB] dark:border-white/10 z-10 bg-[#FAF9F5] dark:bg-[#071324]">
+          {/* Left Column: Editorial Typography & Actions */}
+          <div className="lg:col-span-8 space-y-6 max-w-3xl">
             
-            {/* 1. Header Metadata & Location */}
-            <div className="space-y-6">
-              <div className="flex flex-wrap items-center justify-between gap-3 text-xs">
-                <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#0B1F3A] text-white text-[11px] font-mono uppercase tracking-[0.2em]">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#93C5FD] animate-pulse" />
-                  <span>Formulated in Sunyani</span>
-                </div>
-                <div className="font-mono text-[11px] uppercase tracking-wider text-[#6B7280] dark:text-[#DCEBFA]/70">
-                  {activeSlide.batchNo} &bull; 0{currentSlide + 1} / 0{HERO_SLIDES.length}
-                </div>
+            {/* Atelier Sunyani Origin Pill & Live Slide Counter */}
+            <div className="flex flex-wrap items-center gap-3 text-xs">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-white/10 text-white backdrop-blur-md border border-white/20 text-[11px] font-mono uppercase tracking-[0.2em]">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#93C5FD] animate-pulse" />
+                <span>Formulated in Sunyani</span>
               </div>
-
-              {/* 2. Slide Category & Title */}
-              <div className="space-y-3 pt-2">
-                <p className="text-[11px] uppercase font-mono tracking-[0.25em] font-semibold text-[#174EA6] dark:text-[#93C5FD]">
-                  {activeSlide.category}
-                </p>
-                <h1 className="font-serif-luxury text-3xl sm:text-4xl lg:text-5xl font-normal text-[#0B1F3A] dark:text-white leading-[1.12] tracking-tight transition-all duration-300">
-                  {activeSlide.title}
-                </h1>
-                <p className="italic font-serif font-light text-base sm:text-lg text-[#4B5563] dark:text-[#DCEBFA]/85">
-                  {activeSlide.subtitle}
-                </p>
-              </div>
-
-              {/* 3. Editorial Description */}
-              <p className="text-xs sm:text-sm text-[#4B5563] dark:text-[#DCEBFA]/80 leading-relaxed max-w-xl">
-                {activeSlide.description}
-              </p>
-
-              {/* 4. Key Botanical Actives Tags */}
-              <div className="pt-1 flex flex-wrap gap-2">
-                {activeSlide.keyActives.map((active, i) => (
-                  <span
-                    key={i}
-                    className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-mono bg-white dark:bg-white/5 border border-[#E5E7EB] dark:border-white/10 text-[#0B1F3A] dark:text-[#DCEBFA] shadow-2xs"
-                  >
-                    <CheckCircle2 className="w-3 h-3 text-[#174EA6] dark:text-[#93C5FD]" />
-                    <span>{active}</span>
-                  </span>
-                ))}
-              </div>
-
-              {/* 5. Pricing & Primary CTAs */}
-              <div className="pt-4 space-y-3.5 border-t border-[#E5E7EB] dark:border-white/10">
-                <div className="flex items-baseline gap-3">
-                  <span className="text-2xl font-mono font-bold text-[#0B1F3A] dark:text-white">
-                    {formatPrice(activeProduct.price)}
-                  </span>
-                  {activeProduct.compareAtPrice && (
-                    <span className="text-sm font-mono line-through text-[#9CA3AF]">
-                      {formatPrice(activeProduct.compareAtPrice)}
-                    </span>
-                  )}
-                  <span className="text-[11px] font-mono text-[#6B7280] dark:text-[#DCEBFA]/70">
-                    &bull; Flat GH₵ 20 Delivery in Sunyani
-                  </span>
-                </div>
-
-                {/* Primary Action Buttons */}
-                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-                  {/* WhatsApp Direct Quick Order */}
-                  <button
-                    type="button"
-                    onClick={() => openWhatsAppOrder(activeProduct, undefined, 1)}
-                    className="bg-[#25D366] hover:bg-[#1EBE5D] text-white py-3.5 px-6 text-xs uppercase tracking-widest font-semibold flex items-center justify-center gap-2 shadow-sm transition-all duration-200"
-                    title="Order via WhatsApp with GH₵ 20 Delivery"
-                  >
-                    <MessageCircle className="w-4 h-4 fill-current" />
-                    <span>Order via WhatsApp</span>
-                  </button>
-
-                  {/* Add to Bag */}
-                  <button
-                    type="button"
-                    onClick={handleAddDirectToBag}
-                    className="bg-[#0B1F3A] hover:bg-[#174EA6] text-white py-3.5 px-6 text-xs uppercase tracking-widest font-semibold flex items-center justify-center gap-2 shadow-sm transition-all duration-200"
-                    title="Add formulation to bag"
-                  >
-                    <ShoppingBag className="w-4 h-4" />
-                    <span>Add to Bag</span>
-                  </button>
-
-                  {/* View Details Link */}
-                  <Link
-                    href={`/product/${activeProduct.slug}`}
-                    className="border border-[#0B1F3A] dark:border-white/20 text-[#0B1F3A] dark:text-white hover:bg-black/5 dark:hover:bg-white/5 py-3.5 px-5 text-xs uppercase tracking-widest font-semibold flex items-center justify-center gap-1.5 transition-colors"
-                  >
-                    <span>Details</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </Link>
-                </div>
-              </div>
+              <span className="font-mono text-[11px] tracking-widest text-[#93C5FD] uppercase">
+                {activeSlide.batchNo} &bull; 0{currentSlide + 1} / 0{HERO_SLIDES.length}
+              </span>
             </div>
 
-            {/* 6. Interactive Formulation Tabs (Bottom of Left Column) */}
-            <div className="pt-8 mt-6 border-t border-[#E5E7EB] dark:border-white/10">
-              <div className="text-[10px] uppercase font-mono tracking-[0.2em] text-[#6B7280] dark:text-[#DCEBFA]/60 mb-3">
-                Select Botanical Formulation:
+            {/* Category Kicker */}
+            <div className="text-xs uppercase font-mono tracking-[0.28em] font-semibold text-[#93C5FD]">
+              {activeSlide.category}
+            </div>
+
+            {/* Headline */}
+            <h1 className="font-serif-luxury text-4xl sm:text-6xl lg:text-7xl font-normal text-white leading-[1.06] tracking-tight">
+              {activeSlide.title}
+            </h1>
+
+            {/* Subtitle with High-Fashion Italic Accent */}
+            <p className="italic font-serif font-light text-lg sm:text-2xl text-[#DCEBFA]/90">
+              {activeSlide.subtitle}
+            </p>
+
+            {/* Formulation Description */}
+            <p className="text-sm sm:text-base text-[#DCEBFA]/80 leading-relaxed max-w-2xl font-normal">
+              {activeSlide.description}
+            </p>
+
+            {/* Key Botanical Actives Tags */}
+            <div className="flex flex-wrap gap-2 pt-1">
+              {activeSlide.keyActives.map((active, i) => (
+                <span
+                  key={i}
+                  className="inline-flex items-center gap-1.5 px-3 py-1 text-[11px] font-mono bg-white/10 backdrop-blur-md border border-white/15 text-white shadow-2xs"
+                >
+                  <CheckCircle2 className="w-3 h-3 text-[#93C5FD]" />
+                  <span>{active}</span>
+                </span>
+              ))}
+            </div>
+
+            {/* Pricing & Direct Commerce CTAs */}
+            <div className="pt-4 space-y-4">
+              <div className="flex items-baseline gap-3">
+                <span className="text-3xl font-mono font-bold text-white tracking-tight">
+                  {formatPrice(activeProduct.price)}
+                </span>
+                {activeProduct.compareAtPrice && (
+                  <span className="text-base font-mono line-through text-[#9CA3AF]">
+                    {formatPrice(activeProduct.compareAtPrice)}
+                  </span>
+                )}
+                <span className="text-xs font-mono text-[#93C5FD]">
+                  &bull; Flat GH₵ 20 Delivery in Sunyani
+                </span>
               </div>
-              <div className="grid grid-cols-2 sm:grid-cols-5 gap-1.5">
-                {HERO_SLIDES.map((slide, idx) => {
-                  const isCurrent = idx === currentSlide;
-                  return (
-                    <button
-                      key={slide.id}
-                      type="button"
-                      onClick={() => setCurrentSlide(idx)}
-                      className={`text-left p-2.5 transition-all duration-200 border ${
-                        isCurrent
-                          ? 'border-[#0B1F3A] dark:border-[#93C5FD] bg-[#0B1F3A] text-white dark:bg-[#93C5FD] dark:text-[#0B1F3A] shadow-xs'
-                          : 'border-[#E5E7EB] dark:border-white/10 bg-white/60 dark:bg-white/5 text-[#4B5563] dark:text-[#DCEBFA]/75 hover:border-[#174EA6]'
-                      }`}
-                    >
-                      <div className="font-mono text-[10px] opacity-75">{slide.id}</div>
-                      <div className="font-sans text-[11px] font-semibold truncate leading-tight mt-0.5">
-                        {slide.title.replace('Lumière ', '').replace('Sunyani ', '')}
-                      </div>
-                    </button>
-                  );
-                })}
+
+              {/* Action Buttons */}
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 pt-1">
+                {/* 1-Click WhatsApp Quick Order */}
+                <button
+                  type="button"
+                  onClick={() => openWhatsAppOrder(activeProduct, undefined, 1)}
+                  className="bg-[#25D366] hover:bg-[#1EBE5D] text-white py-4 px-8 text-xs uppercase tracking-widest font-semibold flex items-center justify-center gap-2 shadow-xl shadow-black/20 hover:scale-[1.02] transition-all duration-200"
+                  title="Order formulation instantly via WhatsApp"
+                >
+                  <MessageCircle className="w-4 h-4 fill-current" />
+                  <span>Order via WhatsApp &bull; GH₵ 20 Delivery</span>
+                </button>
+
+                {/* Add to Bag */}
+                <button
+                  type="button"
+                  onClick={handleAddDirectToBag}
+                  className="bg-white hover:bg-[#DCEBFA] text-[#071324] py-4 px-8 text-xs uppercase tracking-widest font-semibold flex items-center justify-center gap-2 shadow-xl shadow-black/20 hover:scale-[1.02] transition-all duration-200"
+                  title="Add formulation to bag"
+                >
+                  <ShoppingBag className="w-4 h-4" />
+                  <span>Add to Bag</span>
+                </button>
+
+                {/* Explore Details Link */}
+                <Link
+                  href={`/product/${activeProduct.slug}`}
+                  className="border border-white/30 hover:border-white text-white hover:bg-white/10 py-4 px-6 text-xs uppercase tracking-widest font-semibold flex items-center justify-center gap-2 transition-all duration-200"
+                >
+                  <span>Details</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
               </div>
             </div>
 
           </div>
 
-          {/* ====================================================================
-              RIGHT COLUMN: PRISTINE HIGH-RESOLUTION PHOTOGRAPHIC SHOWCASE
-              (100% visible, uncompromised product visual stage)
-              ==================================================================== */}
-          <div className="lg:col-span-6 xl:col-span-7 relative overflow-hidden bg-[#F3F4F6] dark:bg-black/60 min-h-[480px] sm:min-h-[580px] lg:min-h-full flex items-center justify-center p-6 sm:p-10 lg:p-12">
-            
-            {/* Slideshow Image Canvas (100% visible, no heavy fog) */}
-            <div className="absolute inset-0 z-0">
-              {HERO_SLIDES.map((slide, idx) => {
-                const isActive = idx === currentSlide;
-                return (
-                  <div
-                    key={slide.id}
-                    className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
-                      isActive ? 'opacity-100' : 'opacity-0 pointer-events-none'
-                    }`}
-                  >
-                    <img
-                      src={slide.image}
-                      alt={slide.title}
-                      className={`w-full h-full object-cover object-center transition-transform duration-7000 ease-out ${
-                        isActive ? 'scale-105' : 'scale-100'
-                      }`}
-                    />
-                  </div>
-                );
-              })}
-
-              {/* Ultra-subtle luxury corner vignette to elevate floating HUD badges */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/20 pointer-events-none" />
-            </div>
-
-            {/* Top-Right Floating Atelier Seal */}
-            <div className="absolute top-6 right-6 z-10 bg-white/90 dark:bg-[#0B1F3A]/90 backdrop-blur-md px-3.5 py-1.5 border border-white/80 dark:border-white/10 shadow-lg hidden sm:flex items-center gap-2">
-              <Sparkles className="w-3.5 h-3.5 text-[#174EA6] dark:text-[#93C5FD]" />
-              <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-[#0B1F3A] dark:text-white font-semibold">
-                Pure Botanicals &bull; Sunyani Atelier
-              </span>
-            </div>
-
-            {/* Bottom-Left Floating Formulation Summary Card */}
-            <div className="absolute bottom-6 left-6 z-10 bg-white/95 dark:bg-[#0B1F3A]/95 backdrop-blur-md p-3.5 border border-white/80 dark:border-white/10 shadow-xl max-w-xs hidden sm:block animate-fadeIn">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-neutral-100 dark:bg-black/50 overflow-hidden shrink-0 border border-[#E5E7EB] dark:border-white/10">
-                  <img
-                    src={activeSlide.image}
-                    alt={activeSlide.title}
-                    className="w-full h-full object-cover"
-                  />
+          {/* Right Column: Floating Atelier Specs Badge */}
+          <div className="lg:col-span-4 hidden lg:flex flex-col items-end space-y-4">
+            <div className="bg-[#071324]/85 backdrop-blur-xl border border-white/15 p-6 max-w-xs text-right space-y-4 shadow-2xl">
+              <div className="flex items-center justify-end gap-2 text-[#93C5FD]">
+                <Sparkles className="w-4 h-4" />
+                <span className="text-[10px] font-mono uppercase tracking-[0.25em] font-semibold">
+                  Atelier Standards
+                </span>
+              </div>
+              <div className="space-y-1 text-xs">
+                <div className="text-[11px] uppercase tracking-wider text-[#9CA3AF]">
+                  Skin Profile:
                 </div>
-                <div className="min-w-0 flex-1">
-                  <div className="font-serif-luxury text-xs font-semibold text-[#0B1F3A] dark:text-white truncate">
-                    {activeSlide.title}
-                  </div>
-                  <div className="font-mono text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold mt-0.5 flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                    <span>In Stock &bull; Sunyani Dispatch</span>
-                  </div>
+                <div className="font-serif text-sm text-white font-medium">
+                  {activeSlide.skinType}
+                </div>
+              </div>
+              <div className="space-y-1 text-xs pt-2 border-t border-white/10">
+                <div className="text-[11px] uppercase tracking-wider text-[#9CA3AF]">
+                  Compounding Atelier:
+                </div>
+                <div className="font-mono text-xs text-[#93C5FD]">
+                  Sunyani, Bono Region &bull; Ghana
                 </div>
               </div>
             </div>
+          </div>
 
-            {/* Bottom-Right Slideshow Navigation Controls */}
-            <div className="absolute bottom-6 right-6 z-10 flex items-center gap-2 bg-white/95 dark:bg-[#0B1F3A]/95 backdrop-blur-md p-2 border border-white/80 dark:border-white/10 shadow-xl">
-              <div className="px-2 font-mono text-xs font-semibold text-[#0B1F3A] dark:text-white">
-                0{currentSlide + 1} / 0{HERO_SLIDES.length}
-              </div>
+        </div>
 
-              <div className="h-4 w-px bg-[#E5E7EB] dark:border-white/20" />
+        {/* ====================================================================
+            3. FLOATING BOTTOM HUD: FORMULATION TABS & SLIDE CONTROLS (CHANEL STYLE)
+            ==================================================================== */}
+        <div className="pt-6 border-t border-white/15 flex flex-col md:flex-row items-center justify-between gap-4">
+          
+          {/* Formulation Selector Tabs */}
+          <div className="w-full md:w-auto flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 scrollbar-none">
+            {HERO_SLIDES.map((slide, idx) => {
+              const isCurrent = idx === currentSlide;
+              return (
+                <button
+                  key={slide.id}
+                  type="button"
+                  onClick={() => setCurrentSlide(idx)}
+                  className={`group relative text-left py-2 px-3 transition-all duration-300 border ${
+                    isCurrent
+                      ? 'border-[#93C5FD] bg-white/15 text-white'
+                      : 'border-white/10 bg-black/20 text-[#DCEBFA]/60 hover:text-white hover:border-white/30'
+                  }`}
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="font-mono text-[10px] text-[#93C5FD]">
+                      {slide.id}
+                    </span>
+                    <span className="font-sans text-xs font-semibold tracking-wide whitespace-nowrap">
+                      {slide.title.replace('Lumière ', '').replace('Sunyani ', '')}
+                    </span>
+                  </div>
+                  {/* Active Indicator Line */}
+                  {isCurrent && (
+                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#93C5FD] animate-pulse" />
+                  )}
+                </button>
+              );
+            })}
+          </div>
 
+          {/* Controls: Prev/Next & Autoplay State */}
+          <div className="flex items-center gap-3 shrink-0">
+            <div className="font-mono text-xs text-[#DCEBFA]/80">
+              0{currentSlide + 1} <span className="text-white/30">/</span> 0{HERO_SLIDES.length}
+            </div>
+
+            <div className="h-4 w-px bg-white/20" />
+
+            <div className="flex items-center gap-1">
               <button
                 type="button"
                 onClick={handlePrev}
-                className="w-8 h-8 flex items-center justify-center text-[#0B1F3A] dark:text-white hover:bg-[#0B1F3A] hover:text-white dark:hover:bg-[#174EA6] transition-colors"
-                title="Previous Formulation"
+                className="w-9 h-9 flex items-center justify-center border border-white/20 bg-white/5 hover:bg-white hover:text-[#071324] text-white transition-all"
+                title="Previous formulation"
                 aria-label="Previous Slide"
               >
                 <ChevronLeft className="w-4 h-4" />
               </button>
-
               <button
                 type="button"
                 onClick={handleNext}
-                className="w-8 h-8 flex items-center justify-center text-[#0B1F3A] dark:text-white hover:bg-[#0B1F3A] hover:text-white dark:hover:bg-[#174EA6] transition-colors"
-                title="Next Formulation"
+                className="w-9 h-9 flex items-center justify-center border border-white/20 bg-white/5 hover:bg-white hover:text-[#071324] text-white transition-all"
+                title="Next formulation"
                 aria-label="Next Slide"
               >
                 <ChevronRight className="w-4 h-4" />
               </button>
             </div>
-
           </div>
 
         </div>
+
       </div>
     </section>
   );
