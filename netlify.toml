@@ -1,0 +1,7 @@
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+# Netlify automatically configures Next.js runtime for App Router
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
